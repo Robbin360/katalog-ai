@@ -69,17 +69,18 @@ export async function signup(formData: FormData) {
     redirect("/")
 }
 
-// --- NUEVA FUNCIÓN: EL COHETE A GOOGLE ---
+// --- FUNCIÓN DE GOOGLE ROBUSTA ---
 export async function signInWithGoogle() {
     const supabase = await createClient()
 
-    // Detectamos si estamos en localhost o en vercel automáticamente
-    const origin = (await headers()).get('origin')
+    // 1. Detectar Origen (Localhost o Vercel)
+    // El fallback 'http://localhost:3000' evita que explote si headers() falla
+    const origin = (await headers()).get('origin') || 'http://localhost:3000'
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            // Le decimos a Supabase: "Cuando Google termine, manda al usuario AQUÍ"
+            // Importante: Esto redirige a la ruta /auth/callback que crearemos/verificaremos
             redirectTo: `${origin}/auth/callback`,
             queryParams: {
                 access_type: 'offline',
@@ -94,6 +95,6 @@ export async function signInWithGoogle() {
     }
 
     if (data.url) {
-        redirect(data.url) // Redirige al usuario a la pantalla de Google
+        redirect(data.url) // Nos vamos a Google
     }
 }
