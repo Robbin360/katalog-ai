@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 import { createServerClient } from "@supabase/ssr"
 import { cookies, headers } from "next/headers"
 
-// Función auxiliar para crear el cliente en el servidor
+// Helper para conectar Supabase
 async function createClient() {
     const cookieStore = await cookies()
 
@@ -23,7 +23,7 @@ async function createClient() {
                             cookieStore.set(name, value, options)
                         )
                     } catch {
-                        // Ignoramos errores de cookies en Server Components
+                        // Ignorar errores de cookies en Server Components
                     }
                 },
             },
@@ -33,7 +33,6 @@ async function createClient() {
 
 export async function login(formData: FormData) {
     const supabase = await createClient()
-
     const data = {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
@@ -52,7 +51,6 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
     const supabase = await createClient()
-
     const data = {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
@@ -69,18 +67,15 @@ export async function signup(formData: FormData) {
     redirect("/")
 }
 
-// --- FUNCIÓN DE GOOGLE ROBUSTA ---
 export async function signInWithGoogle() {
     const supabase = await createClient()
 
-    // 1. Detectar Origen (Localhost o Vercel)
-    // El fallback 'http://localhost:3000' evita que explote si headers() falla
-    const origin = (await headers()).get('origin') || 'http://localhost:3000'
+    // URL fija para evitar errores en Windows
+    const origin = 'http://localhost:3000'
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            // Importante: Esto redirige a la ruta /auth/callback que crearemos/verificaremos
             redirectTo: `${origin}/auth/callback`,
             queryParams: {
                 access_type: 'offline',
@@ -95,6 +90,18 @@ export async function signInWithGoogle() {
     }
 
     if (data.url) {
-        redirect(data.url) // Nos vamos a Google
+        redirect(data.url)
     }
+}
+
+// --- ESTA ES LA FUNCIÓN QUE FALTABA ---
+export async function signout() {
+    const supabase = await createClient()
+
+    // 1. Cerrar sesión en Supabase
+    await supabase.auth.signOut()
+
+    // 2. Limpiar caché y redirigir
+    revalidatePath("/", "layout")
+    redirect("/login")
 }
