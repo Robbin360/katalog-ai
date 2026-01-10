@@ -29,13 +29,13 @@ export default function SidebarList() {
 
   const [isUploading, setIsUploading] = useState(false)
   const [activeTab, setActiveTab] = useState("inventory")
+
   const [file, setFile] = useState<File | null>(null)
   const [urlInput, setUrlInput] = useState("")
   const [title, setTitle] = useState("")
   const [brand, setBrand] = useState("")
   const [context, setContext] = useState("")
 
-  // 1. OBTENER USUARIO
   const { data: user } = useQuery({
     queryKey: ['current-user'],
     queryFn: async () => {
@@ -44,14 +44,10 @@ export default function SidebarList() {
     }
   })
 
-  // --- LÓGICA DE NOMBRE MEJORADA ---
-  const metadata = user?.user_metadata || {}
-  // Prioridad: 1. Nombre completo Google, 2. Nombre manual, 3. Email (antes del @)
-  const displayName = metadata.full_name || metadata.name || user?.email?.split('@')[0] || "Usuario"
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Usuario"
   const displayEmail = user?.email || ""
   const initials = displayName.substring(0, 2).toUpperCase()
 
-  // 2. Fetch productos
   const { data: products, isLoading } = useQuery({
     queryKey: ['products-list'],
     queryFn: async () => {
@@ -63,7 +59,6 @@ export default function SidebarList() {
     }
   })
 
-  // 3. Función de Subida
   const handleUpload = async () => {
     try {
       setIsUploading(true)
@@ -103,8 +98,50 @@ export default function SidebarList() {
     }
   }
 
+  // --- LOGICA DE RENDERIZADO EXTRAÍDA (Para evitar errores de sintaxis) ---
+  let renderContent;
+
+  if (isLoading) {
+    renderContent = (
+      <div className="p-4 text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
+        <Loader2 className="w-3 h-3 animate-spin" /> <span>Cargando...</span>
+      </div>
+    );
+  } else {
+    renderContent = products?.map((item) => {
+      const itemTitle = item.ai_output?.product_title || item.ai_output?.producto || `Asset #${item.id}`;
+      const isSelected = selectedProductId === item.id;
+      return (
+        <button
+          key={item.id}
+          onClick={() => setSelectedProduct(item.id)}
+          className={cn(
+            "flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200 group",
+            isSelected ? "bg-zinc-900 border border-zinc-700 shadow-sm" : "hover:bg-zinc-900/50 border border-transparent"
+          )}
+        >
+          <div className={cn("w-8 h-8 rounded flex items-center justify-center shrink-0 border border-zinc-800", isSelected ? "bg-indigo-500/10 text-indigo-400" : "bg-zinc-950 text-zinc-600")}>
+            <Package className="w-4 h-4" />
+          </div>
+          <div className="flex flex-col overflow-hidden w-full">
+            <span className={cn("text-xs font-medium truncate notranslate", isSelected ? "text-zinc-200" : "text-zinc-400 group-hover:text-zinc-300")}>
+              {itemTitle}
+            </span>
+            <div className="flex items-center justify-between mt-1.5">
+              <span className={cn("text-[9px] px-1.5 py-0.5 rounded-sm font-mono uppercase tracking-wider notranslate", item.status === 'DONE' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border border-amber-500/20")}>
+                {item.status}
+              </span>
+              <span className="text-[9px] text-zinc-600 font-mono notranslate">#{item.id}</span>
+            </div>
+          </div>
+        </button>
+      )
+    });
+  }
+
   return (
     <div className="h-full flex flex-col bg-zinc-950 border-r border-zinc-800 font-sans">
+
       <div className="p-3 border-b border-zinc-800 bg-zinc-900">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full bg-zinc-950 border border-zinc-800 grid grid-cols-2">
@@ -122,53 +159,22 @@ export default function SidebarList() {
         {activeTab === 'inventory' ? (
           <ScrollArea className="h-full">
             <div className="flex flex-col p-2 gap-1 pb-20">
-              {isLoading ? (
-                <div className="p-4 text-center text-xs text-zinc-500"><span>Cargando...</span></div>
-              ) : products?.map((item) => {
-                const itemTitle = item.ai_output?.product_title || item.ai_output?.producto || `Asset #${item.id}`;
-                const isSelected = selectedProductId === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedProduct(item.id)}
-                    className={cn(
-                      "flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200 group",
-                      isSelected ? "bg-zinc-900 border border-zinc-700 shadow-sm" : "hover:bg-zinc-900/50 border border-transparent"
-                    )}
-                  >
-                    <div className={cn("w-8 h-8 rounded flex items-center justify-center shrink-0 border border-zinc-800", isSelected ? "bg-indigo-500/10 text-indigo-400" : "bg-zinc-950 text-zinc-600")}>
-                      <Package className="w-4 h-4" />
-                    </div>
-                    <div className="flex flex-col overflow-hidden w-full">
-                      {/* notranslate para proteger el nombre del producto, quítalo si quieres traducir */}
-                      <span className={cn("text-xs font-medium truncate", isSelected ? "text-zinc-200" : "text-zinc-400 group-hover:text-zinc-300")}>
-                        {itemTitle}
-                      </span>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className={cn("text-[9px] px-1.5 py-0.5 rounded-sm font-mono uppercase tracking-wider", item.status === 'DONE' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border border-amber-500/20")}>
-                          {item.status}
-                        </span>
-                        <span className="text-[9px] text-zinc-600 font-mono notranslate">#{item.id}</span>
-                      </div>
-                    </div>
-                  </button>
-                )
-              })}
+              {/* Aquí inyectamos la lógica limpia */}
+              {renderContent}
             </div>
           </ScrollArea>
         ) : (
           <ScrollArea className="h-full">
             <div className="p-4 space-y-6 pb-24">
-              {/* Formulario de subida... (Se mantiene igual que antes) */}
+
               <div className="space-y-3">
                 <Label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Imagen</span></Label>
-                {/* ... Inputs de archivo/url ... */}
                 <div className="grid gap-3">
                   <div className="relative group cursor-pointer">
                     <Input type="file" accept="image/*" className="opacity-0 absolute inset-0 z-10 cursor-pointer h-24 w-full" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
                     <div className={cn("h-24 border border-dashed rounded-lg flex flex-col items-center justify-center transition-colors", file ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-700 bg-zinc-900/30 group-hover:bg-zinc-900/50")}>
                       <Upload className="w-5 h-5 text-zinc-500 mb-2" />
-                      <span className="text-xs text-zinc-400">{file ? file.name : "Subir archivo"}</span>
+                      <span className="text-xs text-zinc-400">{file ? file.name : <span>Subir archivo</span>}</span>
                     </div>
                   </div>
                   <Input placeholder="URL..." className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={urlInput} onChange={(e) => setUrlInput(e.target.value)} />
@@ -176,18 +182,36 @@ export default function SidebarList() {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Nombre</span></Label>
-                <Input className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Datos del Producto</span></Label>
+                <div className="grid gap-2">
+                  <Input placeholder="Nombre (Ej: Air Max)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={title} onChange={(e) => setTitle(e.target.value)} />
+                  <Input placeholder="Marca (Ej: Nike)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                </div>
               </div>
+
+              <div className="space-y-3">
+                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Descripción / Especificaciones</span></Label>
+                <Textarea
+                  placeholder="Pega aquí medidas, materiales, peso o datos del proveedor..."
+                  className="bg-zinc-900 border-zinc-800 text-xs min-h-[100px] resize-none focus:ring-indigo-500/50"
+                  value={context}
+                  onChange={(e) => setContext(e.target.value)}
+                />
+              </div>
+
               <Button onClick={handleUpload} disabled={isUploading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-10 text-xs">
-                {isUploading ? "..." : <span>PROCESAR</span>}
+                {isUploading ? (
+                  <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> <span>PROCESANDO...</span></>
+                ) : (
+                  <span>INICIAR FUNDICIÓN</span>
+                )}
               </Button>
             </div>
           </ScrollArea>
         )}
       </div>
 
-      <div className="p-3 border-t border-zinc-800 bg-zinc-950 mt-auto">
+      <div className="p-3 border-t border-zinc-800 bg-zinc-900 mt-auto">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-zinc-900 transition-colors group outline-none border border-transparent hover:border-zinc-800">
@@ -203,8 +227,18 @@ export default function SidebarList() {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-60 bg-zinc-900 border-zinc-800 text-zinc-300 ml-2" align="start" side="top">
+            <DropdownMenuLabel className="text-xs font-normal text-zinc-500 px-2 py-1.5">
+              <span>Mi Cuenta</span>
+            </DropdownMenuLabel>
+            <DropdownMenuItem className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md">
+              <Settings className="w-3.5 h-3.5 mr-2" /> <span>Configuración</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md">
+              <CreditCard className="w-3.5 h-3.5 mr-2" /> <span>Facturación</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-zinc-800 my-1" />
             <DropdownMenuItem onClick={() => signout()} className="text-red-400 focus:text-red-300 cursor-pointer">
-              <span>Cerrar Sesión</span>
+              <LogOut className="w-3.5 h-3.5 mr-2" /> <span>Cerrar Sesión</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
