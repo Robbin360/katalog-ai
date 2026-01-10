@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { createServerClient } from "@supabase/ssr"
-import { cookies, headers } from "next/headers"
+import { cookies } from "next/headers"
 
 // Helper para conectar Supabase
 async function createClient() {
@@ -67,11 +67,14 @@ export async function signup(formData: FormData) {
     redirect("/")
 }
 
+// --- FUNCIÓN GOOGLE ACTUALIZADA (DINÁMICA) ---
 export async function signInWithGoogle() {
     const supabase = await createClient()
 
-    // URL fija para evitar errores en Windows
-    const origin = 'http://localhost:3000'
+    // Lógica Dinámica:
+    // 1. En Vercel: Usará la variable de entorno (ej: https://tudominio.vercel.app)
+    // 2. En Local: Si no hay variable, usa localhost:3000
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -94,7 +97,6 @@ export async function signInWithGoogle() {
     }
 }
 
-// --- ESTA ES LA FUNCIÓN QUE FALTABA ---
 export async function signout() {
     const supabase = await createClient()
 
