@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/providers";
 
+// Configuración de Fuentes (Vienen por defecto en Next.js 15)
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,9 +14,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Metadatos para Google y compartir links
 export const metadata: Metadata = {
-  title: "Katalog.ai",
-  description: "E-commerce Asset Foundry",
+  title: "Katalog AI | Autonomous Foundry",
+  description: "Transform product images into high-conversion assets.",
 };
 
 export default function RootLayout({
@@ -24,9 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950 text-zinc-100`}>
-        <Providers>{children}</Providers>
+    // 1. suppressHydrationWarning: Evita errores si el navegador traduce
+    // 2. lang="en": Define el idioma base
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950 text-zinc-100 min-h-screen`}
+      >
+        {/* Envolvemos toda la app con el Provider de Datos */}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

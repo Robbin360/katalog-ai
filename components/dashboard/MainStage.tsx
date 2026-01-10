@@ -25,6 +25,13 @@ export default function MainStage() {
     enabled: !!selectedProductId
   })
 
+  // Función para copiar al portapapeles
+  const handleCopy = (text: string) => {
+    if (!text) return
+    navigator.clipboard.writeText(text)
+    alert("¡Código HTML copiado! Listo para pegar en Shopify.")
+  }
+
   if (!selectedProductId) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center text-zinc-600 bg-zinc-950/50">
@@ -45,9 +52,13 @@ export default function MainStage() {
 
         {/* HEADER: IMAGEN + TÍTULO SEO */}
         <div className="flex flex-col md:flex-row gap-8 border-b border-zinc-800 pb-8">
-          <div className="w-full md:w-1/3 h-64 bg-white/5 border border-zinc-800 rounded-xl flex justify-center items-center overflow-hidden shrink-0">
+          <div className="w-full md:w-1/3 h-64 bg-zinc-900/50 border border-zinc-800 rounded-xl flex justify-center items-center overflow-hidden shrink-0">
             {product?.original_image_url ? (
-              <img src={product.original_image_url} alt="Product" className="h-full w-full object-contain p-4 hover:scale-105 transition-transform" />
+              <img
+                src={product.original_image_url}
+                alt="Product"
+                className="h-full w-full object-contain p-4 hover:scale-105 transition-transform duration-500"
+              />
             ) : (
               <span className="text-zinc-700">Sin Imagen</span>
             )}
@@ -58,7 +69,7 @@ export default function MainStage() {
               <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5 text-[10px] uppercase tracking-wide">
                 SEO Optimized
               </Badge>
-              <span className="text-xs font-mono text-zinc-600">ID: {product.id}</span>
+              <span className="text-xs font-mono text-zinc-600 notranslate">ID: {product.id}</span>
             </div>
 
             <div className="space-y-1">
@@ -86,14 +97,18 @@ export default function MainStage() {
               <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-indigo-400" /> Descripción del Producto
               </h3>
-              <Button variant="ghost" size="sm" className="h-6 text-xs text-zinc-500 hover:text-white">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 text-xs text-zinc-500 hover:text-white"
+                onClick={() => handleCopy(data.description_html)}
+              >
                 <Copy className="w-3 h-3 mr-1" /> Copiar HTML
               </Button>
             </div>
 
-            {/* Renderizamos el HTML de forma segura o lo mostramos como texto */}
+            {/* Renderizamos el HTML de forma segura */}
             <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-6 text-zinc-300 text-sm leading-7 space-y-4">
-              {/* Aquí simulamos el renderizado del HTML que mandó la IA */}
               <div dangerouslySetInnerHTML={{ __html: data.description_html || "<p>Generando descripción...</p>" }} />
             </div>
           </div>
