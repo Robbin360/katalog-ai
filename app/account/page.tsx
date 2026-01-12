@@ -23,7 +23,7 @@ export default function AccountPage() {
         queryFn: async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) throw new Error("No user")
-            const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+            const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
             return { user, profile: data }
         }
     })
