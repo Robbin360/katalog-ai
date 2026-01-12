@@ -1,7 +1,7 @@
 ﻿"use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation" // <--- IMPORTACIÓN NUEVA (El Navegador)
+import { useRouter } from "next/navigation"
 import { useFoundryStore } from "@/store/useFoundryStore"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
@@ -25,7 +25,7 @@ import {
 import { signout } from "@/app/login/actions"
 
 export default function SidebarList() {
-  const router = useRouter() // <--- INICIALIZAMOS EL ROUTER
+  const router = useRouter()
   const { selectedProductId, setSelectedProduct } = useFoundryStore()
   const queryClient = useQueryClient()
 
@@ -100,6 +100,56 @@ export default function SidebarList() {
     }
   }
 
+  // --- FUNCIÓN DE RENDERIZADO (SOLUCIÓN AL ERROR DE PARSING) ---
+  // Sacamos la lógica compleja del JSX para que no falle el compilador
+  const renderInventoryList = () => {
+    if (isLoading) {
+      return (
+        <div className="p-4 text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
+          <Loader2 className="w-3 h-3 animate-spin" /> <span>Cargando...</span>
+        </div>
+      )
+    }
+
+    if (!products || products.length === 0) {
+      return (
+        <div className="p-6 text-center text-zinc-600 text-xs">
+          <span>No hay activos. Sube uno nuevo.</span>
+        </div>
+      )
+    }
+
+    return products.map((item) => {
+      const itemTitle = item.ai_output?.product_title || item.ai_output?.producto || `Asset #${item.id}`;
+      const isSelected = selectedProductId === item.id;
+      return (
+        <button
+          key={item.id}
+          onClick={() => setSelectedProduct(item.id)}
+          className={cn(
+            "flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200 group",
+            isSelected ? "bg-zinc-900 border border-zinc-700 shadow-sm" : "hover:bg-zinc-900/50 border border-transparent"
+          )}
+        >
+          <div className={cn("w-8 h-8 rounded flex items-center justify-center shrink-0 border border-zinc-800", isSelected ? "bg-indigo-500/10 text-indigo-400" : "bg-zinc-950 text-zinc-600")}>
+            <Package className="w-4 h-4" />
+          </div>
+          <div className="flex flex-col overflow-hidden w-full">
+            <span className={cn("text-xs font-medium truncate notranslate", isSelected ? "text-zinc-200" : "text-zinc-400 group-hover:text-zinc-300")}>
+              {itemTitle}
+            </span>
+            <div className="flex items-center justify-between mt-1.5">
+              <span className={cn("text-[9px] px-1.5 py-0.5 rounded-sm font-mono uppercase tracking-wider notranslate", item.status === 'DONE' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border border-amber-500/20")}>
+                {item.status}
+              </span>
+              <span className="text-[9px] text-zinc-600 font-mono notranslate">#{item.id}</span>
+            </div>
+          </div>
+        </button>
+      )
+    })
+  }
+
   return (
     <div className="h-full flex flex-col bg-zinc-950 border-r border-zinc-800 font-sans">
 
@@ -120,41 +170,8 @@ export default function SidebarList() {
         {activeTab === 'inventory' ? (
           <ScrollArea className="h-full">
             <div className="flex flex-col p-2 gap-1 pb-20">
-              {isLoading ? (
-                <div className="p-4 text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
-                  <Loader2 className="w-3 h-3 animate-spin" /> <span>Cargando...</span>
-                </div>
-              ) : (
-                products?.map((item) => {
-                  const itemTitle = item.ai_output?.product_title || item.ai_output?.producto || `Asset #${item.id}`;
-                  const isSelected = selectedProductId === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedProduct(item.id)}
-                      className={cn(
-                        "flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200 group",
-                        isSelected ? "bg-zinc-900 border border-zinc-700 shadow-sm" : "hover:bg-zinc-900/50 border border-transparent"
-                      )}
-                    >
-                      <div className={cn("w-8 h-8 rounded flex items-center justify-center shrink-0 border border-zinc-800", isSelected ? "bg-indigo-500/10 text-indigo-400" : "bg-zinc-950 text-zinc-600")}>
-                        <Package className="w-4 h-4" />
-                      </div>
-                      <div className="flex flex-col overflow-hidden w-full">
-                        <span className={cn("text-xs font-medium truncate notranslate", isSelected ? "text-zinc-200" : "text-zinc-400 group-hover:text-zinc-300")}>
-                          {itemTitle}
-                        </span>
-                        <div className="flex items-center justify-between mt-1.5">
-                          <span className={cn("text-[9px] px-1.5 py-0.5 rounded-sm font-mono uppercase tracking-wider notranslate", item.status === 'DONE' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border border-amber-500/20")}>
-                            {item.status}
-                          </span>
-                          <span className="text-[9px] text-zinc-600 font-mono notranslate">#{item.id}</span>
-                        </div>
-                      </div>
-                    </button>
-                  )
-                })
-              )}
+              {/* AQUÍ LLAMAMOS A LA FUNCIÓN LIMPIA */}
+              {renderInventoryList()}
             </div>
           </ScrollArea>
         ) : (
@@ -173,6 +190,7 @@ export default function SidebarList() {
                   <Input placeholder="URL..." className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={urlInput} onChange={(e) => setUrlInput(e.target.value)} />
                 </div>
               </div>
+
               <div className="space-y-3">
                 <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Datos del Producto</span></Label>
                 <div className="grid gap-2">
@@ -180,10 +198,12 @@ export default function SidebarList() {
                   <Input placeholder="Marca (Ej: Nike)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={brand} onChange={(e) => setBrand(e.target.value)} />
                 </div>
               </div>
+
               <div className="space-y-3">
                 <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Descripción / Especificaciones</span></Label>
                 <Textarea placeholder="Pega aquí medidas, materiales, peso o datos del proveedor..." className="bg-zinc-900 border-zinc-800 text-xs min-h-[100px] resize-none focus:ring-indigo-500/50" value={context} onChange={(e) => setContext(e.target.value)} />
               </div>
+
               <Button onClick={handleUpload} disabled={isUploading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-10 text-xs">
                 {isUploading ? (
                   <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> <span>PROCESANDO...</span></>
@@ -216,7 +236,6 @@ export default function SidebarList() {
               <span>Mi Cuenta</span>
             </DropdownMenuLabel>
 
-            {/* AHORA USAMOS ROUTER.PUSH PARA LA NAVEGACIÓN SEGURA */}
             <DropdownMenuItem
               onClick={() => router.push('/account')}
               className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"
