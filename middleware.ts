@@ -34,16 +34,18 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // 4. REGLAS DE PROTECCIÓN (Aquí estaba el bloqueo)
+  // 4. REGLAS DE PROTECCIÓN BLINDADAS
+
+  // Excepciones: Rutas que SIEMPRE deben ser públicas
+  const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
+  const isLoginRoute = request.nextUrl.pathname.startsWith('/login')
+  const isWebhookRoute = request.nextUrl.pathname.startsWith('/api/webhooks') // <--- LA CLAVE ES ESTA
 
   // Si NO hay usuario...
   if (!user) {
-    // ...y NO estamos en Login ... y NO estamos en rutas de Auth (Callback de Google)
-    if (
-      !request.nextUrl.pathname.startsWith('/login') &&
-      !request.nextUrl.pathname.startsWith('/auth')
-    ) {
-      // Bloquear y mandar al login
+    // ...y NO está intentando entrar a una ruta pública permitida...
+    if (!isLoginRoute && !isAuthRoute && !isWebhookRoute) {
+      // ...lo mandamos al login.
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       return NextResponse.redirect(url)
@@ -51,8 +53,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Si SÍ hay usuario y quiere ir al login...
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
-    // Mandarlo al dashboard (ya está logueado)
+  if (user && isLoginRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
