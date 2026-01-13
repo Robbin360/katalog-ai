@@ -46,7 +46,8 @@ export default function SidebarList() {
     }
   })
 
-  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Usuario"
+  // Lógica de Nombre (Default: "User")
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
   const displayEmail = user?.email || ""
   const initials = displayName.substring(0, 2).toUpperCase()
 
@@ -75,10 +76,18 @@ export default function SidebarList() {
         finalImageUrl = urlData.publicUrl
       }
 
-      if (!finalImageUrl) throw new Error("Necesitas una imagen")
+      if (!finalImageUrl) throw new Error("Image is required")
 
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("Sesión expirada")
+      if (!user) throw new Error("Session expired. Please log in.")
+
+      // Verificación de Créditos (Simplificada)
+      const { data: profile } = await supabase.from('profiles').select('credits_total, credits_used').eq('id', user.id).single()
+      if ((profile?.credits_used || 0) >= (profile?.credits_total || 3)) {
+        alert("⚠️ Out of credits! Please upgrade your plan.")
+        setIsUploading(false)
+        return
+      }
 
       const { error: dbError } = await supabase.from('products_queue').insert({
         user_id: user.id,
@@ -89,24 +98,27 @@ export default function SidebarList() {
 
       if (dbError) throw dbError
 
+      // Cobrar crédito
+      await supabase.from('profiles').update({ credits_used: (profile?.credits_used || 0) + 1 }).eq('id', user.id)
+
       setFile(null); setUrlInput(""); setTitle(""); setBrand(""); setContext("")
       setActiveTab("inventory")
       queryClient.invalidateQueries({ queryKey: ['products-list'] })
+      queryClient.invalidateQueries({ queryKey: ['user-profile'] })
 
     } catch (error: any) {
-      alert(error.message)
+      alert("Error: " + error.message)
     } finally {
       setIsUploading(false)
     }
   }
 
-  // --- FUNCIÓN DE RENDERIZADO (SOLUCIÓN AL ERROR DE PARSING) ---
-  // Sacamos la lógica compleja del JSX para que no falle el compilador
+  // --- FUNCIÓN DE RENDERIZADO LIMPIA ---
   const renderInventoryList = () => {
     if (isLoading) {
       return (
         <div className="p-4 text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
-          <Loader2 className="w-3 h-3 animate-spin" /> <span>Cargando...</span>
+          <Loader2 className="w-3 h-3 animate-spin" /> <span>Loading...</span>
         </div>
       )
     }
@@ -114,7 +126,7 @@ export default function SidebarList() {
     if (!products || products.length === 0) {
       return (
         <div className="p-6 text-center text-zinc-600 text-xs">
-          <span>No hay activos. Sube uno nuevo.</span>
+          <span>No assets found. Start by adding a new one.</span>
         </div>
       )
     }
@@ -157,10 +169,10 @@ export default function SidebarList() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full bg-zinc-950 border border-zinc-800 grid grid-cols-2">
             <TabsTrigger value="inventory" className="text-xs data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-500">
-              <span>Inventario</span>
+              <span>Inventory</span>
             </TabsTrigger>
             <TabsTrigger value="new" className="text-xs flex gap-2 items-center data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-500">
-              <Plus className="w-3 h-3" /> <span>Nuevo</span>
+              <Plus className="w-3 h-3" /> <span>New Asset</span>
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -170,45 +182,50 @@ export default function SidebarList() {
         {activeTab === 'inventory' ? (
           <ScrollArea className="h-full">
             <div className="flex flex-col p-2 gap-1 pb-20">
-              {/* AQUÍ LLAMAMOS A LA FUNCIÓN LIMPIA */}
               {renderInventoryList()}
             </div>
           </ScrollArea>
         ) : (
           <ScrollArea className="h-full">
             <div className="p-4 space-y-6 pb-24">
+
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Imagen</span></Label>
+                <Label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Asset Image</span></Label>
                 <div className="grid gap-3">
                   <div className="relative group cursor-pointer">
                     <Input type="file" accept="image/*" className="opacity-0 absolute inset-0 z-10 cursor-pointer h-24 w-full" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
                     <div className={cn("h-24 border border-dashed rounded-lg flex flex-col items-center justify-center transition-colors", file ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-700 bg-zinc-900/30 group-hover:bg-zinc-900/50")}>
                       <Upload className="w-5 h-5 text-zinc-500 mb-2" />
-                      <span className="text-xs text-zinc-400">{file ? file.name : <span>Subir archivo</span>}</span>
+                      <span className="text-xs text-zinc-400">{file ? file.name : <span>Upload or Drag</span>}</span>
                     </div>
                   </div>
-                  <Input placeholder="URL..." className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={urlInput} onChange={(e) => setUrlInput(e.target.value)} />
+                  <Input placeholder="Or paste URL..." className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={urlInput} onChange={(e) => setUrlInput(e.target.value)} />
                 </div>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Datos del Producto</span></Label>
+                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Product Data</span></Label>
                 <div className="grid gap-2">
-                  <Input placeholder="Nombre (Ej: Air Max)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={title} onChange={(e) => setTitle(e.target.value)} />
-                  <Input placeholder="Marca (Ej: Nike)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                  <Input placeholder="Product Name (e.g. Nike Air Max)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={title} onChange={(e) => setTitle(e.target.value)} />
+                  <Input placeholder="Brand (e.g. Nike)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={brand} onChange={(e) => setBrand(e.target.value)} />
                 </div>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Descripción / Especificaciones</span></Label>
-                <Textarea placeholder="Pega aquí medidas, materiales, peso o datos del proveedor..." className="bg-zinc-900 border-zinc-800 text-xs min-h-[100px] resize-none focus:ring-indigo-500/50" value={context} onChange={(e) => setContext(e.target.value)} />
+                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Description / Specs</span></Label>
+                <Textarea
+                  placeholder="Paste technical details, materials, dimensions or vendor specs here..."
+                  className="bg-zinc-900 border-zinc-800 text-xs min-h-[100px] resize-none focus:ring-indigo-500/50"
+                  value={context}
+                  onChange={(e) => setContext(e.target.value)}
+                />
               </div>
 
               <Button onClick={handleUpload} disabled={isUploading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-10 text-xs">
                 {isUploading ? (
-                  <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> <span>PROCESANDO...</span></>
+                  <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> <span>PROCESSING...</span></>
                 ) : (
-                  <span>INICIAR FUNDICIÓN</span>
+                  <span>START FOUNDRY</span>
                 )}
               </Button>
             </div>
@@ -233,27 +250,27 @@ export default function SidebarList() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-60 bg-zinc-900 border-zinc-800 text-zinc-300 ml-2" align="start" side="top">
             <DropdownMenuLabel className="text-xs font-normal text-zinc-500 px-2 py-1.5">
-              <span>Mi Cuenta</span>
+              <span>My Account</span>
             </DropdownMenuLabel>
 
             <DropdownMenuItem
               onClick={() => router.push('/account')}
               className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"
             >
-              <Settings className="w-3.5 h-3.5 mr-2" /> <span>Configuración</span>
+              <Settings className="w-3.5 h-3.5 mr-2" /> <span>Settings</span>
             </DropdownMenuItem>
 
             <DropdownMenuItem
               onClick={() => router.push('/account')}
               className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"
             >
-              <CreditCard className="w-3.5 h-3.5 mr-2" /> <span>Facturación</span>
+              <CreditCard className="w-3.5 h-3.5 mr-2" /> <span>Billing</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator className="bg-zinc-800 my-1" />
 
             <DropdownMenuItem onClick={() => signout()} className="text-red-400 focus:text-red-300 cursor-pointer px-2 py-2">
-              <LogOut className="w-3.5 h-3.5 mr-2" /> <span>Cerrar Sesión</span>
+              <LogOut className="w-3.5 h-3.5 mr-2" /> <span>Sign Out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

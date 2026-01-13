@@ -29,19 +29,19 @@ export default function MainStage() {
   const handleCopy = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    alert("¡Código HTML copiado! Listo para pegar en Shopify.")
+    alert("HTML code copied to clipboard!")
   }
 
   if (!selectedProductId) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center text-zinc-600 bg-zinc-950/50">
         <ImageIcon className="h-12 w-12 mb-4 opacity-20" />
-        <p className="text-sm font-medium">Selecciona un producto para ver su ficha técnica</p>
+        <p className="text-sm font-medium"><span>Select a product to view technical details</span></p>
       </div>
     )
   }
 
-  if (isLoading) return <div className="p-10 text-zinc-500 animate-pulse">Analizando producto...</div>
+  if (isLoading) return <div className="p-10 text-zinc-500 animate-pulse"><span>Analyzing product...</span></div>
 
   // Accedemos directamente al JSON generado por el nuevo prompt
   const data = product?.ai_output || {}
@@ -60,27 +60,27 @@ export default function MainStage() {
                 className="h-full w-full object-contain p-4 hover:scale-105 transition-transform duration-500"
               />
             ) : (
-              <span className="text-zinc-700">Sin Imagen</span>
+              <span className="text-zinc-700"><span>No Image</span></span>
             )}
           </div>
 
           <div className="flex-1 space-y-4">
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5 text-[10px] uppercase tracking-wide">
-                SEO Optimized
+                <span>SEO Optimized</span>
               </Badge>
               <span className="text-xs font-mono text-zinc-600 notranslate">ID: {product.id}</span>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">Product Title (H1)</label>
+              <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Product Title (H1)</span></label>
               <h1 className="text-2xl font-bold text-white leading-tight font-sans selection:bg-indigo-500/30">
-                {data.product_title || "Generando título..."}
+                {data.product_title || <span>Generating title...</span>}
               </h1>
             </div>
 
             <div className="space-y-1 pt-2">
-              <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">Meta Description</label>
+              <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Meta Description</span></label>
               <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-700 pl-3">
                 {data.short_description || "..."}
               </p>
@@ -95,7 +95,7 @@ export default function MainStage() {
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" /> Descripción del Producto
+                <FileText className="w-4 h-4 text-indigo-400" /> <span>Product Description</span>
               </h3>
               <Button
                 variant="ghost"
@@ -103,13 +103,13 @@ export default function MainStage() {
                 className="h-6 text-xs text-zinc-500 hover:text-white"
                 onClick={() => handleCopy(data.description_html)}
               >
-                <Copy className="w-3 h-3 mr-1" /> Copiar HTML
+                <Copy className="w-3 h-3 mr-1" /> <span>Copy HTML</span>
               </Button>
             </div>
 
             {/* Renderizamos el HTML de forma segura */}
             <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-6 text-zinc-300 text-sm leading-7 space-y-4">
-              <div dangerouslySetInnerHTML={{ __html: data.description_html || "<p>Generando descripción...</p>" }} />
+              <div dangerouslySetInnerHTML={{ __html: data.description_html || "<p>Generating description...</p>" }} />
             </div>
           </div>
 
@@ -119,7 +119,7 @@ export default function MainStage() {
             {/* Lista de Features */}
             <div className="bg-zinc-900/20 border border-zinc-800 rounded-xl p-5 space-y-3">
               <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
-                <Layers className="w-3 h-3" /> Key Features
+                <Layers className="w-3 h-3" /> <span>Key Features</span>
               </h3>
               <ul className="space-y-2">
                 {data.features_list?.map((feat: string, i: number) => (
@@ -133,7 +133,7 @@ export default function MainStage() {
             {/* Tags / Keywords */}
             <div className="bg-zinc-900/20 border border-zinc-800 rounded-xl p-5 space-y-3">
               <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
-                <Tag className="w-3 h-3" /> SEO Keywords
+                <Tag className="w-3 h-3" /> <span>SEO Keywords</span>
               </h3>
               <div className="flex flex-wrap gap-1.5">
                 {data.seo_tags?.split(',').map((tag: string, i: number) => (
@@ -147,7 +147,7 @@ export default function MainStage() {
             {/* Especificaciones Técnicas */}
             {data.technical_specs && (
               <div className="bg-zinc-900/20 border border-zinc-800 rounded-xl p-5 space-y-3">
-                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Specs</h3>
+                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider"><span>Specs</span></h3>
                 <div className="space-y-2">
                   {Object.entries(data.technical_specs).map(([key, value]) => (
                     <div key={key} className="flex justify-between text-xs border-b border-zinc-800/50 pb-1 last:border-0">

@@ -18,12 +18,20 @@ export default function ControlPanel() {
   const { selectedProductId } = useFoundryStore()
   const queryClient = useQueryClient()
   const [isSaving, setIsSaving] = useState(false)
-  const [tone, setTone] = useState("Profesional y Persuasivo")
-  const [language, setLanguage] = useState("Español")
+
+  // Valores por defecto (ahora en Inglés)
+  const [tone, setTone] = useState("Professional and Persuasive")
+  const [language, setLanguage] = useState("Spanish")
   const [audience, setAudience] = useState("General")
   const [forbidden, setForbidden] = useState("")
 
-  const { data: user } = useQuery({ queryKey: ['current-user'], queryFn: async () => { const { data } = await supabase.auth.getUser(); return data.user } })
+  const { data: user } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      return user
+    }
+  })
   const userId = user?.id
 
   const { data: rules } = useQuery({
@@ -50,11 +58,22 @@ export default function ControlPanel() {
     setIsSaving(true)
     try {
       const forbiddenArray = forbidden.split(",").map(s => s.trim()).filter(s => s.length > 0)
-      const { error } = await supabase.from('brand_rules').upsert({ user_id: userId, tone_voice: tone, language: language, target_audience: audience, forbidden_words: forbiddenArray }, { onConflict: 'user_id' })
+      const { error } = await supabase.from('brand_rules').upsert({
+        user_id: userId,
+        tone_voice: tone,
+        language: language,
+        target_audience: audience,
+        forbidden_words: forbiddenArray
+      }, { onConflict: 'user_id' })
+
       if (error) throw error
       queryClient.invalidateQueries({ queryKey: ['brand-rules'] })
-      alert("Guardado correctamente")
-    } catch (e: any) { alert("Error: " + e.message) } finally { setIsSaving(false) }
+      alert("AI Brain Updated Successfully")
+    } catch (e: any) {
+      alert("Error: " + e.message)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const { data: product } = useQuery({
@@ -68,22 +87,25 @@ export default function ControlPanel() {
   })
   const aiData = product?.ai_output || {}
 
-  const copyToClipboard = (text: string) => { if (text) navigator.clipboard.writeText(text); alert("Copiado") }
+  const copyToClipboard = (text: string) => {
+    if (text) navigator.clipboard.writeText(text);
+    alert("Copied to clipboard")
+  }
 
   return (
     <div className="h-full bg-zinc-950 border-l border-zinc-800 flex flex-col font-sans">
       <Tabs defaultValue="config" className="flex-1 flex flex-col">
 
-        {/* HEADER LIMPIO (Sin "IA" para evitar problemas de traducción) */}
+        {/* HEADER TABS (INGLÉS) */}
         <div className="p-3 border-b border-zinc-800 bg-zinc-900">
           <TabsList className="w-full bg-zinc-950 border border-zinc-800 grid grid-cols-2">
             <TabsTrigger value="config" className="text-xs data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-500">
               <Sliders className="w-3 h-3 mr-2" />
-              <span>Configuración</span>
+              <span>AI Config</span>
             </TabsTrigger>
             <TabsTrigger value="export" className="text-xs data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-500">
               <Download className="w-3 h-3 mr-2" />
-              <span>Exportar</span>
+              <span>Export</span>
             </TabsTrigger>
           </TabsList>
         </div>
@@ -92,100 +114,133 @@ export default function ControlPanel() {
           <ScrollArea className="h-full p-6">
             <div className="space-y-8">
 
+              {/* VOICE TONE */}
               <div className="space-y-3">
                 <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider flex items-center gap-2">
                   <Mic className="w-3 h-3" />
-                  <span>Tono de Voz</span>
+                  <span>Voice Tone</span>
                 </Label>
                 <Select value={tone} onValueChange={setTone}>
                   <SelectTrigger className="w-full bg-zinc-900 border-zinc-800 text-zinc-200">
-                    <SelectValue placeholder="Selecciona..." />
+                    <SelectValue placeholder="Select tone..." />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-300">
-                    <SelectItem value="Profesional y Persuasivo"><span>Profesional</span></SelectItem>
-                    <SelectItem value="Lujo y Minimalista"><span>Lujo / Premium</span></SelectItem>
-                    <SelectItem value="Urgencia y Oferta"><span>Agresivo / Ventas</span></SelectItem>
-                    <SelectItem value="Sarcástico y con emojis"><span>Sarcástico</span></SelectItem>
+                    {/* Opciones en Inglés con Span */}
+                    <SelectItem value="Professional and Persuasive">👔 <span>Professional</span></SelectItem>
+                    <SelectItem value="Luxury and Minimalist">💎 <span>Luxury / Premium</span></SelectItem>
+                    <SelectItem value="Urgent and Sales-driven">🔥 <span>Aggressive Sales</span></SelectItem>
+                    <SelectItem value="Friendly and Educational">🌱 <span>Friendly / Blog</span></SelectItem>
+                    <SelectItem value="Sarcastic and Viral">😎 <span>Sarcastic (Social)</span></SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
+              {/* TARGET AUDIENCE */}
               <div className="space-y-3">
                 <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider flex items-center gap-2">
                   <Users className="w-3 h-3" />
-                  <span>Público Objetivo</span>
+                  <span>Target Audience</span>
                 </Label>
                 <Select value={audience} onValueChange={setAudience}>
                   <SelectTrigger className="w-full bg-zinc-900 border-zinc-800 text-zinc-200">
-                    <SelectValue placeholder="Selecciona..." />
+                    <SelectValue placeholder="Select audience..." />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-300">
                     <SelectItem value="General"><span>General</span></SelectItem>
-                    <SelectItem value="Gen Z"><span>Gen Z (Jóvenes)</span></SelectItem>
-                    <SelectItem value="Profesionales"><span>Profesionales</span></SelectItem>
+                    <SelectItem value="Gen Z"><span>Gen Z (Youth)</span></SelectItem>
+                    <SelectItem value="Professionals"><span>Professionals / B2B</span></SelectItem>
+                    <SelectItem value="Parents"><span>Parents / Home</span></SelectItem>
+                    <SelectItem value="Gamers"><span>Gamers / Tech</span></SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
+              {/* OUTPUT LANGUAGE */}
               <div className="space-y-3">
                 <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider flex items-center gap-2">
                   <Globe className="w-3 h-3" />
-                  <span>Idioma de Salida</span>
+                  <span>Output Language</span>
                 </Label>
                 <Select value={language} onValueChange={setLanguage}>
                   <SelectTrigger className="w-full bg-zinc-900 border-zinc-800 text-zinc-200">
-                    <SelectValue placeholder="Selecciona..." />
+                    <SelectValue placeholder="Select language..." />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-300">
-                    <SelectItem value="Español"><span>Español</span></SelectItem>
-                    <SelectItem value="Inglés"><span>English</span></SelectItem>
-                    <SelectItem value="Portugués"><span>Português</span></SelectItem>
-                    <SelectItem value="Chino"><span>中文 (Chino)</span></SelectItem>
+                    <SelectItem value="Spanish"><span>Spanish (Español)</span></SelectItem>
+                    <SelectItem value="English"><span>English (US)</span></SelectItem>
+                    <SelectItem value="Portuguese"><span>Portuguese (BR)</span></SelectItem>
+                    <SelectItem value="French"><span>French (Français)</span></SelectItem>
+                    <SelectItem value="German"><span>German (Deutsch)</span></SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <Separator className="bg-zinc-800" />
 
+              {/* FORBIDDEN WORDS */}
               <div className="space-y-3">
                 <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">
-                  <span>Palabras Prohibidas</span>
+                  <span>Forbidden Words</span>
                 </Label>
-                <Input value={forbidden} onChange={(e) => setForbidden(e.target.value)} placeholder="..." className="bg-zinc-900 border-zinc-800 text-zinc-200" />
+                <Input
+                  value={forbidden}
+                  onChange={(e) => setForbidden(e.target.value)}
+                  placeholder="e.g. cheap, bad, slow..."
+                  className="bg-zinc-900 border-zinc-800 text-zinc-200 placeholder:text-zinc-600"
+                />
               </div>
 
               <Button onClick={handleSaveRules} disabled={isSaving} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold">
                 {isSaving ? <RefreshCw className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                <span>Guardar Configuración</span>
+                <span>Save Configuration</span>
               </Button>
 
             </div>
           </ScrollArea>
         </TabsContent>
 
+        {/* EXPORT TAB */}
         <TabsContent value="export" className="flex-1 min-h-0 m-0">
           {!selectedProductId ? (
-            <div className="p-10 text-center text-zinc-600 text-sm"><span>Selecciona un activo</span></div>
+            <div className="p-10 text-center text-zinc-600 text-sm">
+              <span>Select an asset to view export options</span>
+            </div>
           ) : (
             <ScrollArea className="h-full p-6 space-y-6">
+
               <div className="space-y-2">
-                <Label className="text-zinc-300 text-[10px] font-bold uppercase"><span>HTML para Shopify</span></Label>
+                <Label className="text-zinc-300 text-[10px] font-bold uppercase"><span>Shopify HTML</span></Label>
                 <div className="bg-zinc-900 border border-zinc-800 p-3 rounded-md text-[10px] text-zinc-500 font-mono h-24 overflow-hidden relative group">
                   {aiData.description_html || "N/A"}
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent pointer-events-none" />
                 </div>
                 <Button variant="outline" size="sm" className="w-full border-zinc-700 text-zinc-300 hover:text-white" onClick={() => copyToClipboard(aiData.description_html)}>
-                  <Copy className="w-3 h-3 mr-2" /> <span>Copiar HTML</span>
+                  <Copy className="w-3 h-3 mr-2" /> <span>Copy HTML</span>
                 </Button>
               </div>
+
               <Separator className="bg-zinc-800" />
+
               <div className="space-y-2">
                 <Label className="text-zinc-300 text-[10px] font-bold uppercase"><span>Meta Description</span></Label>
-                <p className="text-xs text-zinc-500 bg-zinc-900/50 p-2 rounded border border-zinc-800">{aiData.short_description}</p>
+                <p className="text-xs text-zinc-500 bg-zinc-900/50 p-2 rounded border border-zinc-800">
+                  {aiData.short_description}
+                </p>
                 <Button variant="outline" size="sm" className="w-full border-zinc-700 text-zinc-300 hover:text-white" onClick={() => copyToClipboard(aiData.short_description)}>
-                  <Copy className="w-3 h-3 mr-2" /> <span>Copiar Meta</span>
+                  <Copy className="w-3 h-3 mr-2" /> <span>Copy Meta</span>
                 </Button>
               </div>
+
+              <div className="space-y-2">
+                <Label className="text-zinc-300 text-[10px] font-bold uppercase"><span>Keywords CSV</span></Label>
+                <p className="text-xs text-zinc-500 bg-zinc-900/50 p-2 rounded border border-zinc-800 truncate">
+                  {aiData.seo_tags}
+                </p>
+                <Button variant="outline" size="sm" className="w-full border-zinc-700 text-zinc-300 hover:text-white" onClick={() => copyToClipboard(aiData.seo_tags)}>
+                  <Copy className="w-3 h-3 mr-2" /> <span>Copy Tags</span>
+                </Button>
+              </div>
+
             </ScrollArea>
           )}
         </TabsContent>
