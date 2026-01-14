@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-
+  
   // 1. Crear respuesta base
   let response = NextResponse.next({
     request: {
@@ -36,27 +36,34 @@ export async function middleware(request: NextRequest) {
 
   // 4. REGLAS DE PROTECCIÓN BLINDADAS
 
-  // Excepciones: Rutas que SIEMPRE deben ser públicas
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
-  const isLoginRoute = request.nextUrl.pathname.startsWith('/login')
-  const isWebhookRoute = request.nextUrl.pathname.startsWith('/api/webhooks') // <--- LA CLAVE ES ESTA
+  const path = request.nextUrl.pathname
 
-  // Si NO hay usuario...
+  // Definimos qué rutas son públicas (Cualquiera puede entrar)
+  const isPublicRoute = 
+    path === '/' ||                       // Landing Page
+    path.startsWith('/login') ||          // Login
+    path.startsWith('/auth') ||           // OAuth Callback
+    path.startsWith('/api')               // Webhooks y Stripe
+
+  // ESCENARIO A: Usuario NO Logueado
   if (!user) {
-    // ...y NO está intentando entrar a una ruta pública permitida...
-    if (!isLoginRoute && !isAuthRoute && !isWebhookRoute) {
-      // ...lo mandamos al login.
+    // Si intenta entrar a una ruta privada (ej: /dashboard, /account)...
+    if (!isPublicRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       return NextResponse.redirect(url)
     }
   }
 
-  // Si SÍ hay usuario y quiere ir al login...
-  if (user && isLoginRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    return NextResponse.redirect(url)
+  // ESCENARIO B: Usuario SÍ Logueado
+  if (user) {
+    // Si intenta entrar al Login o a la Landing Page...
+    // Lo mandamos directo a su herramienta de trabajo
+    if (path.startsWith('/login') || path === '/') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
   }
 
   return response
@@ -64,6 +71,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    /*
+     * Coincidir con todas las rutas excepto:
+     * - _next/static (archivos estáticos)
+     * - _next/image (imágenes optimizadas)
+     * - favicon.ico (icono)
+     * - Archivos con extensión (imágenes, css, etc.)
+     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
