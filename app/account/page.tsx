@@ -9,13 +9,14 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { User, CreditCard, BarChart3, Check, Loader2, ArrowLeft } from "lucide-react"
+import { User, CreditCard, BarChart3, Check, Loader2, ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 export default function AccountPage() {
     const [activeTab, setActiveTab] = useState("general")
     const [loadingCheckout, setLoadingCheckout] = useState(false)
+    const [loadingPortal, setLoadingPortal] = useState(false) // Nuevo estado para el portal
 
     const { data: accountData, isLoading } = useQuery({
         queryKey: ['user-profile'],
@@ -27,6 +28,7 @@ export default function AccountPage() {
         }
     })
 
+    // Función para Pago (Upgrade)
     const handleCheckout = async (priceId: string) => {
         setLoadingCheckout(true)
         try {
@@ -42,6 +44,21 @@ export default function AccountPage() {
             alert("Connection error")
         } finally {
             setLoadingCheckout(false)
+        }
+    }
+
+    // Función para Portal de Cliente (Cancelar/Cambiar)
+    const handlePortal = async () => {
+        setLoadingPortal(true)
+        try {
+            const response = await fetch('/api/portal', { method: 'POST' })
+            const data = await response.json()
+            if (data.url) window.location.href = data.url
+            else alert("No active subscription found to manage.")
+        } catch (error) {
+            alert("Error connecting to billing portal")
+        } finally {
+            setLoadingPortal(false)
         }
     }
 
@@ -75,9 +92,10 @@ export default function AccountPage() {
             </aside>
 
             <main className="flex-1 p-6 md:p-12 overflow-y-auto">
+
                 {/* VISTA GENERAL */}
                 {activeTab === "general" && (
-                    <div className="max-w-xl space-y-8">
+                    <div className="max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-2">
                         <h2 className="text-2xl font-bold text-white">Profile</h2>
                         <div className="space-y-4">
                             <div className="space-y-2"><Label className="text-zinc-400">Email</Label><Input disabled value={user?.email || ""} className="bg-zinc-900 border-zinc-800 text-white" /></div>
@@ -88,7 +106,7 @@ export default function AccountPage() {
 
                 {/* VISTA USO */}
                 {activeTab === "usage" && (
-                    <div className="max-w-xl space-y-8">
+                    <div className="max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-2">
                         <h2 className="text-2xl font-bold text-white">Credit Usage</h2>
                         <Card className="bg-zinc-900 border-zinc-800">
                             <CardHeader>
@@ -111,8 +129,19 @@ export default function AccountPage() {
 
                 {/* VISTA FACTURACIÓN */}
                 {activeTab === "billing" && (
-                    <div className="max-w-5xl space-y-8">
-                        <h2 className="text-2xl font-bold text-white">Subscription Plans</h2>
+                    <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-bottom-2">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <h2 className="text-2xl font-bold text-white">Subscription Plans</h2>
+
+                            {/* BOTÓN DE GESTIÓN (Solo visible si ya pagó) */}
+                            {plan !== 'starter' && (
+                                <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800">
+                                    {loadingPortal ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ExternalLink className="w-4 h-4 mr-2" />}
+                                    Manage Subscription / Cancel
+                                </Button>
+                            )}
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <PricingCard title="Starter" price="$0" features={["3 Products/mo", "Basic Support", "Standard AI Model"]} current={plan === 'starter'} />
 
@@ -150,7 +179,6 @@ function PricingCard({ title, price, features, current, recommended, actionLabel
             {recommended && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">Recommended</div>}
 
             <CardHeader>
-                {/* CORRECCIÓN DE CONTRASTE: text-white forzado */}
                 <CardTitle className="text-xl text-white font-bold">{title}</CardTitle>
                 <div className="mt-2">
                     <span className="text-4xl font-bold text-white">{price}</span>
