@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     // 2. Inicializar Stripe AHORA (Lazy Load)
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2025-01-27.acacia' as any, // Ajuste de versión
+      typescript: true
     })
 
     // 3. Verificar sesión de usuario

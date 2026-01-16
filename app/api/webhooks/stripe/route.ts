@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js"
 
 // 1. Inicializar Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-16' as any,
+  typescript: true,
 })
 
 // 2. Inicializar Supabase en MODO DIOS (Service Role)

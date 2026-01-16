@@ -7,7 +7,7 @@ import { cookies } from "next/headers"
 export async function POST(req: Request) {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-10-16' as any,
+      typescript: true,
     })
 
     // 1. Verificar Usuario
