@@ -5,7 +5,7 @@ import { login, signup, signInWithGoogle } from "./actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, ShieldCheck, Mail, ArrowRight } from "lucide-react"
+import { Loader2, ShieldCheck, Mail } from "lucide-react"
 
 // Icono de Google
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -21,7 +21,6 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-  // ESTADO NUEVO: Controla si estamos en Login o en Registro
   const [mode, setMode] = useState<'login' | 'signup'>('login')
 
   const handleAuth = async (formData: FormData) => {
@@ -41,18 +40,18 @@ export default function LoginPage() {
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6 text-zinc-100 font-sans">
       <div className="w-full max-w-sm space-y-8 border border-zinc-800 bg-zinc-900/50 p-8 rounded-2xl backdrop-blur-xl shadow-2xl transition-all duration-300">
 
-        {/* Header Dinámico */}
+        {/* Header Dinámico (INGLÉS) */}
         <div className="text-center space-y-2">
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400 mb-4 border border-indigo-500/20">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            {mode === 'login' ? 'Bienvenido de nuevo' : 'Crear Cuenta'}
+            {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h1>
           <p className="text-sm text-zinc-500">
             {mode === 'login'
-              ? 'Ingresa tus credenciales para acceder.'
-              : 'Empieza a automatizar tu catálogo hoy.'}
+              ? 'Enter your credentials to access.'
+              : 'Start automating your catalog today.'}
           </p>
         </div>
 
@@ -65,7 +64,7 @@ export default function LoginPage() {
               type="submit"
             >
               <GoogleIcon className="mr-2 h-5 w-5" />
-              {mode === 'login' ? 'Entrar con Google' : 'Registrarse con Google'}
+              {mode === 'login' ? 'Sign in with Google' : 'Sign up with Google'}
             </Button>
           </form>
 
@@ -74,39 +73,39 @@ export default function LoginPage() {
               <span className="w-full border-t border-zinc-800" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-zinc-900 px-2 text-zinc-500">O usa tu email</span>
+              <span className="bg-zinc-900 px-2 text-zinc-500">Or continue with email</span>
             </div>
           </div>
         </div>
 
-        {/* Formulario Principal */}
+        {/* Formulario Principal (INGLÉS) */}
         <form className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-zinc-400">Email Corporativo</Label>
-            <Input id="email" name="email" type="email" placeholder="nombre@empresa.com" required className="bg-zinc-950 border-zinc-800 focus:border-indigo-500" />
+            <Label htmlFor="email" className="text-zinc-400">Work Email</Label>
+            <Input id="email" name="email" type="email" placeholder="name@company.com" required className="bg-zinc-900 border-zinc-800 focus:border-indigo-500 text-white" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-zinc-400">Contraseña</Label>
-            <Input id="password" name="password" type="password" required className="bg-zinc-950 border-zinc-800 focus:border-indigo-500" />
+            <Label htmlFor="password" className="text-zinc-400">Password</Label>
+            <Input id="password" name="password" type="password" required className="bg-zinc-900 border-zinc-800 focus:border-indigo-500 text-white" />
           </div>
 
           <div className="pt-2 flex flex-col gap-4">
-            {/* Botón de Acción Principal (Cambia según el modo) */}
+            {/* Botón de Acción Principal */}
             <Button formAction={handleAuth} disabled={isLoading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-11">
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {!isLoading && <Mail className="mr-2 h-4 w-4" />}
-              {mode === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta'}
+              {mode === 'login' ? 'Log In' : 'Sign Up'}
             </Button>
 
             {/* Switcher de Modo */}
             <div className="text-center text-sm text-zinc-500">
-              {mode === 'login' ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
+              {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
               <button
                 type="button"
                 onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
                 className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4 transition-colors"
               >
-                {mode === 'login' ? "Regístrate aquí" : "Inicia sesión"}
+                {mode === 'login' ? "Sign up" : "Log in"}
               </button>
             </div>
           </div>

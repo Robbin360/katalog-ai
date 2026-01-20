@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { Package, Loader2, Plus, Upload, Link as LinkIcon, MoreVertical, LogOut, Settings, CreditCard, Image as ImageIcon, Trash2, AlertCircle, Check } from "lucide-react"
+import { Package, Loader2, Plus, Upload, Link as LinkIcon, MoreVertical, LogOut, Settings, CreditCard, Trash2, AlertCircle, Check } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -38,7 +38,7 @@ export default function SidebarList() {
   const [brand, setBrand] = useState("")
   const [context, setContext] = useState("")
 
-  // --- 1. OBTENER USUARIO ACTUAL ---
+  // 1. OBTENER USUARIO
   const { data: user } = useQuery({
     queryKey: ['current-user'],
     queryFn: async () => {
@@ -52,7 +52,7 @@ export default function SidebarList() {
   const displayEmail = user?.email || ""
   const initials = displayName.substring(0, 2).toUpperCase()
 
-  // --- 2. FETCH PRODUCTOS ---
+  // 2. FETCH PRODUCTOS
   const { data: products, isLoading } = useQuery({
     queryKey: ['products-list'],
     queryFn: async () => {
@@ -62,25 +62,28 @@ export default function SidebarList() {
         .order('created_at', { ascending: false })
       return data
     },
-    // Auto-refresco inteligente: Rápido si hay pendientes, lento si no
     refetchInterval: (query) => {
       const hasPending = query.state.data?.some((p: any) => p.status === 'QUEUED' || p.status === 'PROCESSING')
       return hasPending ? 2000 : 30000
     }
   })
 
-  // --- ACCIÓN: BORRAR ---
+  // --- NUEVA FUNCIÓN: BORRAR PRODUCTO ---
   const handleDelete = async (id: number, e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!confirm("Delete this asset?")) return
+    e.stopPropagation() // Para no seleccionar el producto al borrar
+    if (!confirm("Are you sure you want to delete this asset?")) return
+
     const { error } = await supabase.from('products_queue').delete().eq('id', id)
-    if (!error) {
+
+    if (error) {
+      alert("Error deleting asset")
+    } else {
       if (selectedProductId === id) setSelectedProduct(null)
       queryClient.invalidateQueries({ queryKey: ['products-list'] })
     }
   }
 
-  // --- ACCIÓN: SUBIR ---
+  // --- FUNCIÓN DE SUBIDA (CON COBRO DE CRÉDITOS) ---
   const handleUpload = async () => {
     try {
       setIsUploading(true)
@@ -100,14 +103,23 @@ export default function SidebarList() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Session expired")
 
-      // Check Créditos
-      const { data: profile } = await supabase.from('profiles').select('credits_total, credits_used').eq('id', user.id).single()
-      if ((profile?.credits_used || 0) >= (profile?.credits_total || 3)) {
-        alert("⚠️ Out of credits! Please upgrade your plan.")
-        setIsUploading(false); return
+      // 1. VERIFICAR CRÉDITOS (EL PORTERO)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('credits_total, credits_used')
+        .eq('id', user.id)
+        .single()
+
+      const total = profile?.credits_total || 3
+      const used = profile?.credits_used || 0
+
+      if (used >= total) {
+        alert("⚠️ Out of credits! Please upgrade your plan in Billing.")
+        setIsUploading(false)
+        return
       }
 
-      // Insertar
+      // 2. INSERTAR FILA
       const { error: dbError } = await supabase.from('products_queue').insert({
         user_id: user.id,
         original_image_url: finalImageUrl,
@@ -117,14 +129,14 @@ export default function SidebarList() {
 
       if (dbError) throw dbError
 
-      // Cobrar
-      await supabase.from('profiles').update({ credits_used: (profile?.credits_used || 0) + 1 }).eq('id', user.id)
+      // 3. COBRAR EL CRÉDITO
+      await supabase.from('profiles').update({ credits_used: used + 1 }).eq('id', user.id)
 
-      // Reset
+      // 4. LIMPIEZA
       setFile(null); setUrlInput(""); setTitle(""); setBrand(""); setContext("")
       setActiveTab("inventory")
       queryClient.invalidateQueries({ queryKey: ['products-list'] })
-      queryClient.invalidateQueries({ queryKey: ['user-profile'] })
+      queryClient.invalidateQueries({ queryKey: ['user-profile'] }) // Actualiza la barra de créditos
 
     } catch (error: any) {
       alert(error.message)
@@ -133,7 +145,7 @@ export default function SidebarList() {
     }
   }
 
-  // --- HELPER DE ESTILOS ---
+  // --- HELPER DE ESTILOS DE ESTADO ---
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'DONE': return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
@@ -142,28 +154,42 @@ export default function SidebarList() {
     }
   }
 
-  // --- RENDERIZADO DE LISTA (Evita errores de sintaxis) ---
+  // --- RENDERIZADO DE LISTA ---
   const renderInventoryList = () => {
-    if (isLoading) return <div className="p-4 text-center text-xs text-zinc-500 flex items-center justify-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> <span>Loading...</span></div>
-    if (!products || products.length === 0) return <div className="p-6 text-center text-zinc-600 text-xs"><span>No assets found. Start by adding a new one.</span></div>
+    if (isLoading) {
+      return (
+        <div className="p-4 text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
+          <Loader2 className="w-3 h-3 animate-spin" /> <span>Loading...</span>
+        </div>
+      )
+    }
+
+    if (!products || products.length === 0) {
+      return (
+        <div className="p-6 text-center text-zinc-600 text-xs">
+          <span>No assets found. Start by adding a new one.</span>
+        </div>
+      )
+    }
 
     return products.map((item) => {
       const itemTitle = item.ai_output?.product_title || item.ai_output?.producto || `Asset #${item.id}`;
       const isSelected = selectedProductId === item.id;
-
       return (
         <div key={item.id} className="relative group">
           <button
+            key={item.id}
             onClick={() => setSelectedProduct(item.id)}
             className={cn(
-              "w-full flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200 pr-8",
-              isSelected ? "bg-zinc-900 border border-zinc-700 shadow-sm" : "hover:bg-zinc-900/50 border border-transparent"
+              "w-full flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200 pr-8", // Espacio para borrar
+              isSelected
+                ? "bg-zinc-900 border border-zinc-700 shadow-sm"
+                : "hover:bg-zinc-900/50 border border-transparent"
             )}
           >
             <div className={cn("w-8 h-8 rounded flex items-center justify-center shrink-0 border border-zinc-800", isSelected ? "bg-indigo-500/10 text-indigo-400" : "bg-zinc-950 text-zinc-600")}>
               {item.status === 'ERROR' ? <AlertCircle className="w-4 h-4 text-red-500" /> : <Package className="w-4 h-4" />}
             </div>
-
             <div className="flex flex-col overflow-hidden w-full">
               <span className={cn("text-xs font-medium truncate notranslate", isSelected ? "text-zinc-200" : "text-zinc-400 group-hover:text-zinc-300")}>
                 {itemTitle}
@@ -177,11 +203,11 @@ export default function SidebarList() {
             </div>
           </button>
 
-          {/* Botón Borrar (Solo en Hover) */}
+          {/* BOTÓN DE BASURA (Aparece en Hover) */}
           <button
             onClick={(e) => handleDelete(item.id, e)}
             className="absolute right-2 top-3 p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-zinc-800 opacity-0 group-hover:opacity-100 transition-all z-10"
-            title="Delete"
+            title="Delete Asset"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -193,7 +219,6 @@ export default function SidebarList() {
   return (
     <div className="h-full flex flex-col bg-zinc-950 border-r border-zinc-800 font-sans">
 
-      {/* TABS */}
       <div className="p-3 border-b border-zinc-800 bg-zinc-900">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full bg-zinc-950 border border-zinc-800 grid grid-cols-2">
@@ -207,7 +232,6 @@ export default function SidebarList() {
         </Tabs>
       </div>
 
-      {/* CONTENIDO */}
       <div className="flex-1 min-h-0 overflow-hidden relative">
         {activeTab === 'inventory' ? (
           <ScrollArea className="h-full">
@@ -218,17 +242,12 @@ export default function SidebarList() {
         ) : (
           <ScrollArea className="h-full">
             <div className="p-4 space-y-6 pb-24">
-
-              {/* IMAGEN UPLOAD */}
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Asset Image</span></Label>
+                <Label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider"><span>Imagen</span></Label>
                 <div className="grid gap-3">
                   <div className="relative group cursor-pointer">
                     <Input type="file" accept="image/*" className="opacity-0 absolute inset-0 z-10 cursor-pointer h-24 w-full" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
-                    <div className={cn(
-                      "h-24 border border-dashed rounded-lg flex flex-col items-center justify-center transition-colors",
-                      file ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-700 bg-zinc-900/30 group-hover:bg-zinc-900/50"
-                    )}>
+                    <div className={cn("h-24 border border-dashed rounded-lg flex flex-col items-center justify-center transition-colors", file ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-700 bg-zinc-900/30 group-hover:bg-zinc-900/50")}>
                       {file ? (
                         <>
                           <div className="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center mb-2"><Check className="w-4 h-4 text-emerald-500" /></div>
@@ -237,50 +256,44 @@ export default function SidebarList() {
                       ) : (
                         <>
                           <Upload className="w-5 h-5 text-zinc-500 mb-2" />
-                          <span className="text-xs text-zinc-400"><span>Upload or Drag</span></span>
+                          <span className="text-xs text-zinc-400"><span>Subir archivo</span></span>
                         </>
                       )}
                     </div>
                   </div>
-                  <Input placeholder="Or paste URL..." className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={urlInput} onChange={(e) => setUrlInput(e.target.value)} />
+                  <Input placeholder="URL..." className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={urlInput} onChange={(e) => setUrlInput(e.target.value)} />
                 </div>
               </div>
 
-              {/* DATOS */}
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Product Data</span></Label>
+                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Datos del Producto</span></Label>
                 <div className="grid gap-2">
-                  <Input placeholder="Name (e.g. Nike Air Max)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={title} onChange={(e) => setTitle(e.target.value)} />
-                  <Input placeholder="Brand (e.g. Nike)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                  <Input placeholder="Nombre (Ej: Air Max)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={title} onChange={(e) => setTitle(e.target.value)} />
+                  <Input placeholder="Marca (Ej: Nike)" className="bg-zinc-900 border-zinc-800 h-9 text-xs" value={brand} onChange={(e) => setBrand(e.target.value)} />
                 </div>
               </div>
-
-              {/* DESCRIPCIÓN */}
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Description / Specs</span></Label>
-                <Textarea
-                  placeholder="Paste technical details, materials, or vendor specs here..."
-                  className="bg-zinc-900 border-zinc-800 text-xs min-h-[100px] resize-none focus:ring-indigo-500/50"
-                  value={context}
-                  onChange={(e) => setContext(e.target.value)}
-                />
+                <Label className="text-[10px] uppercase font-bold text-zinc-500"><span>Descripción / Especificaciones</span></Label>
+                <Textarea placeholder="Pega aquí medidas, materiales, peso o datos del proveedor..." className="bg-zinc-900 border-zinc-800 text-xs min-h-[100px] resize-none focus:ring-indigo-500/50" value={context} onChange={(e) => setContext(e.target.value)} />
               </div>
-
-              <Button onClick={handleUpload} disabled={isUploading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-10 text-xs shadow-lg shadow-indigo-900/20">
-                {isUploading ? <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> <span>PROCESSING...</span></> : <span>START FOUNDRY</span>}
+              <Button onClick={handleUpload} disabled={isUploading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-10 text-xs">
+                {isUploading ? (
+                  <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> <span>PROCESANDO...</span></>
+                ) : (
+                  <span>INICIAR FUNDICIÓN</span>
+                )}
               </Button>
             </div>
           </ScrollArea>
         )}
       </div>
 
-      {/* FOOTER */}
       <div className="p-3 border-t border-zinc-800 bg-zinc-900 mt-auto">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-zinc-900 transition-colors group outline-none border border-transparent hover:border-zinc-800">
               <Avatar className="h-8 w-8 rounded-full border border-zinc-700 bg-zinc-800">
-                <AvatarImage src={user?.user_metadata?.avatar_url} className="object-cover" />
+                <AvatarImage src={user?.user_metadata?.avatar_url} />
                 <AvatarFallback className="bg-indigo-900 text-indigo-200 text-[10px] font-bold notranslate">{initials}</AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left overflow-hidden">
@@ -291,11 +304,29 @@ export default function SidebarList() {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-60 bg-zinc-900 border-zinc-800 text-zinc-300 ml-2" align="start" side="top">
-            <DropdownMenuLabel className="text-xs font-normal text-zinc-500 px-2 py-1.5"><span>My Account</span></DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => router.push('/account')} className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"><Settings className="w-3.5 h-3.5 mr-2" /> <span>Settings</span></DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push('/account')} className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"><CreditCard className="w-3.5 h-3.5 mr-2" /> <span>Billing</span></DropdownMenuItem>
+            <DropdownMenuLabel className="text-xs font-normal text-zinc-500 px-2 py-1.5">
+              <span>Mi Cuenta</span>
+            </DropdownMenuLabel>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/account')}
+              className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"
+            >
+              <Settings className="w-3.5 h-3.5 mr-2" /> <span>Configuración</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/account')}
+              className="text-xs px-2 py-2 cursor-pointer focus:bg-zinc-800 focus:text-white rounded-md"
+            >
+              <CreditCard className="w-3.5 h-3.5 mr-2" /> <span>Facturación</span>
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator className="bg-zinc-800 my-1" />
-            <DropdownMenuItem onClick={() => signout()} className="text-red-400 focus:text-red-300 cursor-pointer px-2 py-2"><LogOut className="w-3.5 h-3.5 mr-2" /> <span>Sign Out</span></DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => signout()} className="text-red-400 focus:text-red-300 cursor-pointer px-2 py-2">
+              <LogOut className="w-3.5 h-3.5 mr-2" /> <span>Cerrar Sesión</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
