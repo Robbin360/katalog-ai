@@ -64,8 +64,10 @@ export default function SidebarList() {
     },
     refetchInterval: (query) => {
       const hasPending = query.state.data?.some((p: any) => p.status === 'QUEUED' || p.status === 'PROCESSING')
-      return hasPending ? 2000 : 30000
-    }
+      return hasPending ? 4000 : false // Si no hay nada pendiente, NO refresques.
+    },
+    staleTime: 3000, // Los datos se consideran frescos por 3 segundos
+    refetchOnWindowFocus: true
   })
 
   // --- NUEVA FUNCIÓN: BORRAR PRODUCTO ---
