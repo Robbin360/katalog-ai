@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,25 +9,31 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { User, CreditCard, BarChart3, Check, Loader2, ArrowLeft, ExternalLink } from "lucide-react"
+import { User, CreditCard, BarChart3, Check, Loader2, ArrowLeft, ExternalLink, Store } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 function AccountContent() {
     const searchParams = useSearchParams()
+    const queryClient = useQueryClient()
     const [activeTab, setActiveTab] = useState("general")
 
     // Sincronizar URL con Tabs
     useEffect(() => {
         const tab = searchParams.get("tab")
-        if (tab && ["general", "usage", "billing"].includes(tab)) {
+        if (tab && ["general", "usage", "billing", "integrations"].includes(tab)) {
             setActiveTab(tab)
         }
     }, [searchParams])
 
     const [loadingCheckout, setLoadingCheckout] = useState(false)
     const [loadingPortal, setLoadingPortal] = useState(false) // Nuevo estado para el portal
+
+    // Estados para Shopify
+    const [shopUrl, setShopUrl] = useState("")
+    const [shopToken, setShopToken] = useState("")
+    const [isSavingShop, setIsSavingShop] = useState(false)
 
     const { data: accountData, isLoading } = useQuery({
         queryKey: ['user-profile'],
@@ -38,6 +44,41 @@ function AccountContent() {
             return { user, profile: data }
         }
     })
+
+    // Guardar Shopify
+    const handleSaveShopify = async () => {
+        if (!accountData?.user) return
+        setIsSavingShop(true)
+        try {
+            // 1. Limpiar y Validar URL
+            const cleanUrl = shopUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+            if (!cleanUrl.includes('.')) throw new Error("Invalid Store URL format")
+
+            // 2. Verificar Credenciales (Llamada al Backend)
+            const verifyRes = await fetch('/api/shopify/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shopUrl: cleanUrl, accessToken: shopToken })
+            })
+
+            const verifyData = await verifyRes.json()
+            if (!verifyRes.ok) throw new Error(verifyData.error || "Connection failed")
+
+            // 3. Guardar en Base de Datos (Solo si es válido)
+            const { error } = await supabase.from('profiles').update({
+                shopify_domain: cleanUrl,
+                shopify_access_token: shopToken
+            }).eq('id', accountData.user.id)
+
+            if (error) throw error
+            alert(`✅ Connected to ${verifyData.shop} successfully!`)
+            queryClient.invalidateQueries({ queryKey: ['user-profile'] })
+        } catch (e: any) {
+            alert("❌ Error: " + e.message)
+        } finally {
+            setIsSavingShop(false)
+        }
+    }
 
     // Función para Pago (Upgrade)
     const handleCheckout = async (priceId: string) => {
@@ -84,7 +125,7 @@ function AccountContent() {
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans flex">
-            <aside className="w-64 border-r border-zinc-800 p-6 flex flex-col gap-6 hidden md:flex">
+            <aside className="w-64 border-r border-zinc-800 p-6 flex-col gap-6 hidden md:flex">
                 <div className="flex items-center gap-2 mb-4">
                     <Link href="/" className="p-2 rounded-lg hover:bg-zinc-900 text-zinc-400 transition-colors"><ArrowLeft className="w-5 h-5" /></Link>
                     <span className="font-bold text-lg tracking-tight text-white">My Account</span>
@@ -92,6 +133,9 @@ function AccountContent() {
                 <nav className="space-y-1">
                     <button onClick={() => setActiveTab("general")} className={cn("w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all", activeTab === "general" ? "bg-indigo-600 text-white" : "text-zinc-400 hover:bg-zinc-900 hover:text-white")}>
                         <User className="w-4 h-4" /> General
+                    </button>
+                    <button onClick={() => setActiveTab("integrations")} className={cn("w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all", activeTab === "integrations" ? "bg-indigo-600 text-white" : "text-zinc-400 hover:bg-zinc-900 hover:text-white")}>
+                        <Store className="w-4 h-4" /> Integrations
                     </button>
                     <button onClick={() => setActiveTab("usage")} className={cn("w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all", activeTab === "usage" ? "bg-indigo-600 text-white" : "text-zinc-400 hover:bg-zinc-900 hover:text-white")}>
                         <BarChart3 className="w-4 h-4" /> Usage & Credits
@@ -112,6 +156,57 @@ function AccountContent() {
                             <div className="space-y-2"><Label className="text-zinc-400">Email</Label><Input disabled value={user?.email || ""} className="bg-zinc-900 border-zinc-800 text-white" /></div>
                             <div className="space-y-2"><Label className="text-zinc-400">User ID</Label><Input disabled value={user?.id || ""} className="font-mono text-xs bg-zinc-900 border-zinc-800 text-zinc-500" /></div>
                         </div>
+                    </div>
+                )}
+
+                {/* VISTA INTEGRACIONES (NUEVA) */}
+                {activeTab === "integrations" && (
+                    <div className="max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-2">
+                        <div>
+                            <h2 className="text-2xl font-bold text-white">Integrations</h2>
+                            <p className="text-zinc-500 text-sm">Connect your store to publish products directly.</p>
+                        </div>
+
+                        <Card className="bg-zinc-900 border-zinc-800">
+                            <CardHeader>
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-green-900/20 rounded-lg"><Store className="w-6 h-6 text-green-500" /></div>
+                                    <CardTitle className="text-lg text-white">Shopify Connection</CardTitle>
+                                </div>
+                                <CardDescription>Requires an Admin Access Token (Custom App).</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label className="text-zinc-300">Store URL</Label>
+                                    <Input
+                                        placeholder="my-store.myshopify.com"
+                                        className="bg-zinc-950 border-zinc-800 text-white"
+                                        value={shopUrl}
+                                        onChange={(e) => setShopUrl(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-zinc-300">Admin Access Token</Label>
+                                    <Input
+                                        type="password"
+                                        placeholder="shpat_xxxxxxxxxxxxxxxx"
+                                        className="bg-zinc-950 border-zinc-800 text-white"
+                                        value={shopToken}
+                                        onChange={(e) => setShopToken(e.target.value)}
+                                    />
+                                    <p className="text-[10px] text-zinc-500">Found in Settings {'>'} Apps {'>'} Develop apps</p>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Button
+                                    onClick={handleSaveShopify}
+                                    disabled={isSavingShop}
+                                    className="w-full bg-green-600 hover:bg-green-500 text-white font-bold"
+                                >
+                                    {isSavingShop ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Connection"}
+                                </Button>
+                            </CardFooter>
+                        </Card>
                     </div>
                 )}
 

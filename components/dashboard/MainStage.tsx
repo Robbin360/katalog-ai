@@ -1,15 +1,17 @@
 ﻿"use client"
 
+import { useState } from "react"
 import { useFoundryStore } from "@/store/useFoundryStore"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Copy, ImageIcon, Tag, Layers, FileText } from "lucide-react"
+import { Copy, ImageIcon, Tag, Layers, FileText, UploadCloud, Loader2 } from "lucide-react"
 
 export default function MainStage() {
   const { selectedProductId } = useFoundryStore()
+  const [isPublishing, setIsPublishing] = useState(false)
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', selectedProductId],
@@ -45,6 +47,27 @@ export default function MainStage() {
 
   // Accedemos directamente al JSON generado por el nuevo prompt
   const data = product?.ai_output || {}
+
+  const handlePublish = async () => {
+    if (!confirm("Publish this product to your connected Shopify store (Draft)?")) return
+    setIsPublishing(true)
+    try {
+      const res = await fetch('/api/shopify/push', {
+        method: 'POST',
+        body: JSON.stringify({
+          productData: data,
+          imageUrl: product.original_image_url
+        })
+      })
+      const result = await res.json()
+      if (!res.ok) throw new Error(result.error || "Connection error")
+      alert("✅ Product pushed to Shopify successfully!")
+    } catch (e: any) {
+      alert("❌ Error: " + e.message + ". Check your connection in Accounts.")
+    } finally {
+      setIsPublishing(false)
+    }
+  }
 
   return (
     <ScrollArea className="h-full w-full bg-zinc-950">
@@ -97,14 +120,24 @@ export default function MainStage() {
               <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-indigo-400" /> <span>Product Description</span>
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 text-xs text-zinc-500 hover:text-white"
-                onClick={() => handleCopy(data.description_html)}
-              >
-                <Copy className="w-3 h-3 mr-1" /> <span>Copy HTML</span>
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handlePublish}
+                  disabled={isPublishing}
+                  size="sm"
+                  className="h-6 text-xs bg-green-600 hover:bg-green-500 text-white border-0"
+                >
+                  {isPublishing ? <Loader2 className="animate-spin w-3 h-3" /> : <><UploadCloud className="mr-1 h-3 w-3" /> Publish to Shopify</>}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 text-xs text-zinc-500 hover:text-white"
+                  onClick={() => handleCopy(data.description_html)}
+                >
+                  <Copy className="w-3 h-3 mr-1" /> <span>Copy HTML</span>
+                </Button>
+              </div>
             </div>
 
             {/* Renderizamos el HTML de forma segura */}
