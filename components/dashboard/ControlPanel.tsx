@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { Sliders, Download, Save, RefreshCw, Globe, Users, Mic, Copy } from "lucide-react"
+import { toast } from "@/components/ui/sonner"
 
 export default function ControlPanel() {
   const { selectedProductId } = useFoundryStore()
@@ -71,9 +72,9 @@ export default function ControlPanel() {
 
       if (error) throw error
       queryClient.invalidateQueries({ queryKey: ['brand-rules'] })
-      alert("AI Brain Updated Successfully")
+      toast.success("AI Brain Updated Successfully")
     } catch (e: any) {
-      alert("Error: " + e.message)
+      toast.error("Error: " + e.message)
     } finally {
       setIsSaving(false)
     }
@@ -93,7 +94,7 @@ export default function ControlPanel() {
 
   const copyToClipboard = (text: string) => {
     if (text) navigator.clipboard.writeText(text);
-    alert("Copied to clipboard")
+    toast.success("Copied to clipboard")
   }
 
   // --- SOLUCIÓN TÉCNICA: Tipado explícito del retorno ---

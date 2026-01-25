@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
@@ -11,10 +11,21 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { User, CreditCard, BarChart3, Check, Loader2, ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-export default function AccountPage() {
+function AccountContent() {
+    const searchParams = useSearchParams()
     const [activeTab, setActiveTab] = useState("general")
+
+    // Sincronizar URL con Tabs
+    useEffect(() => {
+        const tab = searchParams.get("tab")
+        if (tab && ["general", "usage", "billing"].includes(tab)) {
+            setActiveTab(tab)
+        }
+    }, [searchParams])
+
     const [loadingCheckout, setLoadingCheckout] = useState(false)
     const [loadingPortal, setLoadingPortal] = useState(false) // Nuevo estado para el portal
 
@@ -135,7 +146,7 @@ export default function AccountPage() {
 
                             {/* BOTÓN DE GESTIÓN (Solo visible si ya pagó) */}
                             {plan !== 'starter' && (
-                                <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800">
+                                <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="bg-transparent border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800">
                                     {loadingPortal ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ExternalLink className="w-4 h-4 mr-2" />}
                                     Manage Subscription / Cancel
                                 </Button>
@@ -167,6 +178,14 @@ export default function AccountPage() {
                 )}
             </main>
         </div>
+    )
+}
+
+export default function AccountPage() {
+    return (
+        <Suspense fallback={<div className="h-screen bg-zinc-950 flex items-center justify-center text-zinc-500"><Loader2 className="animate-spin w-6 h-6" /></div>}>
+            <AccountContent />
+        </Suspense>
     )
 }
 

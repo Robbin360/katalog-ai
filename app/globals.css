@@ -123,3 +123,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix for Radix ScrollArea internal div expanding horizontally */
+[data-radix-scroll-area-viewport] > div {
+  display: block !important;
+  min-width: 0 !important;
+}
