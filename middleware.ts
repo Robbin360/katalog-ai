@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  
+
   // 1. Crear respuesta base
   let response = NextResponse.next({
     request: {
@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Definimos qué rutas son públicas (Cualquiera puede entrar)
-  const isPublicRoute = 
+  const isPublicRoute =
     path === '/' ||                       // Landing Page
     path.startsWith('/login') ||          // Login
     path.startsWith('/auth') ||           // OAuth Callback
@@ -57,9 +57,9 @@ export async function middleware(request: NextRequest) {
 
   // ESCENARIO B: Usuario SÍ Logueado
   if (user) {
-    // Si intenta entrar al Login o a la Landing Page...
+    // Si intenta entrar al Login...
     // Lo mandamos directo a su herramienta de trabajo
-    if (path.startsWith('/login') || path === '/') {
+    if (path.startsWith('/login')) {
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard'
       return NextResponse.redirect(url)
