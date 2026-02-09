@@ -65,10 +65,10 @@ function OnboardingDeck({ status, onDismiss }: { status: any, onDismiss: () => v
     if (status.dismissed) return null
 
     return (
-        <div className="mb-8 bg-linear-to-r from-zinc-900 to-zinc-900/50 border border-zinc-800 rounded-2xl p-6 relative overflow-hidden animate-in fade-in slide-in-from-top-4">
+        <div className="mb-8 bg-linear-to-r from-card to-card/50 border border-border rounded-2xl p-6 relative overflow-hidden animate-in fade-in slide-in-from-top-4">
             <button
                 onClick={onDismiss}
-                className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+                className="absolute top-4 right-4 text-zinc-500 hover:text-foreground transition-colors"
                 title="Dismiss onboarding"
                 aria-label="Dismiss onboarding"
             >
@@ -77,11 +77,11 @@ function OnboardingDeck({ status, onDismiss }: { status: any, onDismiss: () => v
 
             <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
                 <div className="md:w-1/3 space-y-2">
-                    <h2 className="text-xl font-bold text-white">Setup Progress</h2>
-                    <div className="flex items-center gap-2 text-sm text-zinc-400">
-                        <span className="font-mono text-indigo-400">{completed}/3</span> Steps Completed
+                    <h2 className="text-xl font-bold text-foreground">Setup Progress</h2>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="font-mono text-primary">{completed}/3</span> Steps Completed
                     </div>
-                    <Progress value={progress} className="h-2 bg-zinc-800" indicatorClassName="bg-indigo-500" />
+                    <Progress value={progress} className="h-2 bg-muted" indicatorClassName="bg-primary" />
                 </div>
 
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
@@ -89,21 +89,21 @@ function OnboardingDeck({ status, onDismiss }: { status: any, onDismiss: () => v
                         <div
                             key={step.id}
                             className={`relative p-4 rounded-xl border transition-all ${step.done
-                                ? "bg-emerald-900/10 border-emerald-900/50 opacity-80"
-                                : "bg-zinc-950 border-zinc-800 hover:border-zinc-700"
+                                ? "bg-emerald-500/10 border-emerald-500/50 opacity-80"
+                                : "bg-card border-border hover:border-primary/50"
                                 }`}
                         >
                             <div className="flex items-center justify-between mb-2">
-                                <div className={`p-2 rounded-lg ${step.done ? "bg-emerald-500/20 text-emerald-500" : "bg-zinc-800 text-zinc-400"}`}>
+                                <div className={`p-2 rounded-lg ${step.done ? "bg-emerald-500/20 text-emerald-500" : "bg-muted text-muted-foreground"}`}>
                                     <step.icon className="w-4 h-4" />
                                 </div>
                                 {step.done && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
                             </div>
 
-                            <h3 className={`font-bold text-sm ${step.done ? "text-emerald-400 line-through" : "text-zinc-200"}`}>
+                            <h3 className={`font-bold text-sm ${step.done ? "text-emerald-500/80 line-through" : "text-foreground"}`}>
                                 {step.label}
                             </h3>
-                            <p className="text-xs text-zinc-500 mt-1">{step.desc}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{step.desc}</p>
 
                             {!step.done && step.action && (
                                 <Link href={step.action} className="absolute inset-0" />
@@ -119,34 +119,34 @@ function OnboardingDeck({ status, onDismiss }: { status: any, onDismiss: () => v
 // --- Componentes Auxiliares (KPIs) ---
 const KPIGrid = ({ count, loading }: { count: number, loading: boolean }) => (
     <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Card className="bg-zinc-950 border-zinc-800 border-l-4 border-l-red-500 hover:bg-zinc-900/50 transition-colors">
+        <Card className="bg-card border-border border-l-4 border-l-red-500 hover:bg-accent/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-400">Revenue at Risk</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Revenue at Risk</CardTitle>
                 <TrendingDown className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-white">${(count * 50).toLocaleString()}.00</div>
-                <p className="text-xs text-zinc-500 mt-1"><span className="text-red-500 font-medium">Est. monthly loss</span> (Unoptimized assets)</p>
+                <div className="text-2xl font-bold text-foreground">${(count * 50).toLocaleString()}.00</div>
+                <p className="text-xs text-muted-foreground mt-1"><span className="text-red-500 font-medium">Est. monthly loss</span> (Unoptimized assets)</p>
             </CardContent>
         </Card>
-        <Card className="bg-zinc-950 border-zinc-800 hover:bg-zinc-900/50 transition-colors">
+        <Card className="bg-card border-border hover:bg-accent/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-400">Catalog Health</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Catalog Health</CardTitle>
                 <Activity className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-white">64%</div>
-                <Progress value={64} className="h-1 mt-3 bg-zinc-800" />
+                <div className="text-2xl font-bold text-foreground">64%</div>
+                <Progress value={64} className="h-1 mt-3 bg-muted" />
             </CardContent>
         </Card>
-        <Card className="bg-zinc-950 border-zinc-800 hover:bg-zinc-900/50 transition-colors">
+        <Card className="bg-card border-border hover:bg-accent/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-400">Optimization Queue</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Optimization Queue</CardTitle>
                 <Zap className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-white">{loading ? "..." : count}</div>
-                <p className="text-xs text-zinc-500 mt-1">Assets ready for AI</p>
+                <div className="text-2xl font-bold text-foreground">{loading ? "..." : count}</div>
+                <p className="text-xs text-muted-foreground mt-1">Assets ready for AI</p>
             </CardContent>
         </Card>
     </div>
@@ -232,16 +232,16 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-zinc-100 p-8 font-sans selection:bg-blue-500/30">
+        <div className="min-h-screen bg-background text-foreground p-8 font-sans selection:bg-primary/30">
 
             {/* HEADER */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white">Opportunity Radar</h1>
-                    <p className="text-zinc-500 mt-1">Real-time optimization engine.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Opportunity Radar</h1>
+                    <p className="text-muted-foreground mt-1">Real-time optimization engine.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button className="bg-white text-black hover:bg-zinc-200 font-semibold min-w-[140px]" onClick={handleSync} disabled={isSyncing}>
+                    <Button className="bg-foreground text-background hover:bg-foreground/90 font-semibold min-w-[140px]" onClick={handleSync} disabled={isSyncing}>
                         {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing...</> : <><Zap className="mr-2 h-4 w-4 fill-current" /> Refresh Data</>}
                     </Button>
                     <UserMenu />
@@ -254,24 +254,24 @@ export default function DashboardPage() {
 
             <KPIGrid count={products.length} loading={isLoading} />
 
-            <Card className="bg-zinc-900 border-zinc-800 overflow-hidden">
-                <CardHeader className="border-b border-zinc-900 bg-zinc-950/50 px-6 py-4">
+            <Card className="bg-card border-border overflow-hidden">
+                <CardHeader className="border-b border-border bg-muted/30 px-6 py-4">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="relative w-full md:w-96">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                            <Input placeholder="Search inventory..." className="pl-10 bg-zinc-900 border-zinc-800 focus:ring-zinc-700 text-zinc-200" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Search inventory..." className="pl-10 bg-background border-border focus:ring-primary/50 text-foreground" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                         </div>
                     </div>
                 </CardHeader>
 
                 <Table>
-                    <TableHeader className="bg-zinc-900/30">
-                        <TableRow className="border-zinc-900 hover:bg-transparent">
-                            <TableHead className="text-zinc-500 font-medium">Asset</TableHead>
-                            <TableHead className="text-zinc-500 font-medium">Status</TableHead>
-                            <TableHead className="text-zinc-500 font-medium">Quality Score</TableHead>
-                            <TableHead className="text-zinc-500 font-medium text-right">Est. Loss</TableHead>
-                            <TableHead className="text-zinc-500 font-medium text-right">Inspect</TableHead>
+                    <TableHeader className="bg-muted/30">
+                        <TableRow className="border-border hover:bg-transparent">
+                            <TableHead className="text-muted-foreground font-medium">Asset</TableHead>
+                            <TableHead className="text-muted-foreground font-medium">Status</TableHead>
+                            <TableHead className="text-muted-foreground font-medium">Quality Score</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-right">Est. Loss</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-right">Inspect</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -285,15 +285,15 @@ export default function DashboardPage() {
                                 </div>
                             </TableCell></TableRow>
                         ) : filteredProducts.map((product: any) => (
-                            <TableRow key={product.id} className="border-zinc-900 hover:bg-zinc-900/40 transition-colors group">
+                            <TableRow key={product.id} className="border-border hover:bg-accent/40 transition-colors group">
                                 <TableCell className="py-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 rounded-md overflow-hidden border border-zinc-800 bg-zinc-900 shrink-0">
-                                            {product.image ? <img src={product.image} alt={product.title} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-zinc-800" />}
+                                        <div className="h-10 w-10 rounded-md overflow-hidden border border-border bg-muted shrink-0">
+                                            {product.image ? <img src={product.image} alt={product.title} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-muted" />}
                                         </div>
                                         <div className="flex flex-col min-w-0">
-                                            <span className="font-medium text-zinc-200 truncate max-w-[200px]">{product.title}</span>
-                                            <span className="text-xs text-zinc-500 font-mono">ID: {product.id}</span>
+                                            <span className="font-medium text-foreground truncate max-w-[200px]">{product.title}</span>
+                                            <span className="text-xs text-muted-foreground font-mono">ID: {product.id}</span>
                                         </div>
                                     </div>
                                 </TableCell>
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                                         <span className={`text-sm font-semibold ${product.healthScore > 80 ? 'text-emerald-500' : 'text-red-500'}`}>{product.healthScore}%</span>
                                         <Progress
                                             value={product.healthScore}
-                                            className="w-16 h-1 bg-zinc-800"
+                                            className="w-16 h-1 bg-muted"
                                             indicatorClassName={product.healthScore > 80 ? 'bg-emerald-500' : 'bg-red-500'}
                                         />
                                     </div>
@@ -311,12 +311,12 @@ export default function DashboardPage() {
                                 <TableCell className="text-right font-mono text-zinc-300">{product.revenueImpact > 0 ? `-$${product.revenueImpact}` : '—'}</TableCell>
                                 <TableCell className="text-right">
                                     <Sheet>
-                                        <SheetTrigger asChild><Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white hover:bg-zinc-800"><ArrowUpRight className="h-4 w-4" /></Button></SheetTrigger>
-                                        <SheetContent className="bg-zinc-950 border-zinc-800 text-zinc-100 sm:max-w-xl overflow-y-auto">
+                                        <SheetTrigger asChild><Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent"><ArrowUpRight className="h-4 w-4" /></Button></SheetTrigger>
+                                        <SheetContent className="bg-card border-border text-foreground sm:max-w-xl overflow-y-auto">
                                             <SheetHeader className="space-y-4">
-                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-zinc-500 border-zinc-800">ID: {product.id}</Badge></div>
-                                                <SheetTitle className="text-xl font-bold text-white">{product.title}</SheetTitle>
-                                                <div className="h-48 w-full bg-black/50 rounded-xl overflow-hidden border border-zinc-800 flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" />}</div>
+                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border">ID: {product.id}</Badge></div>
+                                                <SheetTitle className="text-xl font-bold text-foreground">{product.title}</SheetTitle>
+                                                <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" />}</div>
                                             </SheetHeader>
                                             <div className="mt-8 space-y-6">
                                                 <Tabs defaultValue="optimization" className="w-full">
@@ -324,17 +324,17 @@ export default function DashboardPage() {
                                                     <TabsContent value="optimization" className="mt-4 space-y-4">
                                                         {product.status === 'DONE' ? (
                                                             <div className="space-y-4">
-                                                                <div className="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20"><p className="text-xs text-emerald-400 font-bold mb-2">SEO TITLE</p><p className="text-sm text-zinc-200 font-medium">{product.fullData.product_title}</p></div>
-                                                                <div className="prose prose-invert text-sm text-zinc-400"><div dangerouslySetInnerHTML={{ __html: product.fullData.description_html || "<p>No data.</p>" }} /></div>
+                                                                <div className="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20"><p className="text-xs text-emerald-500 font-bold mb-2">SEO TITLE</p><p className="text-sm text-foreground font-medium">{product.fullData.product_title}</p></div>
+                                                                <div className="prose prose-invert dark:prose-invert text-sm text-muted-foreground"><div dangerouslySetInnerHTML={{ __html: product.fullData.description_html || "<p>No data.</p>" }} /></div>
                                                             </div>
-                                                        ) : (<div className="p-6 text-center text-zinc-500 border border-dashed border-zinc-800 rounded-lg">Waiting for Neural Processing...</div>)}
+                                                        ) : (<div className="p-6 text-center text-muted-foreground border border-dashed border-border rounded-lg">Waiting for Neural Processing...</div>)}
                                                     </TabsContent>
-                                                    <TabsContent value="json"><pre className="text-[10px] text-zinc-500 p-4 bg-black rounded-lg overflow-x-auto">{JSON.stringify(product.fullData, null, 2)}</pre></TabsContent>
+                                                    <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(product.fullData, null, 2)}</pre></TabsContent>
                                                 </Tabs>
                                             </div>
                                             <SheetFooter className="mt-10">
                                                 {product.status === 'DONE' && (
-                                                    <Button className="w-full bg-white text-black hover:bg-zinc-200" onClick={() => { navigator.clipboard.writeText(product.fullData.description_html); toast.success("HTML Copied") }}>
+                                                    <Button className="w-full bg-foreground text-background hover:bg-foreground/90" onClick={() => { navigator.clipboard.writeText(product.fullData.description_html); toast.success("HTML Copied") }}>
                                                         <Copy className="mr-2 h-4 w-4" /> Copy HTML
                                                     </Button>
                                                 )}
@@ -360,30 +360,30 @@ function UserMenu() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-zinc-800 hover:bg-zinc-900">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-border hover:bg-accent">
                     <Avatar className="h-9 w-9">
                         <AvatarImage src={user?.user_metadata?.avatar_url} />
-                        <AvatarFallback className="bg-indigo-600 text-white">{initials}</AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-zinc-950 border-zinc-800 text-zinc-200" align="end">
+            <DropdownMenuContent className="w-56 bg-card border-border text-foreground" align="end">
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{displayName}</p>
-                        <p className="text-xs leading-none text-zinc-500 truncate">{user?.email}</p>
+                        <p className="text-sm font-medium leading-none text-foreground">{displayName}</p>
+                        <p className="text-xs leading-none text-muted-foreground truncate">{user?.email}</p>
                     </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-zinc-800" />
-                <DropdownMenuItem onClick={() => router.push('/account')} className="cursor-pointer focus:bg-zinc-900 focus:text-white">
+                <DropdownMenuSeparator className="bg-border" />
+                <DropdownMenuItem onClick={() => router.push('/account')} className="cursor-pointer focus:bg-accent focus:text-foreground">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/account')} className="cursor-pointer focus:bg-zinc-900 focus:text-white">
+                <DropdownMenuItem onClick={() => router.push('/account')} className="cursor-pointer focus:bg-accent focus:text-foreground">
                     <CreditCard className="mr-2 h-4 w-4" />
                     <span>Billing</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-zinc-800" />
+                <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem
                     onClick={async () => {
                         await supabase.auth.signOut();

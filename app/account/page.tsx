@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTheme } from "next-themes"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
@@ -12,7 +13,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator"
 import {
     User, BrainCircuit, Store, CreditCard, ArrowLeft,
-    Save, Loader2, Check, ExternalLink, LogOut, Calendar
+    Save, Loader2, Check, ExternalLink, LogOut, Calendar, Sun, Moon, Laptop
 } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -21,7 +22,12 @@ import { signout } from "@/app/login/actions"
 
 export default function AccountPage() {
     const [activeTab, setActiveTab] = useState("brain")
+    const { theme, setTheme } = useTheme()
+    const [mounted, setMounted] = useState(false)
     const queryClient = useQueryClient()
+
+    // Solo mostrar UI de tema tras montado para evitar errores de hidratación
+    useEffect(() => setMounted(true), [])
 
     // Estados de Carga
     const [isSaving, setIsSaving] = useState(false)
@@ -158,7 +164,26 @@ export default function AccountPage() {
         }
     }
 
-    if (isLoading) return <div className="h-screen bg-zinc-950 flex items-center justify-center text-zinc-500"><Loader2 className="w-6 h-6 animate-spin" /></div>
+    // --- ACCIÓN: CAMBIAR TEMA (COOKIE + DB + LOCAL) ---
+    const handleThemeChange = async (newTheme: string) => {
+        // 1. Visual Instantáneo
+        setTheme(newTheme)
+
+        // 2. Cookie (Zero Flicker)
+        document.cookie = `theme=${newTheme}; path=/; max-age=31536000; SameSite=Lax`
+
+        // 3. DB (Persistencia Multi-dispositivo)
+        if (accountData?.user?.id) {
+            const { error } = await supabase
+                .from('profiles')
+                .update({ interface_theme: newTheme })
+                .eq('id', accountData.user.id)
+
+            if (error) console.error("Error syncing theme:", error)
+        }
+    }
+
+    if (isLoading) return <div className="h-screen bg-background flex items-center justify-center text-muted-foreground"><Loader2 className="w-6 h-6 animate-spin" /></div>
 
     const { user, profile } = accountData || {}
     const plan = profile?.plan_tier || 'starter'
@@ -168,15 +193,15 @@ export default function AccountPage() {
     const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U"
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans flex">
+        <div className="min-h-screen bg-background text-foreground font-sans flex">
 
             {/* SIDEBAR */}
-            <aside className="w-64 border-r border-zinc-800 p-6 hidden md:flex md:flex-col gap-8 fixed h-full bg-zinc-950">
+            <aside className="w-64 border-r border-border p-6 hidden md:flex md:flex-col gap-8 fixed h-full bg-card">
                 <div className="flex items-center gap-2">
-                    <Link href="/dashboard" className="p-2 -ml-2 rounded-lg hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors">
+                    <Link href="/dashboard" className="p-2 -ml-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors">
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
-                    <span className="font-bold text-lg tracking-tight text-white">Settings</span>
+                    <span className="font-bold text-lg tracking-tight text-foreground">Settings</span>
                 </div>
 
                 <nav className="space-y-1">
@@ -194,50 +219,50 @@ export default function AccountPage() {
                 {activeTab === "brain" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                            <h1 className="text-2xl font-bold text-white mb-1">Brand Brain</h1>
-                            <p className="text-zinc-400 text-sm">Configure how the AI speaks about your products.</p>
+                            <h1 className="text-2xl font-bold text-foreground mb-1">Brand Brain</h1>
+                            <p className="text-muted-foreground text-sm">Configure how the AI speaks about your products.</p>
                         </div>
 
-                        <Card className="bg-zinc-900 border-zinc-800">
+                        <Card className="bg-card border-border">
                             <CardHeader>
-                                <CardTitle className="text-base text-zinc-200">Voice & Tone</CardTitle>
+                                <CardTitle className="text-base text-card-foreground">Voice & Tone</CardTitle>
                                 <CardDescription>Define the personality of your copy.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400">Tone</Label>
-                                    <Input value={tone} onChange={(e) => setTone(e.target.value)} className="bg-zinc-950 border-zinc-800 text-white" placeholder="e.g. Professional, Witty..." />
+                                    <Label className="text-muted-foreground">Tone</Label>
+                                    <Input value={tone} onChange={(e) => setTone(e.target.value)} className="bg-background border-border text-foreground" placeholder="e.g. Professional, Witty..." />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label className="text-zinc-400">Language</Label>
-                                        <Input value={language} onChange={(e) => setLanguage(e.target.value)} className="bg-zinc-950 border-zinc-800 text-white" />
+                                        <Label className="text-muted-foreground">Language</Label>
+                                        <Input value={language} onChange={(e) => setLanguage(e.target.value)} className="bg-background border-border text-foreground" />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-zinc-400">Target Audience</Label>
-                                        <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="bg-zinc-950 border-zinc-800 text-white" placeholder="e.g. Gen Z Gamers" />
+                                        <Label className="text-muted-foreground">Target Audience</Label>
+                                        <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="bg-background border-border text-foreground" placeholder="e.g. Gen Z Gamers" />
                                     </div>
                                 </div>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-zinc-900 border-zinc-800">
+                        <Card className="bg-card border-border">
                             <CardHeader>
-                                <CardTitle className="text-base text-zinc-200">Safety & Constraints</CardTitle>
+                                <CardTitle className="text-base text-card-foreground">Safety & Constraints</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400">Forbidden Words (CSV)</Label>
+                                    <Label className="text-muted-foreground">Forbidden Words (CSV)</Label>
                                     <Textarea
                                         value={forbidden}
                                         onChange={(e) => setForbidden(e.target.value)}
-                                        className="bg-zinc-950 border-zinc-800 min-h-[100px] text-white"
+                                        className="bg-background border-border min-h-[100px] text-foreground"
                                         placeholder="cheap, discount, low quality..."
                                     />
                                 </div>
                             </CardContent>
-                            <CardFooter className="bg-zinc-950/50 border-t border-zinc-800 p-4 flex justify-end">
-                                <Button onClick={handleSaveBrain} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-500 text-white">
+                            <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
+                                <Button onClick={handleSaveBrain} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
                                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                                     Save Configuration
                                 </Button>
@@ -250,41 +275,41 @@ export default function AccountPage() {
                 {activeTab === "integrations" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                            <h1 className="text-2xl font-bold text-white mb-1">Integrations</h1>
-                            <p className="text-zinc-400 text-sm">Connect your store to enable auto-sync.</p>
+                            <h1 className="text-2xl font-bold text-foreground mb-1">Integrations</h1>
+                            <p className="text-muted-foreground text-sm">Connect your store to enable auto-sync.</p>
                         </div>
 
-                        <Card className="bg-zinc-900 border-zinc-800">
+                        <Card className="bg-card border-border">
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-green-900/20 rounded-xl border border-green-900/50">
-                                            <Store className="w-6 h-6 text-green-500" />
+                                        <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                                            <Store className="w-6 h-6 text-emerald-500" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-base text-zinc-200">Shopify</CardTitle>
+                                            <CardTitle className="text-base text-card-foreground">Shopify</CardTitle>
                                             <CardDescription>Sync products and publish descriptions.</CardDescription>
                                         </div>
                                     </div>
                                     {accountData?.integration ? (
-                                        <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Connected</Badge>
+                                        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Connected</Badge>
                                     ) : (
-                                        <Badge variant="outline" className="text-zinc-500 border-zinc-700">Not Connected</Badge>
+                                        <Badge variant="outline" className="text-muted-foreground border-border">Not Connected</Badge>
                                     )}
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400">Store URL</Label>
-                                    <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder="my-store.myshopify.com" className="bg-zinc-950 border-zinc-800 text-white" />
+                                    <Label className="text-muted-foreground">Store URL</Label>
+                                    <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder="my-store.myshopify.com" className="bg-background border-border text-foreground" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400">Admin Access Token</Label>
-                                    <Input type="password" value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder="shpat_..." className="bg-zinc-950 border-zinc-800 text-white" />
+                                    <Label className="text-muted-foreground">Admin Access Token</Label>
+                                    <Input type="password" value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder="shpat_..." className="bg-background border-border text-foreground" />
                                 </div>
                             </CardContent>
-                            <CardFooter className="bg-zinc-950/50 border-t border-zinc-800 p-4 flex justify-end">
-                                <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-white text-black hover:bg-zinc-200">
+                            <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
+                                <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
                                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Connect Store"}
                                 </Button>
                             </CardFooter>
@@ -297,11 +322,11 @@ export default function AccountPage() {
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
                         <div className="flex justify-between items-center">
                             <div>
-                                <h1 className="text-2xl font-bold text-white mb-1">Plans & Billing</h1>
-                                <p className="text-zinc-400 text-sm">Manage your subscription and credits.</p>
+                                <h1 className="text-2xl font-bold text-foreground mb-1">Plans & Billing</h1>
+                                <p className="text-muted-foreground text-sm">Manage your subscription and credits.</p>
                             </div>
                             {plan !== 'starter' && (
-                                <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="border-zinc-700 text-zinc-300 hover:text-white">
+                                <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="border-border text-muted-foreground hover:text-foreground">
                                     {loadingPortal ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ExternalLink className="w-4 h-4 mr-2" />}
                                     Manage Subscription
                                 </Button>
@@ -342,20 +367,20 @@ export default function AccountPage() {
                 {activeTab === "profile" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                            <h1 className="text-2xl font-bold text-white mb-1">My Profile</h1>
-                            <p className="text-zinc-400 text-sm">Personal account details.</p>
+                            <h1 className="text-2xl font-bold text-foreground mb-1">My Profile</h1>
+                            <p className="text-muted-foreground text-sm">Personal account details.</p>
                         </div>
 
-                        <Card className="bg-zinc-900 border-zinc-800">
+                        <Card className="bg-card border-border">
                             <CardContent className="p-8">
                                 <div className="flex items-center gap-6">
-                                    <Avatar className="h-20 w-20 border-2 border-zinc-700">
+                                    <Avatar className="h-20 w-20 border-2 border-border">
                                         <AvatarImage src={user?.user_metadata?.avatar_url} />
-                                        <AvatarFallback className="bg-indigo-600 text-2xl text-white font-bold">{userInitials}</AvatarFallback>
+                                        <AvatarFallback className="bg-primary text-2xl text-primary-foreground font-bold">{userInitials}</AvatarFallback>
                                     </Avatar>
                                     <div className="space-y-1">
-                                        <h2 className="text-2xl font-bold text-white">{user?.user_metadata?.full_name || user?.email}</h2>
-                                        <div className="flex items-center gap-2 text-zinc-400 text-sm">
+                                        <h2 className="text-2xl font-bold text-foreground">{user?.user_metadata?.full_name || user?.email}</h2>
+                                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
                                             <User className="w-4 h-4" /> {user?.email}
                                         </div>
                                         <div className="flex items-center gap-2 text-zinc-500 text-xs mt-2">
@@ -364,12 +389,56 @@ export default function AccountPage() {
                                     </div>
                                 </div>
 
-                                <Separator className="bg-zinc-800 my-8" />
+                                <Separator className="bg-border my-8" />
 
                                 <div className="flex gap-4">
-                                    <Button variant="destructive" onClick={() => signout()} className="bg-red-950/30 text-red-500 hover:bg-red-900/50 border border-red-900/50">
+                                    <Button variant="destructive" onClick={() => signout()} className="bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20">
                                         <LogOut className="w-4 h-4 mr-2" /> Log Out
                                     </Button>
+                                </div>
+
+                                <Separator className="bg-border my-8" />
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <h3 className="text-lg font-medium text-foreground mb-1">Interface Theme</h3>
+                                        <p className="text-muted-foreground text-sm">Personalize how Katalog AI looks on your screen.</p>
+                                    </div>
+
+                                    {mounted && (
+                                        <div className="flex flex-wrap gap-3">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => handleThemeChange("light")}
+                                                className={cn(
+                                                    "h-12 w-32 border-border bg-background transition-all",
+                                                    theme === 'light' && "border-primary ring-1 ring-primary bg-primary/5 text-primary"
+                                                )}
+                                            >
+                                                <Sun className="mr-2 h-4 w-4" /> Light
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => handleThemeChange("dark")}
+                                                className={cn(
+                                                    "h-12 w-32 border-border bg-background transition-all",
+                                                    theme === 'dark' && "border-primary ring-1 ring-primary bg-primary/5 text-primary"
+                                                )}
+                                            >
+                                                <Moon className="mr-2 h-4 w-4" /> Dark
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => handleThemeChange("system")}
+                                                className={cn(
+                                                    "h-12 w-36 border-border bg-background transition-all",
+                                                    theme === 'system' && "border-primary ring-1 ring-primary bg-primary/5 text-primary"
+                                                )}
+                                            >
+                                                <Laptop className="mr-2 h-4 w-4" /> System
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
@@ -389,8 +458,8 @@ function NavButton({ active, onClick, icon, children }: any) {
             className={cn(
                 "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all",
                 active
-                    ? "bg-zinc-800 text-white shadow-sm ring-1 ring-zinc-700"
-                    : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                    ? "bg-accent text-foreground shadow-sm ring-1 ring-border"
+                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
             )}
         >
             {icon}
@@ -403,22 +472,22 @@ function PricingCard({ title, price, features, current, recommended, actionLabel
     return (
         <Card className={cn(
             "flex flex-col relative transition-all duration-200",
-            recommended ? "bg-zinc-900 border-indigo-500 shadow-2xl shadow-indigo-900/20 border-2" : "bg-zinc-900 border-zinc-800 border"
+            recommended ? "bg-card border-primary shadow-2xl shadow-primary/10 border-2" : "bg-card border-border border"
         )}>
-            {recommended && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">Recommended</div>}
+            {recommended && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">Recommended</div>}
 
             <CardHeader>
-                <CardTitle className="text-xl text-white font-bold">{title}</CardTitle>
+                <CardTitle className="text-xl text-foreground font-bold">{title}</CardTitle>
                 <div className="mt-2">
-                    <span className="text-4xl font-bold text-white">{price}</span>
-                    <span className="text-zinc-500 text-sm"> / mo</span>
+                    <span className="text-4xl font-bold text-foreground">{price}</span>
+                    <span className="text-muted-foreground text-sm"> / mo</span>
                 </div>
             </CardHeader>
 
             <CardContent className="flex-1">
                 <ul className="space-y-4">
                     {features.map((f: string, i: number) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-zinc-300">
+                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
                             <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             <span>{f}</span>
                         </li>
@@ -428,7 +497,7 @@ function PricingCard({ title, price, features, current, recommended, actionLabel
 
             <CardFooter>
                 <Button
-                    className={cn("w-full font-bold h-11", recommended ? "bg-indigo-600 hover:bg-indigo-500 text-white" : "bg-white text-black hover:bg-zinc-200")}
+                    className={cn("w-full font-bold h-11", recommended ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-foreground text-background hover:bg-foreground/90")}
                     disabled={current || loading || !priceId}
                     onClick={() => priceId && onCheckout(priceId)}
                 >
