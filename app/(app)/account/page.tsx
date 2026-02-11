@@ -20,8 +20,18 @@ import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { signout } from "@/app/login/actions"
 
+import { useSearchParams, useRouter } from "next/navigation"
+
 export default function AccountPage() {
-    const [activeTab, setActiveTab] = useState("brain")
+    const searchParams = useSearchParams()
+    const router = useRouter()
+    const activeTab = searchParams.get("tab") || "brain"
+
+    const setActiveTab = (tab: string) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set("tab", tab)
+        router.push(`/account?${params.toString()}`)
+    }
     const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
     const queryClient = useQueryClient()
@@ -193,27 +203,8 @@ export default function AccountPage() {
     const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U"
 
     return (
-        <div className="min-h-screen bg-background text-foreground font-sans flex">
-
-            {/* SIDEBAR */}
-            <aside className="w-64 border-r border-border p-6 hidden md:flex md:flex-col gap-8 fixed h-full bg-card">
-                <div className="flex items-center gap-2">
-                    <Link href="/dashboard" className="p-2 -ml-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors">
-                        <ArrowLeft className="w-5 h-5" />
-                    </Link>
-                    <span className="font-bold text-lg tracking-tight text-foreground">Settings</span>
-                </div>
-
-                <nav className="space-y-1">
-                    <NavButton active={activeTab === "brain"} onClick={() => setActiveTab("brain")} icon={<BrainCircuit className="w-4 h-4" />}>Brand Brain</NavButton>
-                    <NavButton active={activeTab === "integrations"} onClick={() => setActiveTab("integrations")} icon={<Store className="w-4 h-4" />}>Integrations</NavButton>
-                    <NavButton active={activeTab === "billing"} onClick={() => setActiveTab("billing")} icon={<CreditCard className="w-4 h-4" />}>Plans & Billing</NavButton>
-                    <NavButton active={activeTab === "profile"} onClick={() => setActiveTab("profile")} icon={<User className="w-4 h-4" />}>Profile</NavButton>
-                </nav>
-            </aside>
-
-            {/* CONTENIDO PRINCIPAL */}
-            <main className="flex-1 md:ml-64 p-8 md:p-12 max-w-5xl">
+        <div className="min-h-screen bg-transparent text-foreground font-sans">
+            <main className="p-8 md:p-12 max-w-5xl mx-auto">
 
                 {/* --- PESTAÑA: BRAND BRAIN --- */}
                 {activeTab === "brain" && (
@@ -450,23 +441,6 @@ export default function AccountPage() {
     )
 }
 
-// Componentes Auxiliares
-function NavButton({ active, onClick, icon, children }: any) {
-    return (
-        <button
-            onClick={onClick}
-            className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all",
-                active
-                    ? "bg-accent text-foreground shadow-sm ring-1 ring-border"
-                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-            )}
-        >
-            {icon}
-            {children}
-        </button>
-    )
-}
 
 function PricingCard({ title, price, features, current, recommended, actionLabel, priceId, onCheckout, loading }: any) {
     return (

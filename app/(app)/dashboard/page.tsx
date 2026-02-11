@@ -234,17 +234,15 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-background text-foreground p-8 font-sans selection:bg-primary/30">
 
-            {/* HEADER */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div className="flex flex-col gap-6 md:flex-row justify-between items-start md:items-center mb-10">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">Opportunity Radar</h1>
-                    <p className="text-muted-foreground mt-1">Real-time optimization engine.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Real-time optimization engine.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button className="bg-foreground text-background hover:bg-foreground/90 font-semibold min-w-[140px]" onClick={handleSync} disabled={isSyncing}>
+                    <Button className="bg-foreground text-background hover:bg-foreground/90 font-semibold px-6 shadow-sm" onClick={handleSync} disabled={isSyncing}>
                         {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing...</> : <><Zap className="mr-2 h-4 w-4 fill-current" /> Refresh Data</>}
                     </Button>
-                    <UserMenu />
                 </div>
             </div>
 
@@ -351,50 +349,3 @@ export default function DashboardPage() {
     );
 }
 
-function UserMenu() {
-    const router = useRouter();
-    const { data: user } = useQuery({ queryKey: ['current-user'], queryFn: async () => { const { data } = await supabase.auth.getUser(); return data.user } });
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
-    const initials = displayName.substring(0, 2).toUpperCase() || "U";
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-border hover:bg-accent">
-                    <Avatar className="h-9 w-9">
-                        <AvatarImage src={user?.user_metadata?.avatar_url} />
-                        <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
-                    </Avatar>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-card border-border text-foreground" align="end">
-                <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none text-foreground">{displayName}</p>
-                        <p className="text-xs leading-none text-muted-foreground truncate">{user?.email}</p>
-                    </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-border" />
-                <DropdownMenuItem onClick={() => router.push('/account')} className="cursor-pointer focus:bg-accent focus:text-foreground">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/account')} className="cursor-pointer focus:bg-accent focus:text-foreground">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    <span>Billing</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-border" />
-                <DropdownMenuItem
-                    onClick={async () => {
-                        await supabase.auth.signOut();
-                        router.push('/login');
-                    }}
-                    className="text-red-400 focus:text-red-400 focus:bg-red-950/20 cursor-pointer"
-                >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
-}
