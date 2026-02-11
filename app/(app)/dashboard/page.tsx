@@ -241,7 +241,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center gap-3">
                     <Button className="bg-foreground text-background hover:bg-foreground/90 font-semibold px-6 shadow-sm" onClick={handleSync} disabled={isSyncing}>
-                        {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing...</> : <><Zap className="mr-2 h-4 w-4 fill-current" /> Refresh Data</>}
+                        {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing Inventory...</> : <><Zap className="mr-2 h-4 w-4 fill-current" /> Sync Inventory</>}
                     </Button>
                 </div>
             </div>
@@ -348,4 +348,3 @@ export default function DashboardPage() {
         </div>
     );
 }
-

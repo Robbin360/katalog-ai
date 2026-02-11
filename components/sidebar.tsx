@@ -11,14 +11,12 @@ import {
     Settings,
     ChevronLeft,
     ChevronRight,
-    TrendingUp,
     CreditCard,
-    HelpCircle,
-    LogOut,
     Zap,
     Sun,
     Moon
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
 import { useSearchParams } from "next/navigation"
@@ -31,9 +29,23 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+interface SidebarUser {
+    email?: string
+    user_metadata?: {
+        full_name?: string
+        avatar_url?: string
+    }
+}
+
 interface SidebarProps {
     initialCollapsed?: boolean
-    user: any
+    user: SidebarUser | null
+}
+
+interface NavItemType {
+    name: string
+    icon: LucideIcon
+    href: string
 }
 
 export default function Sidebar({ initialCollapsed = false, user }: SidebarProps) {
@@ -54,7 +66,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
 
     const footerItems = [
         { name: 'Billing', icon: CreditCard, href: '/account?tab=billing' },
-        { name: 'Settings', icon: Settings, href: '/account?tab=profile' },
+        { name: 'Profile', icon: Settings, href: '/account?tab=profile' },
     ]
 
     const toggleSidebar = () => {
@@ -232,7 +244,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
     )
 }
 
-function NavItem({ item, isCollapsed, isActive }: { item: any, isCollapsed: boolean, isActive: boolean }) {
+function NavItem({ item, isCollapsed, isActive }: { item: NavItemType, isCollapsed: boolean, isActive: boolean }) {
     const content = (
         <Link
             href={item.href}

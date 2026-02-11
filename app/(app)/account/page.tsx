@@ -12,20 +12,24 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
-    User, BrainCircuit, Store, CreditCard, ArrowLeft,
+    User, BrainCircuit, Store, CreditCard,
     Save, Loader2, Check, ExternalLink, LogOut, Calendar, Sun, Moon, Laptop
 } from "lucide-react"
-import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { signout } from "@/app/login/actions"
+import { toast } from "sonner"
 
 import { useSearchParams, useRouter } from "next/navigation"
 
 export default function AccountPage() {
     const searchParams = useSearchParams()
     const router = useRouter()
-    const activeTab = searchParams.get("tab") || "brain"
+    const validTabs = ["brain", "integrations", "billing", "profile"] as const
+    const requestedTab = searchParams.get("tab")
+    const activeTab = validTabs.includes((requestedTab || "") as (typeof validTabs)[number])
+        ? (requestedTab as (typeof validTabs)[number])
+        : "brain"
 
     const setActiveTab = (tab: string) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -38,6 +42,14 @@ export default function AccountPage() {
 
     // Solo mostrar UI de tema tras montado para evitar errores de hidratación
     useEffect(() => setMounted(true), [])
+
+    useEffect(() => {
+        if (!requestedTab || activeTab === requestedTab) return
+
+        const params = new URLSearchParams(searchParams.toString())
+        params.set("tab", activeTab)
+        router.replace(`/account?${params.toString()}`)
+    }, [requestedTab, activeTab, searchParams, router])
 
     // Estados de Carga
     const [isSaving, setIsSaving] = useState(false)
@@ -108,10 +120,14 @@ export default function AccountPage() {
             }, { onConflict: 'user_id' })
 
             if (error) throw error
-            alert("Brand Brain Updated")
+            toast.success("Brand voice saved", {
+                description: "Your AI voice settings are now up to date."
+            })
             queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
-        } catch (error: any) {
-            alert("Error: " + error.message)
+        } catch (error: unknown) {
+            toast.error("Could not save brand voice", {
+                description: getErrorMessage(error)
+            })
         } finally {
             setIsSaving(false)
         }
@@ -133,10 +149,14 @@ export default function AccountPage() {
             }, { onConflict: 'user_id, provider' })
 
             if (error) throw error
-            alert("Shopify Connected!")
+            toast.success("Store connected", {
+                description: "Your Shopify integration is ready to sync."
+            })
             queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
-        } catch (error: any) {
-            alert("Error: " + error.message)
+        } catch (error: unknown) {
+            toast.error("Could not connect store", {
+                description: getErrorMessage(error)
+            })
         } finally {
             setIsSaving(false)
         }
@@ -152,9 +172,15 @@ export default function AccountPage() {
             })
             const data = await response.json()
             if (data.url) window.location.href = data.url
-            else alert("Payment error")
+            else {
+                toast.error("Checkout unavailable", {
+                    description: "No checkout URL was returned."
+                })
+            }
         } catch (error) {
-            alert("Connection error")
+            toast.error("Connection error", {
+                description: "Please try again in a few seconds."
+            })
         } finally {
             setLoadingCheckout(false)
         }
@@ -166,9 +192,15 @@ export default function AccountPage() {
             const response = await fetch('/api/portal', { method: 'POST' })
             const data = await response.json()
             if (data.url) window.location.href = data.url
-            else alert("No active subscription found.")
+            else {
+                toast.message("No active subscription", {
+                    description: "Upgrade to a paid plan to manage billing in the portal."
+                })
+            }
         } catch (error) {
-            alert("Portal error")
+            toast.error("Portal unavailable", {
+                description: "Please try again in a few seconds."
+            })
         } finally {
             setLoadingPortal(false)
         }
@@ -205,6 +237,32 @@ export default function AccountPage() {
     return (
         <div className="min-h-screen bg-transparent text-foreground font-sans">
             <main className="p-8 md:p-12 max-w-5xl mx-auto">
+                <div className="mb-8 flex flex-wrap gap-2 rounded-xl border border-border bg-card/70 p-2">
+                    {[
+                        { key: "brain", label: "Brand Voice", icon: BrainCircuit },
+                        { key: "integrations", label: "Integrations", icon: Store },
+                        { key: "billing", label: "Billing", icon: CreditCard },
+                        { key: "profile", label: "Profile", icon: User },
+                    ].map((tab) => {
+                        const isActive = activeTab === tab.key
+                        return (
+                            <Button
+                                key={tab.key}
+                                variant="ghost"
+                                onClick={() => setActiveTab(tab.key)}
+                                className={cn(
+                                    "h-9 px-3 text-sm",
+                                    isActive
+                                        ? "bg-primary/10 text-primary hover:bg-primary/15"
+                                        : "text-muted-foreground hover:text-foreground"
+                                )}
+                            >
+                                <tab.icon className="mr-2 h-4 w-4" />
+                                {tab.label}
+                            </Button>
+                        )
+                    })}
+                </div>
 
                 {/* --- PESTAÑA: BRAND BRAIN --- */}
                 {activeTab === "brain" && (
@@ -255,7 +313,7 @@ export default function AccountPage() {
                             <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
                                 <Button onClick={handleSaveBrain} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
                                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                                    Save Configuration
+                                    {isSaving ? "Saving..." : "Save Brand Voice"}
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -301,7 +359,7 @@ export default function AccountPage() {
                             </CardContent>
                             <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
                                 <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Connect Store"}
+                                    {isSaving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Connecting...</> : "Connect Store"}
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -319,7 +377,7 @@ export default function AccountPage() {
                             {plan !== 'starter' && (
                                 <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="border-border text-muted-foreground hover:text-foreground">
                                     {loadingPortal ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ExternalLink className="w-4 h-4 mr-2" />}
-                                    Manage Subscription
+                                    {loadingPortal ? "Loading..." : "Manage Subscription"}
                                 </Button>
                             )}
                         </div>
@@ -442,7 +500,19 @@ export default function AccountPage() {
 }
 
 
-function PricingCard({ title, price, features, current, recommended, actionLabel, priceId, onCheckout, loading }: any) {
+interface PricingCardProps {
+    title: string
+    price: string
+    features: string[]
+    current: boolean
+    recommended?: boolean
+    actionLabel?: string
+    priceId?: string
+    onCheckout?: (priceId: string) => Promise<void>
+    loading?: boolean
+}
+
+function PricingCard({ title, price, features, current, recommended, actionLabel, priceId, onCheckout, loading }: PricingCardProps) {
     return (
         <Card className={cn(
             "flex flex-col relative transition-all duration-200",
@@ -473,11 +543,17 @@ function PricingCard({ title, price, features, current, recommended, actionLabel
                 <Button
                     className={cn("w-full font-bold h-11", recommended ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-foreground text-background hover:bg-foreground/90")}
                     disabled={current || loading || !priceId}
-                    onClick={() => priceId && onCheckout(priceId)}
+                    onClick={() => priceId && onCheckout?.(priceId)}
                 >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (current ? "Current Plan" : actionLabel || "Free Plan")}
                 </Button>
             </CardFooter>
         </Card>
     )
+}
+
+
+function getErrorMessage(error: unknown) {
+    if (error instanceof Error) return error.message
+    return "Unexpected error. Please try again."
 }
