@@ -27,9 +27,7 @@ export default function AccountPage() {
     const router = useRouter()
     const validTabs = ["brain", "integrations", "billing", "profile"] as const
     const requestedTab = searchParams.get("tab")
-    const activeTab = validTabs.includes((requestedTab || "") as (typeof validTabs)[number])
-        ? (requestedTab as (typeof validTabs)[number])
-        : "brain"
+    const activeTab = validTabs.find(t => t === requestedTab) ?? "brain"
 
     const setActiveTab = (tab: string) => {
         const params = new URLSearchParams(searchParams.toString())
