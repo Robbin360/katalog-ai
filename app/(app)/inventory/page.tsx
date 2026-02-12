@@ -119,7 +119,7 @@ export default function InventoryPage() {
     )
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status }: { status: 'DONE' | 'PROCESSING' | 'ERROR' }) {
     if (status === "DONE") {
         return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20"><CheckCircle2 className="mr-1 h-3 w-3" /> Ready</Badge>
     }
