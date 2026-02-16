@@ -19,6 +19,16 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { signout } from "@/app/login/actions"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+} from "@/components/ui/dialog"
 
 import { useSearchParams, useRouter } from "next/navigation"
 
@@ -383,9 +393,29 @@ export default function AccountPage() {
                                 <Separator className="bg-border my-8" />
 
                                 <div className="flex gap-4">
-                                    <Button variant="destructive" onClick={() => signout()} className="bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20">
-                                        <LogOut className="w-4 h-4 mr-2" /> Log Out
-                                    </Button>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/5 hover:text-destructive hover:border-destructive/60 transition-all font-medium">
+                                                <LogOut className="w-4 h-4 mr-2" /> Log Out
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="sm:max-w-[425px]">
+                                            <DialogHeader>
+                                                <DialogTitle>Sign out of your account?</DialogTitle>
+                                                <DialogDescription>
+                                                    You will need to sign back in to access your dashboard and projects.
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter className="gap-2 sm:gap-0">
+                                                <DialogClose asChild>
+                                                    <Button variant="outline">Cancel</Button>
+                                                </DialogClose>
+                                                <Button variant="destructive" onClick={() => signout()}>
+                                                    Log Out
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
 
                                 <Separator className="bg-border my-8" />

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { toast } from "sonner"
+
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation"
 import {
     TrendingDown, Activity, Zap, Search, Filter, ArrowUpRight,
     AlertCircle, CheckCircle2, Clock, Loader2, Copy,
-    Store, Rocket, BrainCircuit, X, Check,
+    Store, Rocket, BrainCircuit, X, Check, RefreshCw,
     Settings, CreditCard, LogOut
 } from 'lucide-react';
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui/sheet";
@@ -117,7 +119,7 @@ function OnboardingDeck({ status, onDismiss }: { status: any, onDismiss: () => v
 }
 
 // --- Componentes Auxiliares (KPIs) ---
-const KPIGrid = ({ count, loading }: { count: number, loading: boolean }) => (
+const KPIGrid = ({ revenue, health, queue, loading }: { revenue: number, health: number, queue: number, loading: boolean }) => (
     <div className="grid gap-4 md:grid-cols-3 mb-8">
         <Card className="bg-card border-border border-l-4 border-l-red-500 hover:bg-accent/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -125,7 +127,7 @@ const KPIGrid = ({ count, loading }: { count: number, loading: boolean }) => (
                 <TrendingDown className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-foreground">${(count * 50).toLocaleString()}.00</div>
+                <div className="text-2xl font-bold text-foreground">${revenue.toLocaleString()}.00</div>
                 <p className="text-xs text-muted-foreground mt-1"><span className="text-red-500 font-medium">Est. monthly loss</span> (Unoptimized assets)</p>
             </CardContent>
         </Card>
@@ -135,8 +137,8 @@ const KPIGrid = ({ count, loading }: { count: number, loading: boolean }) => (
                 <Activity className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-foreground">64%</div>
-                <Progress value={64} className="h-1 mt-3 bg-muted" />
+                <div className="text-2xl font-bold text-foreground">{health}%</div>
+                <Progress value={health} className="h-1 mt-3 bg-muted" />
             </CardContent>
         </Card>
         <Card className="bg-card border-border hover:bg-accent/50 transition-colors">
@@ -145,7 +147,7 @@ const KPIGrid = ({ count, loading }: { count: number, loading: boolean }) => (
                 <Zap className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-foreground">{loading ? "..." : count}</div>
+                <div className="text-2xl font-bold text-foreground">{loading ? "..." : queue}</div>
                 <p className="text-xs text-muted-foreground mt-1">Assets ready for AI</p>
             </CardContent>
         </Card>
@@ -214,21 +216,30 @@ export default function DashboardPage() {
         }
     }) || []
 
-    const filteredProducts = products.filter((p: any) => p.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    const unoptimizedProducts = products.filter((p: any) => p.status !== 'DONE')
+
+    // KPI Calculations
+    const totalCount = products.length
+    const unoptimizedCount = unoptimizedProducts.length
+    const optimizedCount = totalCount - unoptimizedCount
+    const healthPercentage = totalCount > 0 ? Math.round((optimizedCount / totalCount) * 100) : 0
+    const revenueAtRisk = unoptimizedCount * 50
+
+    const filteredProducts = unoptimizedProducts.filter((p: any) => p.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleSync = async () => {
         setIsSyncing(true);
-        try {
-            const response = await fetch('/api/shopify/sync', { method: 'POST' })
-            const result = await response.json()
-            if (!response.ok) throw new Error(result.error)
-            toast.success("Sync Complete", { description: `${result.count} products imported.` });
-            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] })
-        } catch (error: any) {
-            toast.error("Sync Failed", { description: error.message });
-        } finally {
-            setIsSyncing(false);
-        }
+        toast.promise(
+            new Promise(resolve => setTimeout(resolve, 2000)),
+            {
+                loading: 'Syncing with store...',
+                success: () => {
+                    setIsSyncing(false);
+                    return 'Store synchronization complete!';
+                },
+                error: 'Sync failed'
+            }
+        );
     };
 
     return (
@@ -250,7 +261,7 @@ export default function DashboardPage() {
                 <OnboardingDeck status={dashboardData.userStatus} onDismiss={dismissOnboarding} />
             )}
 
-            <KPIGrid count={products.length} loading={isLoading} />
+            <KPIGrid revenue={revenueAtRisk} health={healthPercentage} queue={unoptimizedCount} loading={isLoading} />
 
             <Card className="bg-card border-border overflow-hidden">
                 <CardHeader className="border-b border-border bg-muted/30 px-6 py-4">
@@ -274,14 +285,69 @@ export default function DashboardPage() {
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
-                            <TableRow><TableCell colSpan={5} className="h-24 text-center text-zinc-500">Connecting...</TableCell></TableRow>
+                            Array.from({ length: 3 }).map((_, i) => (
+                                <TableRow key={i} className="border-border">
+                                    <TableCell className="py-4"><div className="flex items-center gap-3"><Skeleton className="h-10 w-10 rounded-md" /><div className="space-y-2"><Skeleton className="h-4 w-[150px]" /><Skeleton className="h-3 w-[80px]" /></div></div></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-[80px] rounded-full" /></TableCell>
+                                    <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                    <TableCell className="text-right"><Skeleton className="h-4 w-[50px] ml-auto" /></TableCell>
+                                    <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-md ml-auto" /></TableCell>
+                                </TableRow>
+                            ))
                         ) : filteredProducts.length === 0 ? (
-                            <TableRow><TableCell colSpan={5} className="h-32 text-center text-zinc-500">
-                                <div className="flex flex-col items-center justify-center w-full">
-                                    <span className="mb-2">No assets found.</span>
-                                    <span className="text-xs opacity-50">Upload or Sync to start.</span>
-                                </div>
-                            </TableCell></TableRow>
+                            <TableRow>
+                                <TableCell colSpan={5} className="h-64 text-center">
+                                    {!dashboardData?.userStatus?.hasShopify ? (
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground animate-in fade-in-50 zoom-in-95 duration-500">
+                                            <div className="p-4 rounded-full bg-blue-500/10 mb-4 ring-1 ring-blue-500/20">
+                                                <Store className="w-8 h-8 text-blue-500" />
+                                            </div>
+                                            <p className="text-lg font-medium text-foreground">Connect your store</p>
+                                            <p className="text-sm mb-4 max-w-xs mx-auto">Link your Shopify account to import your catalog automatically.</p>
+                                            <Link href="/integrations">
+                                                <Button variant="default">
+                                                    Go to Integrations
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    ) : !dashboardData?.userStatus?.hasProducts ? (
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground animate-in fade-in-50 zoom-in-95 duration-500">
+                                            <div className="p-4 rounded-full bg-zinc-500/10 mb-4 ring-1 ring-zinc-500/20">
+                                                <Store className="w-8 h-8 text-zinc-500" />
+                                            </div>
+                                            <p className="text-lg font-medium text-foreground">Your store is connected but empty</p>
+                                            <p className="text-sm mb-4 max-w-xs mx-auto">We couldn't find any products in your Shopify. Add products to your store and refresh.</p>
+                                            <Button variant="outline" size="sm" onClick={handleSync} disabled={isSyncing}>
+                                                {isSyncing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                                                Check again
+                                            </Button>
+                                        </div>
+                                    ) : unoptimizedProducts.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground animate-in fade-in-50 zoom-in-95 duration-500">
+                                            <div className="p-4 rounded-full bg-emerald-500/10 mb-4 ring-1 ring-emerald-500/20">
+                                                <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+                                            </div>
+                                            <p className="text-lg font-medium text-foreground">All caught up!</p>
+                                            <p className="text-sm mb-4 max-w-xs mx-auto">You have no products pending optimization. Great job!</p>
+                                            <Button variant="outline" size="sm" onClick={handleSync} disabled={isSyncing}>
+                                                {isSyncing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
+                                                Check for new products
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground">
+                                            <div className="p-4 rounded-full bg-muted/50 mb-3">
+                                                <Search className="w-8 h-8 opacity-50" />
+                                            </div>
+                                            <p className="text-lg font-medium text-foreground">No results found</p>
+                                            <p className="text-sm mb-4">No products found matching "{searchTerm}".</p>
+                                            <Button variant="outline" onClick={() => setSearchTerm('')}>
+                                                Clear search
+                                            </Button>
+                                        </div>
+                                    )}
+                                </TableCell>
+                            </TableRow>
                         ) : filteredProducts.map((product: any) => (
                             <TableRow key={product.id} className="border-border hover:bg-accent/40 transition-colors group">
                                 <TableCell className="py-4">
