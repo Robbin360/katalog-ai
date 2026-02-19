@@ -82,7 +82,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
         <TooltipProvider delayDuration={0}>
             <aside
                 className={cn(
-                    "h-screen sticky top-0 bg-card border-r border-border transition-all duration-300 flex flex-col z-50",
+                    "hidden md:flex h-screen sticky top-0 bg-card border-r border-border transition-all duration-300 flex-col z-50",
                     isCollapsed ? "w-[70px]" : "w-64"
                 )}
             >

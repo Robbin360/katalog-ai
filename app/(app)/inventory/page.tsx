@@ -47,16 +47,9 @@ import {
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-// --- TYPES ---
-interface Product {
-    id: string
-    title: string
-    image: string
-    status: 'DONE' | 'PENDING' | 'ERROR' | 'IDLE'
-    healthScore: number
-    createdAt: string
-    platform: string
-}
+import { Product, InventoryResponse } from "@/types/inventory"
+
+const PAGE_SIZE = 10;
 
 // --- COMPONENTS ---
 
@@ -69,19 +62,34 @@ const StatusBadge = ({ status }: { status: string }) => {
 export default function InventoryPage() {
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('all')
+    const [page, setPage] = useState(1)
 
     // --- DATA FETCHING ---
-    const { data: products, isLoading } = useQuery({
-        queryKey: ['inventory'],
+    const { data, isLoading } = useQuery<InventoryResponse>({
+        queryKey: ['inventory', page, statusFilter, searchTerm],
         queryFn: async () => {
-            const { data, error } = await supabase
+            let query = supabase
                 .from('products_queue')
-                .select('*')
+                .select('*', { count: 'exact' })
+
+            if (statusFilter !== 'all') {
+                query = query.eq('status', statusFilter)
+            }
+
+            if (searchTerm) {
+                query = query.ilike('raw_data->>title', `%${searchTerm}%`)
+            }
+
+            const from = (page - 1) * PAGE_SIZE
+            const to = from + PAGE_SIZE - 1
+
+            const { data, error, count } = await query
                 .order('created_at', { ascending: false })
+                .range(from, to)
 
             if (error) throw error
 
-            return data.map((p: any) => {
+            const products = (data || []).map((p: any) => {
                 const ai = p.ai_output || {}
                 const title = ai.product_title || ai.producto || p.raw_data?.title || "Untitled Product"
                 return {
@@ -91,11 +99,31 @@ export default function InventoryPage() {
                     status: p.status,
                     healthScore: p.status === 'DONE' ? 98 : (p.status === 'ERROR' ? 20 : 50),
                     createdAt: new Date(p.created_at).toLocaleDateString(),
-                    platform: 'Shopify' // Placeholder, could be derived if multi-platform
+                    platform: 'Shopify'
                 } as Product
             })
+
+            return {
+                products,
+                totalCount: count || 0
+            }
         }
     })
+
+    const products = data?.products || []
+    const totalCount = data?.totalCount || 0
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+
+    // Reset page when filters change
+    const handleFilterChange = (val: string) => {
+        setStatusFilter(val)
+        setPage(1)
+    }
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value)
+        setPage(1)
+    }
 
     // --- FILTERING ---
     const filteredProducts = products?.filter((product: Product) => {
@@ -137,7 +165,7 @@ export default function InventoryPage() {
                     />
                 </div>
                 <div className="flex gap-3">
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <Select value={statusFilter} onValueChange={handleFilterChange}>
                         <SelectTrigger className="w-[180px] bg-card border-border">
                             <SelectValue placeholder="Filter by status" />
                         </SelectTrigger>
@@ -162,8 +190,8 @@ export default function InventoryPage() {
                             <TableHead className="w-[80px]">Image</TableHead>
                             <TableHead className="w-[300px]">Product</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Quality Score</TableHead>
-                            <TableHead>Date Added</TableHead>
+                            <TableHead className="hidden md:table-cell">Quality Score</TableHead>
+                            <TableHead className="hidden md:table-cell">Date Added</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -221,14 +249,21 @@ export default function InventoryPage() {
                                         <div className="font-medium text-foreground truncate max-w-[280px]" title={product.title}>
                                             {product.title}
                                         </div>
-                                        <div className="text-xs text-muted-foreground hidden sm:block">
-                                            ID: {product.id}
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-[10px] text-muted-foreground truncate max-w-[100px]">
+                                                ID: {product.id}
+                                            </div>
+                                            <div className={`text-[10px] font-bold md:hidden ${product.healthScore >= 90 ? 'text-emerald-500' :
+                                                product.healthScore >= 50 ? 'text-yellow-500' : 'text-red-500'
+                                                }`}>
+                                                {product.healthScore}% Score
+                                            </div>
                                         </div>
                                     </TableCell>
                                     <TableCell>
                                         <StatusBadge status={product.status} />
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="hidden md:table-cell">
                                         <div className="flex items-center gap-2">
                                             <span className={`font-bold ${product.healthScore >= 90 ? 'text-emerald-500' :
                                                 product.healthScore >= 50 ? 'text-yellow-500' : 'text-red-500'
@@ -245,7 +280,7 @@ export default function InventoryPage() {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-muted-foreground text-sm">
+                                    <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
                                         {product.createdAt}
                                     </TableCell>
                                     <TableCell className="text-right">
@@ -261,11 +296,21 @@ export default function InventoryPage() {
                                                 <DropdownMenuItem>
                                                     <Eye className="mr-2 h-4 w-4" /> View Details
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => toast.promise(async () => new Promise(resolve => setTimeout(resolve, 2000)), {
-                                                    loading: 'Re-optimizing asset...',
-                                                    success: 'Optimization queued successfully!',
-                                                    error: 'Failed to queue optimization'
-                                                })}>
+                                                <DropdownMenuItem onClick={async () => {
+                                                    toast.promise(async () => {
+                                                        const { error } = await supabase
+                                                            .from('products_queue')
+                                                            .update({ status: 'PENDING' })
+                                                            .eq('id', product.id);
+
+                                                        if (error) throw error;
+                                                        // Note: Tanstack Query will refetch based on queryKey
+                                                    }, {
+                                                        loading: 'Re-optimizing asset...',
+                                                        success: 'Optimization queued successfully!',
+                                                        error: 'Failed to queue optimization'
+                                                    });
+                                                }}>
                                                     <RefreshCw className="mr-2 h-4 w-4" /> Re-optimize
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -282,10 +327,32 @@ export default function InventoryPage() {
                 </Table>
             </div>
 
-            {/* PAGINATION (Simple Placeholder) */}
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <Button variant="outline" size="sm" disabled>Previous</Button>
-                <Button variant="outline" size="sm" disabled>Next</Button>
+            {/* PAGINATION */}
+            <div className="flex items-center justify-between py-4">
+                <div className="text-sm text-muted-foreground font-medium">
+                    Showed <span className="text-foreground">{products.length}</span> of <span className="text-foreground">{totalCount}</span> assets
+                </div>
+                <div className="flex items-center space-x-2">
+                    <span className="text-sm text-muted-foreground mr-2">Page {page} of {totalPages || 1}</span>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1 || isLoading}
+                        className="bg-card border-border hover:bg-accent"
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(p => p + 1)}
+                        disabled={page >= totalPages || isLoading}
+                        className="bg-card border-border hover:bg-accent"
+                    >
+                        Next
+                    </Button>
+                </div>
             </div>
         </div>
     )

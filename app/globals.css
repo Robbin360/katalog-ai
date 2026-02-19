@@ -32,20 +32,96 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --color-primary: #10b77f;
+  --color-primary-glow: rgba(16, 183, 127, 0.4);
+  --color-background-dark: #09090b;
+  --color-surface-dark: #18181b;
+  --color-surface-darker: #121214;
+  --color-border-dark: #27272a;
+
   --shadow-premium: 0 4px 20px -2px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.02);
+  --shadow-glow: 0 0 20px rgba(16, 183, 127, 0.4);
   --shadow-sm: var(--shadow-premium);
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes shimmer-vertical {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-shimmer-vertical {
+  animation: shimmer-vertical 2s infinite linear;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.bg-grid {
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+}
+
+.bg-neural-glow {
+  background-image: radial-gradient(circle at 50% 0%, rgba(16, 183, 127, 0.15) 0%, rgba(9, 9, 11, 0) 50%);
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, #27272a 1px, transparent 1px), linear-gradient(to bottom, #27272a 1px, transparent 1px);
 }
 
 :root {
