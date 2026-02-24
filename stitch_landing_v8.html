@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Katalog AI - Optimización Premium para Shopify</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#10b77f",
+                        "primary-glow": "rgba(16, 183, 127, 0.4)",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#09090b",
+                        "surface-dark": "#18181b",
+                        "surface-darker": "#121214",
+                        "border-dark": "#27272a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                    backgroundImage: {
+                        'neural-glow': 'radial-gradient(circle at 50% 0%, rgba(16, 183, 127, 0.15) 0%, rgba(9, 9, 11, 0) 50%)',
+                        'grid-pattern': 'linear-gradient(to right, #27272a 1px, transparent 1px), linear-gradient(to bottom, #27272a 1px, transparent 1px)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            ::-webkit-scrollbar { width: 8px; }
+            ::-webkit-scrollbar-track { background: #09090b; }
+            ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+            ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+            .bg-grid {
+                background-size: 40px 40px;
+                mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+                -webkit-mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+            }
+        }
+        .pricing-glow:hover { box-shadow: 0 0 30px -5px rgba(16, 183, 127, 0.15); }
+        .glass-card {
+            @apply bg-surface-dark/60 border border-border-dark backdrop-blur-xl rounded-2xl;
+        }
+        .dashboard-glass {
+            @apply bg-surface-darker/80 backdrop-blur-md border border-white/5;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased overflow-x-hidden selection:bg-primary/30 selection:text-white">
+<nav class="fixed top-0 z-50 w-full border-b border-border-dark/50 bg-background-dark/70 backdrop-blur-md">
+<div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<span class="text-lg font-bold tracking-tight text-white">Katalog AI</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-400 transition-colors hover:text-white" href="#features">Capacidades</a>
+<a class="text-sm font-medium text-slate-400 transition-colors hover:text-white" href="#process">Cómo Funciona</a>
+<a class="text-sm font-medium text-slate-400 transition-colors hover:text-white" href="#pricing">Precios</a>
+<a class="text-sm font-medium text-slate-400 transition-colors hover:text-white" href="#faq">FAQ</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="group relative flex h-9 items-center justify-center overflow-hidden rounded-lg bg-primary px-4 text-sm font-medium text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,183,127,0.4)]">
+<span class="relative z-10 flex items-center gap-2">
+                    Conectar Tienda
+                    <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="relative pt-16">
+<div class="absolute inset-0 z-0 bg-neural-glow pointer-events-none"></div>
+<div class="absolute inset-0 z-0 opacity-[0.03] bg-grid-pattern bg-grid pointer-events-none"></div>
+<section class="relative z-10 px-4 pt-20 pb-16 sm:px-6 lg:px-8 lg:pt-32 lg:pb-24">
+<div class="mx-auto max-w-4xl text-center">
+<div class="mb-6 inline-flex items-center rounded-full border border-border-dark bg-surface-dark px-3 py-1 text-xs font-medium text-primary shadow-[0_0_10px_rgba(16,183,127,0.1)]">
+<span class="flex h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                v2.0 Neural Engine Activo
+            </div>
+<h1 class="bg-gradient-to-b from-white to-slate-400 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+                Tu catálogo de Shopify,<br/>
+                optimizado por IA.
+            </h1>
+<p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-400">
+                Katalog AI audita tu tienda, corrige listings de baja calidad y desbloquea ingresos ocultos mediante procesamiento neuronal avanzado. Deja de adivinar y empieza a escalar.
+            </p>
+<div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+<button class="group flex h-14 w-full min-w-[200px] items-center justify-center rounded-lg bg-primary px-8 text-lg font-bold text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,183,127,0.3)] hover:scale-105 sm:w-auto">
+                    Conectar Tienda
+                </button>
+</div>
+<div class="mt-20 relative mx-auto max-w-6xl rounded-2xl border border-white/5 bg-surface-darker/50 p-2 shadow-2xl backdrop-blur-xl">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 blur-[80px] rounded-full pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
+<div class="relative overflow-hidden rounded-xl bg-[#0c0c0e] border border-white/10 shadow-inner flex flex-row h-[500px] md:h-[600px]">
+<div class="hidden md:flex w-64 flex-col border-r border-white/5 bg-surface-darker/90 backdrop-blur-md">
+<div class="p-6 border-b border-white/5">
+<div class="flex items-center gap-2 text-white font-bold">
+<div class="h-6 w-6 rounded bg-primary/20 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+</div>
+                                Katalog AI
+                            </div>
+</div>
+<div class="flex-1 py-6 px-3 space-y-1">
+<div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Main</div>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-white bg-primary/10 border border-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">dashboard</span>
+                                Dashboard
+                            </button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined">inventory_2</span>
+                                Inventory
+                            </button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined">psychology</span>
+                                Brand Brain
+                            </button>
+<div class="mt-6 px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Analysis</div>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined">query_stats</span>
+                                Audits
+                            </button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined">settings</span>
+                                Settings
+                            </button>
+</div>
+<div class="p-4 border-t border-white/5">
+<div class="flex items-center gap-3 px-2">
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-600 border border-white/10"></div>
+<div class="flex flex-col">
+<span class="text-xs font-medium text-white">Admin User</span>
+<span class="text-[10px] text-slate-500">Pro Plan</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col bg-grid-pattern bg-[length:20px_20px] relative">
+<div class="absolute inset-0 bg-gradient-to-b from-[#0c0c0e] via-transparent to-[#0c0c0e] opacity-80 pointer-events-none"></div>
+<div class="relative z-10 flex items-center justify-between px-8 py-6 border-b border-white/5 bg-[#0c0c0e]/80 backdrop-blur-sm">
+<div>
+<h2 class="text-xl font-bold text-white">Opportunity Radar</h2>
+<p class="text-sm text-slate-400">Real-time optimization insights</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span class="text-xs font-medium text-emerald-400">Neural Engine Active</span>
+</div>
+<button class="h-8 w-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white">
+<span class="material-symbols-outlined text-sm">notifications</span>
+</button>
+</div>
+</div>
+<div class="relative z-10 p-8 space-y-8 overflow-y-auto h-full pb-20">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="dashboard-glass p-5 rounded-xl flex flex-col justify-between group hover:border-red-500/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<span class="text-xs font-semibold text-slate-400 uppercase">Revenue at Risk</span>
+<span class="p-1 rounded bg-red-500/10 text-red-500">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+</span>
+</div>
+<div>
+<span class="text-2xl font-bold text-white">$1,240.00</span>
+<div class="mt-1 flex items-center gap-1 text-xs text-red-400">
+<span class="material-symbols-outlined text-[10px]">warning</span>
+<span>Critical attention needed</span>
+</div>
+</div>
+</div>
+<div class="dashboard-glass p-5 rounded-xl flex flex-col justify-between group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<span class="text-xs font-semibold text-slate-400 uppercase">Catalog Health</span>
+<span class="p-1 rounded bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-sm">health_metrics</span>
+</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<span class="text-2xl font-bold text-white">82%</span>
+<span class="block text-xs text-slate-500 mt-1">+4% from last scan</span>
+</div>
+<div class="relative h-10 w-10">
+<svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
+<path class="text-slate-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary drop-shadow-[0_0_8px_rgba(16,183,127,0.5)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="82, 100" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</div>
+<div class="dashboard-glass p-5 rounded-xl flex flex-col justify-between group hover:border-blue-500/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<span class="text-xs font-semibold text-slate-400 uppercase">Optimization Queue</span>
+<span class="p-1 rounded bg-blue-500/10 text-blue-500">
+<span class="material-symbols-outlined text-sm">queue</span>
+</span>
+</div>
+<div>
+<span class="text-2xl font-bold text-white">14</span>
+<span class="block text-xs text-slate-500 mt-1">Assets processing</span>
+</div>
+<div class="mt-3 w-full bg-slate-800 rounded-full h-1">
+<div class="bg-blue-500 h-1 rounded-full w-2/3 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+</div>
+</div>
+</div>
+<div class="dashboard-glass rounded-xl overflow-hidden flex-1">
+<div class="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+<h3 class="text-sm font-semibold text-white">High Priority Issues</h3>
+<button class="text-xs text-primary hover:text-emerald-400 font-medium">View All</button>
+</div>
+<table class="w-full text-left text-sm">
+<thead>
+<tr class="text-xs text-slate-500 border-b border-white/5">
+<th class="px-6 py-3 font-medium uppercase tracking-wider">Product</th>
+<th class="px-6 py-3 font-medium uppercase tracking-wider">Status</th>
+<th class="px-6 py-3 font-medium uppercase tracking-wider text-right">Quality Score</th>
+<th class="px-6 py-3 font-medium uppercase tracking-wider text-right">Est. Loss</th>
+<th class="px-6 py-3 font-medium uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="group hover:bg-white/[0.02] transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-slate-600">
+                                                        IMG
+                                                    </div>
+<span class="font-medium text-slate-300 group-hover:text-white">Classic Cotton Tee</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs font-medium text-red-400 ring-1 ring-inset ring-red-400/20">ERROR</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-red-400 font-bold">45%</span>
+<div class="w-16 bg-slate-800 rounded-full h-1.5">
+<div class="bg-red-500 h-1.5 rounded-full w-[45%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-slate-400">$120.00</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:text-emerald-300 text-xs font-bold uppercase tracking-wide">Fix Now</button>
+</td>
+</tr>
+<tr class="group hover:bg-white/[0.02] transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-slate-600">
+                                                        IMG
+                                                    </div>
+<span class="font-medium text-slate-300 group-hover:text-white">Vintage Denim Jacket</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-md bg-orange-400/10 px-2 py-1 text-xs font-medium text-orange-400 ring-1 ring-inset ring-orange-400/20">AT RISK</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-orange-400 font-bold">38%</span>
+<div class="w-16 bg-slate-800 rounded-full h-1.5">
+<div class="bg-orange-500 h-1.5 rounded-full w-[38%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-slate-400">$85.50</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:text-emerald-300 text-xs font-bold uppercase tracking-wide">Review</button>
+</td>
+</tr>
+<tr class="group hover:bg-white/[0.02] transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-slate-600">
+                                                        IMG
+                                                    </div>
+<span class="font-medium text-slate-300 group-hover:text-white">Leather Ankle Boots</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-md bg-yellow-400/10 px-2 py-1 text-xs font-medium text-yellow-400 ring-1 ring-inset ring-yellow-400/20">WARNING</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-yellow-400 font-bold">52%</span>
+<div class="w-16 bg-slate-800 rounded-full h-1.5">
+<div class="bg-yellow-500 h-1.5 rounded-full w-[52%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-slate-400">$64.00</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:text-emerald-300 text-xs font-bold uppercase tracking-wide">Optimize</button>
+</td>
+</tr>
+<tr class="group hover:bg-white/[0.02] transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-slate-600">
+                                                        IMG
+                                                    </div>
+<span class="font-medium text-slate-300 group-hover:text-white">Summer Floral Dress</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs font-medium text-red-400 ring-1 ring-inset ring-red-400/20">ERROR</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-red-400 font-bold">28%</span>
+<div class="w-16 bg-slate-800 rounded-full h-1.5">
+<div class="bg-red-500 h-1.5 rounded-full w-[28%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-slate-400">$210.00</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:text-emerald-300 text-xs font-bold uppercase tracking-wide">Fix Now</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="border-y border-border-dark bg-surface-darker/50 py-10 backdrop-blur-sm">
+<div class="mx-auto max-w-7xl px-6 lg:px-8">
+<div class="grid grid-cols-1 gap-8 text-center sm:grid-cols-3">
+<div class="flex flex-col items-center justify-center gap-1">
+<dt class="text-sm font-medium leading-6 text-slate-400">Activos Procesados</dt>
+<dd class="text-3xl font-bold tracking-tight text-white">50,000+</dd>
+</div>
+<div class="flex flex-col items-center justify-center gap-1">
+<dt class="text-sm font-medium leading-6 text-slate-400">Aumento de Ingresos Prom.</dt>
+<dd class="text-3xl font-bold tracking-tight text-primary drop-shadow-[0_0_8px_rgba(16,183,127,0.5)]">20%</dd>
+</div>
+<div class="flex flex-col items-center justify-center gap-1">
+<dt class="text-sm font-medium leading-6 text-slate-400">Tiendas Optimizadas</dt>
+<dd class="text-3xl font-bold tracking-tight text-white">500+</dd>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 relative overflow-hidden" id="process">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
+<div class="text-center mb-20">
+<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Cómo Funciona</h2>
+<p class="mt-4 text-lg text-slate-400">Del caos a la claridad en tres pasos automatizados.</p>
+</div>
+<div class="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-0">
+<div class="flex flex-col items-center text-center max-w-xs group">
+<div class="w-20 h-20 rounded-2xl bg-surface-dark border border-border-dark flex items-center justify-center shadow-lg group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(16,183,127,0.15)] transition-all duration-300 relative">
+<span class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-surface-darker border border-border-dark flex items-center justify-center text-xs font-bold text-slate-400">1</span>
+<span class="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors">query_stats</span>
+</div>
+<h3 class="mt-6 text-xl font-bold text-white leading-tight">Auditoría</h3>
+<p class="mt-2 text-sm text-slate-400">La IA escanea todo tu catálogo en busca de datos faltantes y errores de conversión.</p>
+</div>
+<div class="hidden lg:flex w-32 h-[2px] bg-border-dark relative mx-4"></div>
+<div class="flex flex-col items-center text-center max-w-xs group">
+<div class="w-20 h-20 rounded-2xl bg-surface-dark border border-border-dark flex items-center justify-center shadow-lg group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(16,183,127,0.15)] transition-all duration-300 relative">
+<span class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-surface-darker border border-border-dark flex items-center justify-center text-xs font-bold text-slate-400">2</span>
+<span class="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors">auto_fix_high</span>
+</div>
+<h3 class="mt-6 text-xl font-bold text-white leading-tight">Optimización</h3>
+<p class="mt-2 text-sm text-slate-400">Redes neuronales regeneran títulos, corrigen imágenes y priorizan por impacto en ventas.</p>
+</div>
+<div class="hidden lg:flex w-32 h-[2px] bg-border-dark relative mx-4"></div>
+<div class="flex flex-col items-center text-center max-w-xs group">
+<div class="w-20 h-20 rounded-2xl bg-surface-dark border border-border-dark flex items-center justify-center shadow-lg group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(16,183,127,0.15)] transition-all duration-300 relative">
+<span class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-surface-darker border border-border-dark flex items-center justify-center text-xs font-bold text-slate-400">3</span>
+<span class="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors">sync_saved_locally</span>
+</div>
+<h3 class="mt-6 text-xl font-bold text-white leading-tight">Sincronización</h3>
+<p class="mt-2 text-sm text-slate-400">Las actualizaciones se envían a Shopify al instante sin tiempo de inactividad.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 sm:py-32 bg-surface-darker/30" id="features">
+<div class="mx-auto max-w-7xl px-6 lg:px-8">
+<div class="mx-auto max-w-2xl text-center mb-16">
+<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Capacidades Principales</h2>
+<p class="mt-4 text-lg text-slate-400">Libera el potencial oculto de tu catálogo con nuestro motor de procesamiento avanzado.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+<div class="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
+<div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
+<div class="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-primary shadow-inner">
+<span class="material-symbols-outlined text-2xl">health_metrics</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 leading-tight">Control de Salud del Inventario</h3>
+<p class="text-slate-400 text-sm leading-relaxed mb-8">Un escaneo profundo que identifica instantáneamente qué productos de tu tienda Shopify necesitan atención. Priorizamos tus activos basándonos en el impacto SEO y la completitud de los datos.</p>
+<div class="mt-auto flex flex-col items-center justify-center py-6 bg-slate-900/40 rounded-xl border border-border-dark/50">
+<div class="relative flex items-center justify-center">
+<svg class="h-28 w-28 transform -rotate-90">
+<circle class="text-slate-800" cx="56" cy="56" fill="transparent" r="48" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary drop-shadow-[0_0_12px_#10b77f]" cx="56" cy="56" fill="transparent" r="48" stroke="currentColor" stroke-dasharray="301.59" stroke-dashoffset="54.28" stroke-width="8"></circle>
+</svg>
+<span class="absolute text-2xl font-black text-white">82%</span>
+<div class="absolute inset-0 bg-primary/10 rounded-full blur-2xl -z-10"></div>
+</div>
+<div class="mt-4 flex flex-col items-center">
+<span class="text-xs font-bold text-red-400 flex items-center gap-1 uppercase tracking-wider">
+<span class="material-symbols-outlined text-[14px]">warning</span> 32 Productos en Riesgo
+                            </span>
+</div>
+</div>
+</div>
+<div class="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
+<div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
+<div class="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-primary shadow-inner">
+<span class="material-symbols-outlined text-2xl">history_edu</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 leading-tight">Escritura de Contenido IA</h3>
+<p class="text-slate-400 text-sm leading-relaxed mb-8">Genera títulos SEO y descripciones optimizadas para conversión. Nuestra IA analiza tus datos de Shopify para crear textos que rankean y venden.</p>
+<div class="mt-auto space-y-4">
+<div class="p-4 rounded-xl bg-slate-900/60 border border-border-dark">
+<span class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-bold block mb-2">Listing Actual</span>
+<span class="text-sm text-slate-500 font-medium italic">Camiseta algodón azul talla L</span>
+</div>
+<div class="relative p-4 rounded-xl bg-primary/5 border border-primary/20 shadow-[0_0_20px_rgba(16,183,127,0.05)] overflow-hidden">
+<div class="absolute inset-0 bg-primary/5 blur-xl pointer-events-none"></div>
+<span class="text-[10px] uppercase tracking-[0.15em] text-primary font-bold block mb-2 relative z-10">Optimización IA</span>
+<span class="text-sm text-white font-bold leading-tight relative z-10 block">Premium Navy Cotton Tee - Athletics Fit (Large)</span>
+</div>
+</div>
+</div>
+<div class="group relative overflow-hidden glass-card p-8 hover:border-red-500/30 transition-all duration-300 flex flex-col h-full">
+<div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-red-500/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
+<div class="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-red-500 shadow-inner">
+<span class="material-symbols-outlined text-2xl">monitoring</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 leading-tight">Radar de Ingresos en Riesgo</h3>
+<p class="text-slate-400 text-sm leading-relaxed mb-8">No optimices a ciegas. Nuestra IA calcula el valor monetario de cada mejora, permitiéndote priorizar los cambios que realmente mueven la aguja de tus ingresos mensuales.</p>
+<div class="mt-auto relative rounded-2xl bg-black/60 border border-border-dark/60 p-6 backdrop-blur-2xl shadow-xl overflow-hidden">
+<div class="absolute -top-10 -right-10 w-24 h-24 bg-red-500/20 blur-3xl rounded-full"></div>
+<div class="relative z-10 flex flex-col items-start gap-4">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pérdida Mensual Estimada</span>
+<div class="flex items-end gap-3 w-full">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 text-red-500 shrink-0">
+<span class="material-symbols-outlined text-xl">trending_down</span>
+</div>
+<div class="flex flex-col">
+<span class="text-4xl font-extrabold text-white tracking-tight drop-shadow-[0_0_15px_rgba(239,68,68,0.2)]">$1,240.00</span>
+</div>
+</div>
+<div class="w-full h-px bg-gradient-to-r from-red-500/30 via-transparent to-transparent my-1"></div>
+<div class="flex items-center justify-between w-full">
+<span class="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-bold text-red-500 border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.1)]">
+                            ALTO RIESGO
+                        </span>
+<span class="text-[11px] text-slate-400 font-medium">
+                            32 activos críticos sin optimizar
+                        </span>
+</div>
+</div>
+</div>
+</div>
+<div class="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 md:col-span-2">
+<div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/5 blur-[80px] pointer-events-none"></div>
+<div class="flex flex-col md:flex-row md:items-center gap-8">
+<div class="flex-shrink-0 flex h-14 w-14 items-center justify-center rounded-xl bg-surface-darker border border-border-dark text-primary shadow-inner">
+<span class="material-symbols-outlined text-3xl">analytics</span>
+</div>
+<div class="flex-1">
+<h3 class="text-xl font-bold text-white mb-2 leading-tight">Métrica de Salud Global</h3>
+<p class="text-slate-400 text-sm max-w-lg mb-6 leading-relaxed">Analizamos la integridad de tus metadatos, calidad de etiquetas y consistencia visual para generar un diagnóstico accionable en tiempo real.</p>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider">
+<span class="text-slate-500">Optimización de Catálogo</span>
+<span class="text-primary">82% Excelente</span>
+</div>
+<div class="h-3 w-full bg-slate-900 rounded-full border border-border-dark overflow-hidden p-0.5">
+<div class="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(16,183,127,0.6)]" style="width: 82%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
+<div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
+<div class="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-primary shadow-inner">
+<span class="material-symbols-outlined text-2xl">sync_alt</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 leading-tight">Sincronización Total</h3>
+<p class="text-slate-400 text-sm leading-relaxed mb-8">Integración perfecta con Shopify. Cambios en vivo en segundos con un solo clic.</p>
+<div class="mt-auto flex justify-between items-center bg-slate-900/40 p-4 rounded-xl border border-border-dark/50">
+<div class="h-10 w-10 rounded-lg bg-slate-800 border border-border-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-300 text-sm">shopping_bag</span>
+</div>
+<div class="flex-1 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent mx-3 relative">
+<div class="absolute inset-0 bg-primary/20 blur-sm"></div>
+<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 material-symbols-outlined text-primary text-xs bg-surface-dark px-1">bolt</span>
+</div>
+<div class="h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 relative z-10" id="pricing">
+<div class="mx-auto max-w-7xl px-6 lg:px-8">
+<div class="mx-auto max-w-2xl text-center mb-16">
+<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Planes de Precios Claros</h2>
+<p class="mt-4 text-lg text-slate-400">Elige el plan que mejor se adapte al tamaño de tu catálogo.</p>
+</div>
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8 items-start">
+<div class="rounded-3xl border border-border-dark bg-surface-dark/40 p-8 backdrop-blur-md transition-transform hover:-translate-y-1">
+<h3 class="text-lg font-semibold leading-8 text-white">Starter</h3>
+<p class="mt-4 text-sm leading-6 text-slate-400">Ideal para tiendas pequeñas que comienzan a optimizar.</p>
+<p class="mt-6 flex items-baseline gap-x-1">
+<span class="text-4xl font-bold tracking-tight text-white">$29</span>
+<span class="text-sm font-semibold leading-6 text-slate-400">/mes</span>
+</p>
+<a class="mt-6 block rounded-md border border-border-dark bg-white/5 py-2 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-white/10" href="#">Comenzar</a>
+<ul class="mt-8 space-y-3 text-sm leading-6 text-slate-300" role="list">
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Hasta 1,000 productos</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Auditoría Visual básica</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Sincronización semanal</li>
+</ul>
+</div>
+<div class="relative rounded-3xl border-2 border-primary bg-surface-dark/80 p-8 shadow-[0_0_40px_rgba(16,183,127,0.15)] backdrop-blur-xl transition-transform hover:-translate-y-1 lg:-mt-4 lg:mb-4 lg:p-10 pricing-glow">
+<div class="absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-primary px-3 py-1 text-center text-xs font-semibold text-background-dark shadow-lg">Más Popular</div>
+<h3 class="text-lg font-semibold leading-8 text-white">Pro</h3>
+<p class="mt-4 text-sm leading-6 text-slate-400">Para marcas en crecimiento que buscan automatización total.</p>
+<p class="mt-6 flex items-baseline gap-x-1">
+<span class="text-5xl font-bold tracking-tight text-white">$79</span>
+<span class="text-sm font-semibold leading-6 text-slate-400">/mes</span>
+</p>
+<a class="mt-6 block rounded-md bg-primary py-2.5 px-3 text-center text-sm font-semibold leading-6 text-background-dark shadow-sm hover:bg-emerald-400" href="#">Prueba Gratuita</a>
+<ul class="mt-8 space-y-3 text-sm leading-6 text-slate-300" role="list">
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Hasta 10,000 productos</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Escritura IA Ilimitada</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Revenue at Risk Dashboard</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Auto-sync diario</li>
+</ul>
+</div>
+<div class="rounded-3xl border border-border-dark bg-surface-dark/40 p-8 backdrop-blur-md transition-transform hover:-translate-y-1">
+<h3 class="text-lg font-semibold leading-8 text-white">Enterprise</h3>
+<p class="mt-4 text-sm leading-6 text-slate-400">Soluciones personalizadas para volúmenes masivos.</p>
+<p class="mt-6 flex items-baseline gap-x-1">
+<span class="text-4xl font-bold tracking-tight text-white">$199</span>
+<span class="text-sm font-semibold leading-6 text-slate-400">/mes</span>
+</p>
+<a class="mt-6 block rounded-md border border-border-dark bg-white/5 py-2 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-white/10" href="#">Contactar Ventas</a>
+<ul class="mt-8 space-y-3 text-sm leading-6 text-slate-300" role="list">
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Productos ilimitados</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Modelos de IA personalizados</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Manager de éxito dedicado</li>
+<li class="flex gap-x-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Acceso vía API</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 border-t border-border-dark bg-surface-darker/30" id="faq">
+<div class="mx-auto max-w-3xl px-6 lg:px-8">
+<h2 class="text-3xl font-bold tracking-tight text-white text-center mb-12">Inteligencia, simplificada.</h2>
+<div class="space-y-4">
+<details class="group rounded-xl bg-surface-dark border border-border-dark px-4 py-3 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between text-white">
+<h3 class="font-medium text-sm">¿Katalog AI modifica mi tienda en vivo directamente?</h3>
+<span class="ml-1.5 flex-shrink-0 rounded-full bg-white/5 p-1 text-white sm:p-1.5 group-open:bg-primary/20 group-open:text-primary transition-colors">
+<span class="material-symbols-outlined group-open:hidden text-lg">add</span>
+<span class="material-symbols-outlined hidden group-open:block text-lg">remove</span>
+</span>
+</summary>
+<p class="mt-2 leading-relaxed text-slate-400 text-sm">
+                        No de inmediato. Katalog AI crea una versión previa de los cambios. Puedes revisar todas las optimizaciones propuestas en nuestro panel antes de sincronizarlas con tu tienda Shopify con un solo clic.
+                    </p>
+</details>
+<details class="group rounded-xl bg-surface-dark border border-border-dark px-4 py-3 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between text-white">
+<h3 class="font-medium text-sm">¿Cómo sabe la IA cuál es la voz de mi marca?</h3>
+<span class="ml-1.5 flex-shrink-0 rounded-full bg-white/5 p-1 text-white sm:p-1.5 group-open:bg-primary/20 group-open:text-primary transition-colors">
+<span class="material-symbols-outlined group-open:hidden text-lg">add</span>
+<span class="material-symbols-outlined hidden group-open:block text-lg">remove</span>
+</span>
+</summary>
+<p class="mt-2 leading-relaxed text-slate-400 text-sm">
+                        Durante el registro, puedes configurar tus guías de estilo. Nuestro motor analiza estos datos para ajustar el tono, estructura y vocabulario en el contenido generado de forma automática.
+                    </p>
+</details>
+<details class="group rounded-xl bg-surface-dark border border-border-dark px-4 py-3 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between text-white">
+<h3 class="font-medium text-sm">¿Es compatible con todas las plantillas de Shopify?</h3>
+<span class="ml-1.5 flex-shrink-0 rounded-full bg-white/5 p-1 text-white sm:p-1.5 group-open:bg-primary/20 group-open:text-primary transition-colors">
+<span class="material-symbols-outlined group-open:hidden text-lg">add</span>
+<span class="material-symbols-outlined hidden group-open:block text-lg">remove</span>
+</span>
+</summary>
+<p class="mt-2 leading-relaxed text-slate-400 text-sm">
+                        Sí, Katalog AI funciona a nivel de datos del producto, no del tema. Los cambios en títulos, descripciones y etiquetas se reflejan perfectamente independientemente de la plantilla visual que utilices.
+                    </p>
+</details>
+<details class="group rounded-xl bg-surface-dark border border-border-dark px-4 py-3 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between text-white">
+<h3 class="font-medium text-sm">¿Cuánto tiempo tarda en optimizar mi catálogo completo?</h3>
+<span class="ml-1.5 flex-shrink-0 rounded-full bg-white/5 p-1 text-white sm:p-1.5 group-open:bg-primary/20 group-open:text-primary transition-colors">
+<span class="material-symbols-outlined group-open:hidden text-lg">add</span>
+<span class="material-symbols-outlined hidden group-open:block text-lg">remove</span>
+</span>
+</summary>
+<p class="mt-2 leading-relaxed text-slate-400 text-sm">
+                        El escaneo inicial toma solo unos minutos para tiendas de hasta 10,000 productos. Las optimizaciones de IA se generan en lotes y suelen estar listas para revisión en menos de una hora.
+                    </p>
+</details>
+</div>
+</div>
+</section>
+<section class="relative py-24 px-6 lg:px-8">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none"></div>
+<div class="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-surface-dark border border-border-dark px-6 py-16 text-center shadow-2xl sm:px-16 lg:py-20">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary/20 blur-[100px] rounded-full pointer-events-none"></div>
+<h2 class="relative z-10 text-3xl font-bold tracking-tight text-white sm:text-4xl">¿Listo para reparar tu catálogo?</h2>
+<p class="relative z-10 mx-auto mt-6 max-w-xl text-lg text-slate-300">Únete a cientos de comerciantes de Shopify que ya optimizan sus ingresos con honestidad y precisión.</p>
+<div class="relative z-10 mt-10 flex justify-center">
+<button class="flex h-14 min-w-[200px] items-center justify-center rounded-xl bg-primary px-8 text-lg font-bold text-background-dark shadow-[0_0_40px_rgba(16,183,127,0.4)] transition-all hover:scale-105 hover:bg-emerald-400">
+                    Prueba Gratuita
+                </button>
+</div>
+</div>
+</section>
+<footer class="border-t border-border-dark bg-background-dark py-12">
+<div class="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="flex h-6 w-6 items-center justify-center rounded bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+</div>
+<span class="text-sm font-semibold text-white">Katalog AI</span>
+</div>
+<div class="flex gap-8">
+<a class="text-sm text-slate-500 hover:text-white transition-colors" href="#">Privacidad</a>
+<a class="text-sm text-slate-500 hover:text-white transition-colors" href="#">Términos</a>
+<a class="text-sm text-slate-500 hover:text-white transition-colors" href="#">Soporte</a>
+</div>
+<p class="text-sm text-slate-600">© 2024 Katalog AI. Todos los derechos reservados.</p>
+</div>
+</footer>
+</main>
+</body></html>

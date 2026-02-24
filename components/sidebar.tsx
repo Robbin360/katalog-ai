@@ -47,7 +47,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
 
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-        { name: 'Inventory', icon: Package, href: '/inventory' }, // Ruta propia para evitar colisión de resaltado
+        { name: 'Inventory', icon: Package, href: '/inventory' }, // Separate route to avoid highlight collision
         { name: 'Brand Brain', icon: BrainCircuit, href: '/account?tab=brain' },
         { name: 'Integrations', icon: Zap, href: '/account?tab=integrations' },
     ]
@@ -63,7 +63,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
         document.cookie = `sidebar_collapsed=${newState}; path=/; max-age=31536000; SameSite=Lax`
     }
 
-    // Atajo de teclado Cmd + \
+    // Keyboard shortcut: Cmd + \
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key === '\\') {

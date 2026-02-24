@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Product, ProductStatus } from "@/types/inventory";
 
-// --- COMPONENTE: ONBOARDING DECK (El Panel Inteligente) ---
+// --- COMPONENT: ONBOARDING DECK ---
 function OnboardingDeck({ status, onDismiss }: {
     status: {
         hasShopify: boolean;
@@ -126,7 +126,7 @@ function OnboardingDeck({ status, onDismiss }: {
     )
 }
 
-// --- Componentes Auxiliares (KPIs) ---
+// --- AUXILIARY COMPONENTS (KPIs) ---
 const KPICard = ({ title, value, icon: Icon, trend, glowColor, subtitle, loading }: {
     title: string,
     value: string | number,
@@ -192,7 +192,7 @@ const KPIGrid = ({ revenue, health, queue, loading }: { revenue: number, health:
     </div>
 );
 
-// --- COMPONENTE: CONNECT STORE BANNER ---
+// --- COMPONENT: CONNECT STORE BANNER ---
 function ConnectStoreBanner() {
     return (
         <div className="mt-8 relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -223,7 +223,7 @@ const StatusBadge = ({ status }: { status: ProductStatus }) => {
     return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
 };
 
-// --- PÁGINA PRINCIPAL ---
+// --- MAIN PAGE ---
 
 export default function DashboardPage() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -294,17 +294,37 @@ export default function DashboardPage() {
 
     const handleSync = async () => {
         setIsSyncing(true);
-        toast.promise(
-            new Promise(resolve => setTimeout(resolve, 2000)),
-            {
-                loading: 'Syncing with store...',
-                success: () => {
-                    setIsSyncing(false);
-                    return 'Store synchronization complete!';
+
+        const syncPromise = async () => {
+            const response = await fetch('/api/shopify/sync', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                error: 'Sync failed'
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                if (data.error) throw new Error(data.error);
+                throw new Error('Sync failed');
             }
-        );
+
+            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
+            return data; // Returns { success: true, count: X, message: '...' }
+        };
+
+        toast.promise(syncPromise(), {
+            loading: 'Syncing with Shopify...',
+            success: (data: any) => {
+                setIsSyncing(false);
+                return `Catalog updated! ${data.count || 0} products imported.`;
+            },
+            error: (err: any) => {
+                setIsSyncing(false);
+                return err.message || 'Sync failed';
+            }
+        });
     };
 
     const handleOptimize = async (productId: string) => {
