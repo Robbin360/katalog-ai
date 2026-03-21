@@ -13,6 +13,9 @@ import {
     MessageSquare,
     Sparkles
 } from "lucide-react";
+import { Brand } from "@/components/ui/brand";
+import { Navbar } from "@/components/landing/Navbar";
+import { useI18n } from "@/lib/i18n-context";
 
 type FAQItem = {
     question: string;
@@ -20,85 +23,41 @@ type FAQItem = {
     category: string;
 };
 
-const FAQ_DATA: FAQItem[] = [
-    // General
-    {
-        category: "General",
-        question: "¿Qué es Katalog AI?",
-        answer: "Katalog AI es una plataforma de automatización de catálogos de última generación que utiliza Inteligencia Artificial para optimizar descripciones, imágenes y SEO de tus productos de forma 100% autónoma y profesional."
-    },
-    {
-        category: "General",
-        question: "¿Cómo ayuda a mi tienda?",
-        answer: "Katalog AI elimina el trabajo manual de redactar fichas de producto. Aumenta tu conversión con textos persuasivos, mejora tu posicionamiento en Google y te permite escalar tu catálogo de 10 a 10,000 productos en minutos."
-    },
-    {
-        category: "General",
-        question: "¿Es difícil de configurar?",
-        answer: "En absoluto. Katalog AI es 'plug & play'. Conectas tu tienda vía API en un clic y nuestro motor comienza a analizar tu catálogo inmediatamente sin necesidad técnica de tu parte."
-    },
-    // IA & Créditos
-    {
-        category: "IA & Créditos",
-        question: "¿Cómo funcionan los créditos?",
-        answer: "1 crédito equivale a la optimización completa de un producto (título, descripción, meta-tags y alt-text de imágenes). Los créditos se renuevan mensualmente según tu plan seleccionado."
-    },
-    {
-        category: "IA & Créditos",
-        question: "¿El contenido generado es original?",
-        answer: "Sí. Nuestra IA genera contenido único basado en los atributos técnicos de tus productos. Además, contamos con una capa de 'Protección Anti-Alucinaciones' para asegurar que la información sea veraz y coherente con tu marca."
-    },
-    {
-        category: "IA & Créditos",
-        question: "¿Puedo entrenar la IA con mi estilo?",
-        answer: "Sí, mediante nuestra función 'Brand Brain'. Puedes subir documentos, guías de marca o ejemplos de textos anteriores para que la IA aprenda y replique exactamente el tono de voz de tu negocio."
-    },
-    // Integraciones
-    {
-        category: "Integraciones",
-        question: "¿Qué tiendas soporta?",
-        answer: "Actualmente ofrecemos soporte nativo total para Shopify. Estamos trabajando activamente en integraciones para Etsy, WooCommerce y Amazon, que estarán disponibles en el futuro cercano."
-    },
-    {
-        category: "Integraciones",
-        question: "¿Es seguro conectar mi tienda?",
-        answer: "Totalmente. Utilizamos las APIs oficiales de cada plataforma con permisos granulares. Todos los datos están cifrados y nunca compartimos información de tus ventas o clientes con terceros."
-    },
-    {
-        category: "Integraciones",
-        question: "¿Katalog borra mis productos originales?",
-        answer: "Nunca. Katalog AI trabaja creando borradores o actualizando campos específicos bajo tu supervisión. Además, siempre guardamos un historial para que puedas revertir cualquier cambio en un clic (Rollback)."
-    },
-    // Planes
-    {
-        category: "Planes",
-        question: "¿Puedo cambiar de plan en cualquier momento?",
-        answer: "Sí, puedes subir o bajar de nivel de suscripción cuando lo desees desde tu panel de facturación. Los cambios de precio se prorratean automáticamente."
-    },
-    {
-        category: "Planes",
-        question: "¿Qué es el Piloto Automático?",
-        answer: "Es nuestra función estrella. A diferencia del modo manual donde tú apruebas cada cambio, el Piloto Automático detecta nuevos productos en tu tienda y los optimiza y publica en segundo plano sin que tengas que intervenir."
-    }
-];
-
-const CATEGORIES = ["Todas", "General", "IA & Créditos", "Integraciones", "Planes"];
-
 const FAQPage = () => {
+    const { t, Trans, locale } = useI18n();
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeCategory, setActiveCategory] = useState("Todas");
+    const [activeCategory, setActiveCategory] = useState("all");
     const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+    const CATEGORIES = ["all", "general", "ia", "integrations", "plans"];
+
+    const FAQ_DATA: FAQItem[] = useMemo(() => {
+        const items = [];
+        // Tenemos 11 items definidos en los JSON
+        for (let i = 0; i < 11; i++) {
+            items.push({
+                category: t(`faq.items.${i}.category`),
+                question: t(`faq.items.${i}.question`),
+                answer: t(`faq.items.${i}.answer`)
+            });
+        }
+        return items;
+    }, [t, locale]);
 
     const filteredFaqs = useMemo(() => {
         return FAQ_DATA.filter(faq => {
             const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = activeCategory === "Todas" || faq.category === activeCategory;
+
+            const categoryLabel = t(`faq.categories.${activeCategory}`);
+            const matchesCategory = activeCategory === "all" || faq.category === categoryLabel;
             return matchesSearch && matchesCategory;
         });
-    }, [searchQuery, activeCategory]);
+    }, [searchQuery, activeCategory, FAQ_DATA, t]);
 
     return (
+    <div className="flex flex-col min-h-screen">
+        <Navbar />
         <main className="min-h-screen bg-[#09090b] text-white pt-32 pb-20 px-4">
             {/* Background Decorative Glow */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-20">
@@ -110,10 +69,10 @@ const FAQPage = () => {
                 {/* Header Section */}
                 <div className="text-center mb-16 space-y-6">
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
-                        Preguntas <span className="text-primary italic">Frecuentes</span>
+                        {t('faq.title')} <span className="text-primary italic">{t('faq.highlight')}</span>
                     </h1>
                     <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                        Todo lo que necesitas saber sobre la automatización de catálogos impulsada por Inteligencia Artificial.
+                        {t('faq.subtitle')}
                     </p>
 
                     {/* Search Bar */}
@@ -123,7 +82,7 @@ const FAQPage = () => {
                         </div>
                         <input
                             type="text"
-                            placeholder="Busca tu duda..."
+                            placeholder={t('faq.search_placeholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full bg-zinc-900/40 border border-white/5 rounded-2xl py-5 pl-14 pr-6 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 backdrop-blur-xl transition-all"
@@ -141,11 +100,11 @@ const FAQPage = () => {
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
                             className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === cat
-                                    ? "bg-primary text-black"
-                                    : "bg-zinc-900/50 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-white/5"
+                                ? "bg-primary text-black"
+                                : "bg-zinc-900/50 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-white/5"
                                 }`}
                         >
-                            {cat}
+                            {t(`faq.categories.${cat}`)}
                         </button>
                     ))}
                 </div>
@@ -159,8 +118,8 @@ const FAQPage = () => {
                                 <div
                                     key={faq.question}
                                     className={`group rounded-2xl border transition-all duration-300 ${isOpen
-                                            ? "bg-zinc-900/60 border-primary/30 shadow-[0_4px_20px_-10px_rgba(16,183,127,0.1)]"
-                                            : "bg-zinc-900/30 border-white/5 hover:border-white/10"
+                                        ? "bg-zinc-900/60 border-primary/30 shadow-[0_4px_20px_-10px_rgba(16,183,127,0.1)]"
+                                        : "bg-zinc-900/30 border-white/5 hover:border-white/10"
                                         }`}
                                 >
                                     <button
@@ -169,14 +128,12 @@ const FAQPage = () => {
                                     >
                                         <div className="flex items-center gap-4">
                                             <div className={`p-2 rounded-lg transition-colors ${isOpen ? "bg-primary/10 text-primary" : "bg-zinc-800/50 text-zinc-500"}`}>
-                                                {faq.category === "General" && <Globe size={18} />}
-                                                {faq.category === "IA & Créditos" && <Sparkles size={18} />}
-                                                {faq.category === "Integraciones" && <ShieldCheck size={18} />}
-                                                {faq.category === "Planes" && <CreditCard size={18} />}
+                                                {faq.category === t('faq.categories.general') && <Globe size={18} />}
+                                                {faq.category === t('faq.categories.ia') && <Sparkles size={18} />}
+                                                {faq.category === t('faq.categories.integrations') && <ShieldCheck size={18} />}
+                                                {faq.category === t('faq.categories.plans') && <CreditCard size={18} />}
                                             </div>
-                                            <span className={`font-semibold text-lg transition-colors ${isOpen ? "text-white" : "text-zinc-300"}`}>
-                                                {faq.question}
-                                            </span>
+                                            <Trans i18nKey={`faq.items.${index}.question`} className={`font-semibold text-lg transition-colors ${isOpen ? "text-white" : "text-zinc-300"}`} />
                                         </div>
                                         <ChevronDown
                                             className={`text-zinc-500 transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""}`}
@@ -188,9 +145,7 @@ const FAQPage = () => {
                                             }`}
                                     >
                                         <div className="px-6 pb-6 pt-0 ml-14">
-                                            <p className="text-zinc-400 leading-relaxed text-base">
-                                                {faq.answer}
-                                            </p>
+                                            <Trans i18nKey={`faq.items.${index}.answer`} className="text-zinc-400 leading-relaxed text-base block" />
                                         </div>
                                     </div>
                                 </div>
@@ -201,13 +156,13 @@ const FAQPage = () => {
                             <div className="inline-flex p-4 rounded-full bg-zinc-800/50 text-zinc-500 mb-4">
                                 <Search size={32} />
                             </div>
-                            <h3 className="text-xl font-medium text-white">No se encontraron resultados</h3>
-                            <p className="text-zinc-500 mt-2">Prueba con palabras clave como 'créditos', 'Shopify' o 'IA'.</p>
+                            <h3 className="text-xl font-medium text-white">{t('faq.no_results')}</h3>
+                            <p className="text-zinc-500 mt-2">{t('faq.no_results_sub')}</p>
                             <button
-                                onClick={() => { setSearchQuery(""); setActiveCategory("Todas"); }}
+                                onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
                                 className="mt-6 text-primary hover:underline underline-offset-4 text-sm font-medium"
                             >
-                                Limpiar filtros
+                                {t('faq.clear_filters')}
                             </button>
                         </div>
                     )}
@@ -218,13 +173,13 @@ const FAQPage = () => {
                     <div className="absolute inset-0 bg-primary/10 blur-3xl opacity-0 group-hover:opacity-50 transition-opacity duration-700 rounded-full scale-75"></div>
                     <div className="relative p-10 md:p-14 rounded-[3rem] bg-zinc-900/40 border border-white/5 backdrop-blur-3xl text-center space-y-8">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-                            <Zap size={12} fill="currentColor" /> Soporte Directo
+                            <Zap size={12} fill="currentColor" /> {t('faq.suggestions.label')}
                         </div>
                         <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
-                            ¿Tienes una <span className="text-primary">sugerencia</span>?
+                            {t('faq.suggestions.title_pre')} <span className="text-primary">{t('faq.suggestions.title_highlight')}</span>{t('faq.suggestions.title_post')}
                         </h2>
                         <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-                            Tu opinión nos ayuda a mejorar Katalog AI. Si tienes una idea para una nueva función o no encontraste la respuesta que buscabas, nuestro equipo está listo para escucharte.
+                            {t('faq.suggestions.desc')}
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                             <Link
@@ -232,28 +187,29 @@ const FAQPage = () => {
                                 className="w-full sm:w-auto px-10 py-4 bg-primary text-black font-bold rounded-2xl hover:bg-white transition-all duration-300 flex items-center justify-center gap-3 shadow-[0_10px_30px_-10px_rgba(16,183,127,0.3)] hover:scale-105"
                             >
                                 <MessageSquare size={20} />
-                                Enviar Sugerencia
+                                {t('faq.suggestions.btn_send')}
                             </Link>
                             <Link
                                 href="/contact"
                                 className="w-full sm:w-auto px-10 py-4 bg-white/5 text-white font-bold rounded-2xl border border-white/10 hover:bg-white/10 transition-all"
                             >
-                                Contactar Soporte
+                                {t('faq.suggestions.btn_support')}
                             </Link>
                         </div>
                         <div className="flex items-center justify-center gap-6 pt-8 grayscale opacity-30">
-                            <div className="flex items-center gap-2 text-xs font-medium"><MessageCircle size={14} /> WhatsApp</div>
-                            <div className="flex items-center gap-2 text-xs font-medium"><Globe size={14} /> Email 24/7</div>
+                            <div className="flex items-center gap-2 text-xs font-medium"><MessageCircle size={14} /> {t('faq.suggestions.footer_wa')}</div>
+                            <div className="flex items-center gap-2 text-xs font-medium"><Globe size={14} /> {t('faq.suggestions.footer_email')}</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Legal Disclaimer */}
                 <div className="mt-24 text-center text-zinc-600 text-[10px] uppercase tracking-widest">
-                    <p>© 2024 Katalog AI. Resolviendo dudas para la escala masiva.</p>
+                    <p>{t('faq.legal_disclaimer').split('Katalog AI')[0]} <Brand className="text-zinc-500" /> {t('faq.legal_disclaimer').split('Katalog AI')[1]}</p>
                 </div>
             </div>
         </main>
+    </div>
     );
 };
 

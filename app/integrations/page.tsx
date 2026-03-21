@@ -1,7 +1,14 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { Brand } from '@/components/ui/brand';
+import { useI18n } from '@/lib/i18n-context';
+import { Navbar } from '@/components/landing/Navbar';
 
 export default function IntegrationsPage() {
+    const { t } = useI18n();
+
     return (
         <div className="bg-background-dark font-display text-slate-100 min-h-screen selection:bg-primary/30 antialiased">
             <style dangerouslySetInnerHTML={{
@@ -88,32 +95,7 @@ export default function IntegrationsPage() {
                 }
             `}} />
 
-            <nav className="sticky top-0 z-50 w-full bg-background-dark/80 backdrop-blur-md border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex-1 flex justify-start">
-                        <Link href="/" className="flex items-center gap-2.5">
-                            <div className="relative flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-3xl font-light">account_tree</span>
-                                <div className="absolute -top-1 -right-1 size-2 bg-primary rounded-full"></div>
-                            </div>
-                            <span className="font-bold tracking-tight text-xl text-white">Katalog AI</span>
-                        </Link>
-                    </div>
-
-                    <div className="hidden md:flex flex-1 justify-center items-center gap-8">
-                        <Link className="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="/features">Capacidades</Link>
-                        <Link className="text-sm font-medium text-primary" href="/integrations">Integraciones</Link>
-                        <Link className="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="/pricing">Precios</Link>
-                        <Link className="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="/faq">FAQ</Link>
-                    </div>
-
-                    <div className="flex-1 flex justify-end items-center gap-4">
-                        <Link href="/login" className="bg-primary hover:bg-[#0da371] text-background-dark font-bold px-6 py-2.5 rounded-lg transition-all shadow-lg shadow-primary/20 text-sm">
-                            Connect Store
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            <Navbar />
 
             <main className="relative overflow-hidden">
                 <div className="neural-glow absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[500px] pointer-events-none opacity-60"></div>
@@ -123,17 +105,17 @@ export default function IntegrationsPage() {
                     <div className="flex flex-col items-center text-center max-w-3xl mx-auto gap-6">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-2">
                             <span className="size-2 rounded-full bg-primary emerald-pulse"></span>
-                            <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-primary">Neural Connect Engine</span>
+                            <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-primary">{t('integrations.hero.badge')}</span>
                         </div>
-                        <h1 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tight text-white uppercase italic">
-                            Integraciones <br /> <span className="text-primary tracking-tighter not-italic">Nativas de IA</span>
+                        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 mb-6 group">
+                            {t('integrations.hero.title_pre')} <Brand className="text-primary italic group-hover:scale-110 transition-transform" /> <br />{t('integrations.hero.title_post')}
                         </h1>
                         <p className="text-slate-400 text-lg md:text-xl leading-relaxed">
-                            Sincroniza tu tienda en segundos. Nuestra IA se conecta directamente con tu inventario para una optimización autónoma y en tiempo real.
+                            {t('integrations.hero.subtitle')}
                         </p>
                         <div className="mt-4">
                             <Link href="/login" className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
-                                Prueba Gratis
+                                {t('integrations.hero.cta_free')}
                             </Link>
                         </div>
                     </div>
@@ -184,7 +166,7 @@ export default function IntegrationsPage() {
 
                     <div className="mt-16 flex justify-center">
                         <Link href="/login" className="px-10 py-5 bg-primary hover:bg-[#0da371] text-background-dark font-black text-lg rounded-2xl shadow-2xl shadow-primary/30 flex items-center gap-3 transition-transform hover:-translate-y-1">
-                            Configurar Integración
+                            {t('integrations.hero.cta_connect')}
                             <span className="material-symbols-outlined">arrow_forward</span>
                         </Link>
                     </div>
@@ -192,8 +174,8 @@ export default function IntegrationsPage() {
 
                 <section className="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold mb-4">Conexión en 3 Pasos</h2>
-                        <p className="text-slate-400">Implementación inmediata sin necesidad de desarrollo técnico.</p>
+                        <h2 className="text-3xl font-bold mb-4">{t('integrations.steps.title')}</h2>
+                        <p className="text-slate-400">{t('integrations.steps.subtitle')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -202,24 +184,24 @@ export default function IntegrationsPage() {
                                 <span className="material-symbols-outlined text-primary text-3xl">add_link</span>
                                 <div className="absolute -right-2 top-0 size-6 bg-primary text-background-dark text-xs font-black rounded-full flex items-center justify-center">1</div>
                             </div>
-                            <h3 className="text-xl font-bold">Selecciona Plataforma</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed">Elige tu CMS actual de nuestra lista de conectores nativos verificados.</p>
+                            <h3 className="text-xl font-bold">{t('integrations.steps.step1.title')}</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed">{t('integrations.steps.step1.desc')}</p>
                         </div>
                         <div className="flex flex-col items-center text-center gap-6">
                             <div className="size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
                                 <span className="material-symbols-outlined text-primary text-3xl">vpn_key</span>
                                 <div className="absolute -right-2 top-0 size-6 bg-primary text-background-dark text-xs font-black rounded-full flex items-center justify-center">2</div>
                             </div>
-                            <h3 className="text-xl font-bold">Autoriza Acceso</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed">Otorga permisos de lectura de catálogo mediante OAuth2 seguro en un solo clic.</p>
+                            <h3 className="text-xl font-bold">{t('integrations.steps.step2.title')}</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed">{t('integrations.steps.step2.desc')}</p>
                         </div>
                         <div className="flex flex-col items-center text-center gap-6">
                             <div className="size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
                                 <span className="material-symbols-outlined text-primary text-3xl">auto_awesome</span>
                                 <div className="absolute -right-2 top-0 size-6 bg-primary text-background-dark text-xs font-black rounded-full flex items-center justify-center">3</div>
                             </div>
-                            <h3 className="text-xl font-bold">IA Sincronizada</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed">Katalog AI procesa tus productos y optimiza los datos automáticamente.</p>
+                            <h3 className="text-xl font-bold">{t('integrations.steps.step3.title')}</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed"><Brand className="text-slate-400 font-medium" /> {t('integrations.steps.step3.desc')}</p>
                         </div>
                     </div>
                 </section>
@@ -227,7 +209,7 @@ export default function IntegrationsPage() {
                 <section className="max-w-7xl mx-auto px-6 py-20">
                     <div className="flex items-center justify-between mb-12">
                         <h2 className="text-3xl font-bold">
-                            Plataformas <span className="text-slate-500 font-normal">Soportadas</span>
+                            {t('integrations.platforms.title')} <span className="text-slate-500 font-normal">{t('integrations.platforms.highlight')}</span>
                         </h2>
                         <div className="h-px flex-1 bg-white/5 mx-8"></div>
                     </div>
@@ -235,7 +217,7 @@ export default function IntegrationsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div className="md:col-span-2 glass-card rounded-3xl p-8 relative overflow-hidden group hover:border-primary/40 transition-all">
                             <div className="absolute top-0 right-0 p-6">
-                                <span className="px-3 py-1.5 rounded-lg bg-primary/20 text-primary text-xs font-black tracking-widest uppercase">Nativo</span>
+                                <span className="px-3 py-1.5 rounded-lg bg-primary/20 text-primary text-xs font-black tracking-widest uppercase">{t('integrations.platforms.native')}</span>
                             </div>
                             <div className="flex flex-col gap-6 h-full justify-between">
                                 <div className="flex items-center gap-6">
@@ -246,34 +228,34 @@ export default function IntegrationsPage() {
                                         <h3 className="text-2xl font-bold">Shopify</h3>
                                         <div className="flex items-center gap-2 mt-2">
                                             <span className="size-2.5 rounded-full bg-primary emerald-pulse"></span>
-                                            <span className="text-sm text-primary font-semibold">Conectado y Sincronizando</span>
+                                            <span className="text-sm text-primary font-semibold">{t('integrations.platforms.connected')}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <p className="text-slate-400 max-w-md">Acceso completo a inventario, pedidos y perfiles de clientes con actualización en tiempo real.</p>
+                                <p className="text-slate-400 max-w-md">{t('integrations.platforms.shopify_desc')}</p>
                             </div>
                         </div>
 
                         <div className="glass-card rounded-3xl p-8 flex flex-col gap-6 group relative overflow-hidden">
                             <div className="absolute inset-0 bg-background-dark/60 backdrop-blur-[6px] flex items-center justify-center z-20">
-                                <span className="text-[10px] font-black tracking-[0.3em] text-slate-300 -rotate-12 border border-slate-700/50 px-3 py-1.5 bg-background-dark/95">PRÓXIMAMENTE</span>
+                                <span className="text-[10px] font-black tracking-[0.3em] text-slate-300 -rotate-12 border border-slate-700/50 px-3 py-1.5 bg-background-dark/95">{t('integrations.platforms.coming_soon')}</span>
                             </div>
                             <div className="absolute top-0 right-0 p-4 z-10">
-                                <span className="px-2 py-1 rounded-lg bg-white/5 text-slate-500 text-[10px] font-black tracking-widest uppercase">Próximamente</span>
+                                <span className="px-2 py-1 rounded-lg bg-white/5 text-slate-500 text-[10px] font-black tracking-widest uppercase">{t('integrations.platforms.coming_soon')}</span>
                             </div>
                             <div className="size-14 rounded-2xl bg-white/5 flex items-center justify-center text-slate-600 transition-colors">
                                 <span className="material-symbols-outlined text-3xl">hub</span>
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-slate-500">BigCommerce</h3>
-                                <p className="text-xs text-slate-600 mt-2 leading-relaxed">Infraestructura de API robusta diseñada para B2B complejas.</p>
+                                <p className="text-xs text-slate-600 mt-2 leading-relaxed">{t('integrations.platforms.bigcommerce_desc')}</p>
                             </div>
                         </div>
 
                         <div className="grid grid-rows-2 gap-6">
                             <div className="glass-card rounded-3xl p-6 flex flex-col justify-center relative group overflow-hidden">
                                 <div className="absolute inset-0 bg-background-dark/60 backdrop-blur-[6px] flex items-center justify-center opacity-100 z-10">
-                                    <span className="text-[10px] font-black tracking-[0.3em] text-slate-300 -rotate-12 border border-slate-700/50 px-3 py-1.5 bg-background-dark/95">PRÓXIMAMENTE</span>
+                                    <span className="text-[10px] font-black tracking-[0.3em] text-slate-300 -rotate-12 border border-slate-700/50 px-3 py-1.5 bg-background-dark/95">{t('integrations.platforms.coming_soon')}</span>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="size-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-700">
@@ -284,7 +266,7 @@ export default function IntegrationsPage() {
                             </div>
                             <div className="glass-card rounded-3xl p-6 flex flex-col justify-center relative group overflow-hidden">
                                 <div className="absolute inset-0 bg-background-dark/60 backdrop-blur-[6px] flex items-center justify-center opacity-100 z-10">
-                                    <span className="text-[10px] font-black tracking-[0.3em] text-slate-300 -rotate-12 border border-slate-700/50 px-3 py-1.5 bg-background-dark/95">PRÓXIMAMENTE</span>
+                                    <span className="text-[10px] font-black tracking-[0.3em] text-slate-300 -rotate-12 border border-slate-700/50 px-3 py-1.5 bg-background-dark/95">{t('integrations.platforms.coming_soon')}</span>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="size-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-700">
@@ -298,15 +280,15 @@ export default function IntegrationsPage() {
                 </section>
 
                 <section className="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
-                    <h3 className="text-xl font-bold mb-12 text-center text-slate-300">Beneficios de la Integración Nativa</h3>
+                    <h3 className="text-xl font-bold mb-12 text-center text-slate-300">{t('integrations.benefits.title')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <div className="glass-card rounded-2xl p-6 flex items-start gap-5">
                             <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                                 <span className="material-symbols-outlined text-primary">sync</span>
                             </div>
                             <div>
-                                <h4 className="text-lg font-bold mb-2">Sincronización en Tiempo Real</h4>
-                                <p className="text-sm text-slate-500 leading-relaxed">Infraestructura de baja latencia con actualizaciones cada 15ms para una precisión total del catálogo.</p>
+                                <h4 className="text-lg font-bold mb-2">{t('integrations.benefits.sync.title')}</h4>
+                                <p className="text-sm text-slate-500 leading-relaxed">{t('integrations.benefits.sync.desc')}</p>
                             </div>
                         </div>
                         <div className="glass-card rounded-2xl p-6 flex items-start gap-5">
@@ -314,8 +296,8 @@ export default function IntegrationsPage() {
                                 <span className="material-symbols-outlined text-primary">verified_user</span>
                             </div>
                             <div>
-                                <h4 className="text-lg font-bold mb-2">Seguridad de Datos SOC2</h4>
-                                <p className="text-sm text-slate-500 leading-relaxed">Encriptación AES-256 de extremo a extremo y cumplimiento estricto de normativas globales.</p>
+                                <h4 className="text-lg font-bold mb-2">{t('integrations.benefits.security.title')}</h4>
+                                <p className="text-sm text-slate-500 leading-relaxed">{t('integrations.benefits.security.desc')}</p>
                             </div>
                         </div>
                         <div className="glass-card rounded-2xl p-6 flex items-start gap-5">
@@ -323,8 +305,8 @@ export default function IntegrationsPage() {
                                 <span className="material-symbols-outlined text-primary">analytics</span>
                             </div>
                             <div>
-                                <h4 className="text-lg font-bold mb-2">Mapping Inteligente</h4>
-                                <p className="text-sm text-slate-500 leading-relaxed">Normalización automática de atributos y taxonomías mediante modelos LLM especializados.</p>
+                                <h4 className="text-lg font-bold mb-2">{t('integrations.benefits.mapping.title')}</h4>
+                                <p className="text-sm text-slate-500 leading-relaxed">{t('integrations.benefits.mapping.desc')}</p>
                             </div>
                         </div>
                     </div>
@@ -335,15 +317,15 @@ export default function IntegrationsPage() {
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary text-2xl">account_tree</span>
-                        <span className="font-bold tracking-tight text-lg">Katalog AI</span>
+                        <Brand className="font-bold tracking-tight text-lg text-primary" />
                     </div>
                     <div className="flex gap-8 text-sm text-slate-500 font-medium">
-                        <Link className="hover:text-primary transition-colors" href="/features">Capacidades</Link>
-                        <Link className="hover:text-primary transition-colors" href="/integrations">Integraciones</Link>
-                        <Link className="hover:text-primary transition-colors" href="/pricing">Precios</Link>
-                        <Link className="hover:text-primary transition-colors" href="/faq">FAQ</Link>
+                        <Link className="hover:text-primary transition-colors" href="/features">{t('integrations.nav.features')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="/integrations">{t('integrations.nav.integrations')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="/pricing">{t('integrations.nav.pricing')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="/faq">{t('integrations.nav.faq')}</Link>
                     </div>
-                    <p className="text-slate-600 text-sm">© 2024 Katalog AI Optimization SaaS.</p>
+                    <p className="text-slate-600 text-sm">© 2024 <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
                 </div>
             </footer>
         </div >

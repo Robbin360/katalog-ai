@@ -12,6 +12,9 @@ import {
     Settings, CreditCard, LogOut
 } from 'lucide-react';
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n-context";
+import { Brand } from "@/components/ui/brand";
+import { AutoPilotToggle } from "@/components/dashboard/AutoPilotToggle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -42,30 +45,31 @@ function OnboardingDeck({ status, onDismiss }: {
     },
     onDismiss: () => void
 }) {
+    const { t } = useI18n();
     const steps = [
         {
             id: 'store',
-            label: 'Connect Store',
+            label: t('onboarding.steps.connect.title'),
             done: status.hasShopify,
             icon: Store,
             action: '/account',
-            desc: 'Sync inventory automatically'
+            desc: t('onboarding.steps.connect.desc')
         },
         {
             id: 'ai',
-            label: 'Generate Asset',
+            label: t('onboarding.steps.train.title'),
             done: status.hasProducts,
             icon: BrainCircuit,
             action: null,
-            desc: 'Create your first optimization'
+            desc: t('onboarding.steps.train.desc')
         },
         {
             id: 'plan',
-            label: 'Upgrade Plan',
+            label: t('onboarding.steps.autopilot.title'),
             done: status.isPro,
             icon: Rocket,
             action: '/account',
-            desc: 'Unlock full power'
+            desc: t('onboarding.steps.autopilot.desc')
         }
     ]
 
@@ -80,16 +84,16 @@ function OnboardingDeck({ status, onDismiss }: {
                 onClick={onDismiss}
                 className="absolute top-4 right-4 text-zinc-500 hover:text-foreground transition-colors"
                 title="Dismiss onboarding"
-                aria-label="Dismiss onboarding"
+                aria-label={t('common.aria.dismiss')}
             >
                 <X className="w-5 h-5" />
             </button>
 
             <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
                 <div className="md:w-1/3 space-y-2">
-                    <h2 className="text-xl font-bold text-foreground">Setup Progress</h2>
+                    <h2 className="text-xl font-bold text-foreground">{t('onboarding.setup_progress')}</h2>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="font-mono text-primary">{completed}/3</span> Steps Completed
+                        <span className="font-mono text-primary">{completed}/3</span> {t('onboarding.steps_completed')}
                     </div>
                     <Progress value={progress} className="h-2 bg-muted" indicatorClassName="bg-primary" />
                 </div>
@@ -204,7 +208,7 @@ function ConnectStoreBanner() {
                 </div>
                 <div>
                     <h3 className="text-xl font-bold text-foreground">Connect your Shopify store</h3>
-                    <p className="text-sm text-muted-foreground max-w-md">Unlock the full power of Katalog AI by syncing your inventory. We'll automatically find and fix poor listings.</p>
+                    <p className="text-sm text-muted-foreground max-w-md">Unlock the full power of <Brand className="text-foreground font-medium" /> by syncing your inventory. We'll automatically find and fix poor listings.</p>
                 </div>
             </div>
 
@@ -226,6 +230,7 @@ const StatusBadge = ({ status }: { status: ProductStatus }) => {
 // --- MAIN PAGE ---
 
 export default function DashboardPage() {
+    const { t } = useI18n();
     const [searchTerm, setSearchTerm] = useState('');
     const [isSyncing, setIsSyncing] = useState(false);
     const queryClient = useQueryClient();
@@ -237,16 +242,26 @@ export default function DashboardPage() {
             if (!user) return null
 
             const { data: products } = await supabase.from('products_queue').select('*').order('created_at', { ascending: false })
-            const { data: profile } = await supabase.from('profiles').select('plan_tier, onboarding_dismissed').eq('id', user.id).single()
+            const { data: profile } = await supabase.from('profiles').select('plan_tier, onboarding_dismissed, auto_pilot_enabled').eq('id', user.id).single()
             const { count: shopifyCount } = await supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('provider', 'shopify')
+            const { count: integrationCount } = await supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
+            const { count: queuedCount } = await supabase.from('products_queue').select('*', { count: 'exact', head: true }).in('status', ['QUEUED', 'PENDING_AUDIT'])
+            const { data: brandRules } = await supabase.from('brand_rules').select('tone_voice, forbidden_words').eq('user_id', user.id).maybeSingle()
 
             return {
                 products: products || [],
                 userStatus: {
                     dismissed: profile?.onboarding_dismissed || false,
-                    isPro: profile?.plan_tier !== 'starter',
+                    isPro: profile?.plan_tier === 'pro' || profile?.plan_tier === 'business', // Added business plan check
                     hasShopify: (shopifyCount || 0) > 0,
                     hasProducts: (products?.length || 0) > 0
+                },
+                autoPilotData: {
+                    enabled: profile?.auto_pilot_enabled || false,
+                    integrationCount: integrationCount || 0,
+                    queuedCount: queuedCount || 0,
+                    brandRules: brandRules || { tone_voice: 'Professional and Persuasive', forbidden_words: [] },
+                    plan: profile?.plan_tier || 'starter'
                 }
             }
         },
@@ -315,14 +330,14 @@ export default function DashboardPage() {
         };
 
         toast.promise(syncPromise(), {
-            loading: 'Syncing with Shopify...',
+            loading: t('dashboard.toasts.sync_loading'),
             success: (data: any) => {
                 setIsSyncing(false);
-                return `Catalog updated! ${data.count || 0} products imported.`;
+                return t('dashboard.toasts.sync_success', { count: data.count || 0 });
             },
             error: (err: any) => {
                 setIsSyncing(false);
-                return err.message || 'Sync failed';
+                return err.message || t('dashboard.toasts.sync_error');
             }
         });
     };
@@ -339,9 +354,9 @@ export default function DashboardPage() {
                 queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
             },
             {
-                loading: 'Notifying AI Agent...',
-                success: 'Optimization queued! Your agent will process it soon.',
-                error: 'Could not contact the agent.'
+                loading: t('dashboard.toasts.optimize_loading'),
+                success: t('dashboard.toasts.optimize_success'),
+                error: t('dashboard.toasts.optimize_error')
             }
         );
     };
@@ -349,17 +364,29 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-background text-foreground p-8 font-sans selection:bg-primary/30">
 
-            <div className="flex flex-col gap-2 md:flex-row justify-between items-start md:items-center mb-12">
+            <div className="flex flex-col gap-4 md:flex-row justify-between items-start md:items-center mb-12">
                 <div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">Opportunity Radar</h1>
+                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">{t('dashboard.title')}</h1>
                     <p className="text-muted-foreground mt-2 text-base font-medium flex items-center gap-2">
-                        <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Neural Engine Active
+                        {dashboardData?.autoPilotData?.enabled ? (
+                            <>
+                                <span className="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.8)]"></span>
+                                {t('dashboard.status.autopilot')}
+                            </>
+                        ) : (
+                            <>
+                                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                {t('dashboard.status.active')}
+                            </>
+                        )}
                     </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="border-border hover:bg-accent text-sm font-semibold" onClick={handleSync} disabled={isSyncing}>
-                        {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing...</> : <><RefreshCw className="mr-2 h-4 w-4" /> Refresh Data</>}
+                <div className="flex flex-wrap items-center gap-3">
+                    {dashboardData?.autoPilotData && (
+                        <AutoPilotToggle data={dashboardData.autoPilotData} />
+                    )}
+                    <Button variant="outline" className="border-border hover:bg-accent text-sm font-semibold h-11" onClick={handleSync} disabled={isSyncing}>
+                        {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('dashboard.actions.syncing')}</> : <><RefreshCw className="mr-2 h-4 w-4" /> {t('dashboard.actions.refresh')}</>}
                     </Button>
                 </div>
             </div>
@@ -374,13 +401,13 @@ export default function DashboardPage() {
                 <CardHeader className="border-b border-border/50 bg-muted/20 px-6 py-6 transition-colors">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="space-y-1">
-                            <h2 className="text-xl font-bold text-foreground">Immediate Actions</h2>
-                            <p className="text-xs text-muted-foreground">Assets with the highest revenue impact</p>
+                            <h2 className="text-xl font-bold text-foreground">{t('dashboard.actions.immediate_actions')}</h2>
+                            <p className="text-sm text-muted-foreground">{t('dashboard.actions.assets_impact')}</p>
                         </div>
                         <div className="relative w-full md:w-80">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="Filter by product name..."
+                                placeholder={t('dashboard.actions.search_placeholder')}
                                 className="pl-10 bg-background/50 border-border/50 focus:ring-primary/30 text-sm h-10 rounded-xl"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -417,16 +444,6 @@ export default function DashboardPage() {
                                         <div className="flex flex-col items-center text-center max-w-md w-full animate-in fade-in zoom-in-95 duration-500">
                                             <div className="relative mb-8">
                                                 <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150 opacity-30 animate-pulse"></div>
-                                                <div className="relative p-6 rounded-3xl bg-card border border-border shadow-2xl">
-                                                    <Activity className="w-12 h-12 text-primary" />
-                                                </div>
-                                            </div>
-                                            <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">No areas of concern found</h3>
-                                            <p className="text-muted-foreground leading-relaxed text-sm">
-                                                Your catalog is currently optimal or no products reach the risk threshold.
-                                                Scan your store again to detect new optimization opportunities.
-                                            </p>
-                                            <div className="mt-10">
                                                 <Button
                                                     variant="outline"
                                                     size="lg"

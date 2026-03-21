@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Providers from "@/components/providers";
-import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -18,7 +17,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const theme = cookieStore.get("theme")?.value || "system";
 
   return (
-    <html lang="en" suppressHydrationWarning className={theme === "dark" ? "dark" : ""}>
+    <html lang="es" suppressHydrationWarning className={theme === "dark" ? "dark" : ""}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -45,7 +44,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}>
         <Providers>
           {children}
-          <Toaster />
         </Providers>
       </body>
     </html>

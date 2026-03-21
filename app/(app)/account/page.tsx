@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
+import { Brand } from "@/components/ui/brand"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -31,10 +32,12 @@ import {
 } from "@/components/ui/dialog"
 
 import { useSearchParams, useRouter } from "next/navigation"
+import { useI18n } from "@/lib/i18n-context"
 
 export default function AccountPage() {
     const searchParams = useSearchParams()
     const router = useRouter()
+    const { t, Trans } = useI18n()
     const activeTab = searchParams.get("tab") || "brain"
 
     const setActiveTab = (tab: string) => {
@@ -42,6 +45,7 @@ export default function AccountPage() {
         params.set("tab", tab)
         router.push(`/account?${params.toString()}`)
     }
+
     const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
     const queryClient = useQueryClient()
@@ -118,10 +122,10 @@ export default function AccountPage() {
             }, { onConflict: 'user_id' })
 
             if (error) throw error
-            alert("Brand Brain Updated")
+            alert(t('account.alerts.brain_updated'))
             queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
         } catch (error: any) {
-            alert("Error: " + error.message)
+            alert(t('account.alerts.error_prefix') + error.message)
         } finally {
             setIsSaving(false)
         }
@@ -143,10 +147,10 @@ export default function AccountPage() {
             }, { onConflict: 'user_id, provider' })
 
             if (error) throw error
-            alert("Shopify Connected!")
+            alert(t('account.alerts.shopify_connected'))
             queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
         } catch (error: any) {
-            alert("Error: " + error.message)
+            alert(t('account.alerts.error_prefix') + error.message)
         } finally {
             setIsSaving(false)
         }
@@ -162,9 +166,9 @@ export default function AccountPage() {
             })
             const data = await response.json()
             if (data.url) window.location.href = data.url
-            else alert("Payment error")
+            else alert(t('account.alerts.payment_error'))
         } catch (error) {
-            alert("Connection error")
+            alert(t('account.alerts.connection_error'))
         } finally {
             setLoadingCheckout(false)
         }
@@ -176,9 +180,9 @@ export default function AccountPage() {
             const response = await fetch('/api/portal', { method: 'POST' })
             const data = await response.json()
             if (data.url) window.location.href = data.url
-            else alert("No active subscription found.")
+            else alert(t('account.alerts.no_subscription'))
         } catch (error) {
-            alert("Portal error")
+            alert(t('account.alerts.portal_error'))
         } finally {
             setLoadingPortal(false)
         }
@@ -220,28 +224,28 @@ export default function AccountPage() {
                 {activeTab === "brain" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                            <h1 className="text-2xl font-bold text-foreground mb-1">Brand Brain</h1>
-                            <p className="text-muted-foreground text-sm">Configure how the AI speaks about your products.</p>
+                            <h1 className="text-2xl font-bold text-foreground mb-1">{t('account.brain.title')}</h1>
+                            <p className="text-muted-foreground text-sm">{t('account.brain.subtitle')}</p>
                         </div>
 
                         <Card className="bg-card border-border">
                             <CardHeader>
-                                <CardTitle className="text-base text-card-foreground">Voice & Tone</CardTitle>
-                                <CardDescription>Define the personality of your copy.</CardDescription>
+                                <CardTitle className="text-base text-card-foreground">{t('account.brain.voice_title')}</CardTitle>
+                                <CardDescription>{t('account.brain.voice_desc')}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label className="text-muted-foreground">Tone</Label>
-                                    <Input value={tone} onChange={(e) => setTone(e.target.value)} className="bg-background border-border text-foreground" placeholder="e.g. Professional, Witty..." />
+                                    <Label className="text-muted-foreground">{t('account.brain.tone_label')}</Label>
+                                    <Input value={tone} onChange={(e) => setTone(e.target.value)} className="bg-background border-border text-foreground" placeholder={t('account.brand.tone_placeholder')} />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label className="text-muted-foreground">Language</Label>
+                                        <Label className="text-muted-foreground">{t('account.brain.lang_label')}</Label>
                                         <Input value={language} onChange={(e) => setLanguage(e.target.value)} className="bg-background border-border text-foreground" />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-muted-foreground">Target Audience</Label>
-                                        <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="bg-background border-border text-foreground" placeholder="e.g. Gen Z Gamers" />
+                                        <Label className="text-muted-foreground">{t('account.brain.audience_label')}</Label>
+                                        <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="bg-background border-border text-foreground" placeholder={t('account.brand.audience_placeholder')} />
                                     </div>
                                 </div>
                             </CardContent>
@@ -258,7 +262,7 @@ export default function AccountPage() {
                                         value={forbidden}
                                         onChange={(e) => setForbidden(e.target.value)}
                                         className="bg-background border-border min-h-[100px] text-foreground"
-                                        placeholder="cheap, discount, low quality..."
+                                        placeholder={t('account.brand.exclude_placeholder')}
                                     />
                                 </div>
                             </CardContent>
@@ -276,8 +280,8 @@ export default function AccountPage() {
                 {activeTab === "integrations" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                            <h1 className="text-2xl font-bold text-foreground mb-1">Integrations</h1>
-                            <p className="text-muted-foreground text-sm">Connect your store to enable auto-sync.</p>
+                            <h1 className="text-2xl font-bold text-foreground mb-1">{t('account.store.title')}</h1>
+                            <p className="text-muted-foreground text-sm">{t('account.store.subtitle')}</p>
                         </div>
 
                         <Card className="bg-card border-border">
@@ -289,7 +293,7 @@ export default function AccountPage() {
                                         </div>
                                         <div>
                                             <CardTitle className="text-base text-card-foreground">Shopify</CardTitle>
-                                            <CardDescription>Sync products and publish descriptions.</CardDescription>
+                                            <CardDescription>{t('account.store.shopify_desc')}</CardDescription>
                                         </div>
                                     </div>
                                     {accountData?.integration ? (
@@ -301,17 +305,17 @@ export default function AccountPage() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label className="text-muted-foreground">Store URL</Label>
-                                    <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder="my-store.myshopify.com" className="bg-background border-border text-foreground" />
+                                    <Label className="text-muted-foreground">{t('account.store.url_label')}</Label>
+                                    <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder={t('account.store.url_placeholder')} className="bg-background border-border text-foreground" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-muted-foreground">Admin Access Token</Label>
-                                    <Input type="password" value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder="shpat_..." className="bg-background border-border text-foreground" />
+                                    <Label className="text-muted-foreground">{t('account.store.token_label')}</Label>
+                                    <Input type="password" value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder={t('account.store.token_placeholder')} className="bg-background border-border text-foreground" />
                                 </div>
                             </CardContent>
                             <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
                                 <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Connect Store"}
+                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : t('account.store.connect_btn')}
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -323,13 +327,13 @@ export default function AccountPage() {
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
                         <div className="flex justify-between items-center">
                             <div>
-                                <h1 className="text-2xl font-bold text-foreground mb-1">Plans & Billing</h1>
-                                <p className="text-muted-foreground text-sm">Manage your subscription and credits.</p>
+                                <h1 className="text-2xl font-bold text-foreground mb-1">{t('account.billing.title')}</h1>
+                                <p className="text-muted-foreground text-sm">{t('account.billing.subtitle')}</p>
                             </div>
                             {plan !== 'starter' && (
                                 <Button onClick={handlePortal} disabled={loadingPortal} variant="outline" className="border-border text-muted-foreground hover:text-foreground">
                                     {loadingPortal ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ExternalLink className="w-4 h-4 mr-2" />}
-                                    Manage Subscription
+                                    {t('account.billing.manage_btn')}
                                 </Button>
                             )}
                         </div>
@@ -339,26 +343,29 @@ export default function AccountPage() {
                                 title="Starter" price="$0"
                                 features={["3 Products/mo", "Basic Support", "Standard AI Model"]}
                                 current={plan === 'starter'}
+                                t={t}
                             />
 
                             <PricingCard
                                 title="Pro" price="$29"
                                 features={["50 Products/mo", "Priority Queue", "Advanced Brand Voice", "HD Image Processing"]}
                                 current={plan === 'pro'} recommended
-                                actionLabel="Upgrade to Pro"
+                                actionLabel={t('account.billing.upgrade_pro')}
                                 priceId={process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO}
                                 onCheckout={handleCheckout}
                                 loading={loadingCheckout}
+                                t={t}
                             />
 
                             <PricingCard
                                 title="Business" price="$99"
                                 features={["500 Products/mo", "Bulk Export (CSV)", "API Access", "Dedicated Support"]}
                                 current={plan === 'business'}
-                                actionLabel="Upgrade to Business"
+                                actionLabel={t('account.billing.upgrade_business')}
                                 priceId={process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS}
                                 onCheckout={handleCheckout}
                                 loading={loadingCheckout}
+                                t={t}
                             />
                         </div>
                     </div>
@@ -368,8 +375,8 @@ export default function AccountPage() {
                 {activeTab === "profile" && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                            <h1 className="text-2xl font-bold text-foreground mb-1">My Profile</h1>
-                            <p className="text-muted-foreground text-sm">Personal account details.</p>
+                            <h1 className="text-2xl font-bold text-foreground mb-1">{t('account.profile.title')}</h1>
+                            <p className="text-muted-foreground text-sm">{t('account.profile.subtitle')}</p>
                         </div>
 
                         <Card className="bg-card border-border">
@@ -396,14 +403,14 @@ export default function AccountPage() {
                                     <Dialog>
                                         <DialogTrigger asChild>
                                             <Button variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/5 hover:text-destructive hover:border-destructive/60 transition-all font-medium">
-                                                <LogOut className="w-4 h-4 mr-2" /> Log Out
+                                                <LogOut className="w-4 h-4 mr-2" /> {t('account.profile.logout_btn')}
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent className="sm:max-w-[425px]">
                                             <DialogHeader>
-                                                <DialogTitle>Sign out of your account?</DialogTitle>
+                                                <DialogTitle>{t('account.profile.logout_confirm_title')}</DialogTitle>
                                                 <DialogDescription>
-                                                    You will need to sign back in to access your dashboard and projects.
+                                                    {t('account.profile.logout_confirm_desc')}
                                                 </DialogDescription>
                                             </DialogHeader>
                                             <DialogFooter className="gap-2 sm:gap-0">
@@ -422,8 +429,10 @@ export default function AccountPage() {
 
                                 <div className="space-y-4">
                                     <div>
-                                        <h3 className="text-lg font-medium text-foreground mb-1">Interface Theme</h3>
-                                        <p className="text-muted-foreground text-sm">Personalize how Katalog AI looks on your screen.</p>
+                                        <h3 className="text-lg font-medium text-foreground mb-1">{t('account.profile.theme_title')}</h3>
+                                        <p className="text-muted-foreground text-sm text-balance">
+                                            <Trans i18nKey="account.profile.theme_desc" />
+                                        </p>
                                     </div>
 
                                     {mounted && (
@@ -472,7 +481,7 @@ export default function AccountPage() {
 }
 
 
-function PricingCard({ title, price, features, current, recommended, actionLabel, priceId, onCheckout, loading }: any) {
+function PricingCard({ title, price, features, current, recommended, actionLabel, priceId, onCheckout, loading, t }: any) {
     return (
         <Card className={cn(
             "flex flex-col relative transition-all duration-200",
@@ -505,7 +514,7 @@ function PricingCard({ title, price, features, current, recommended, actionLabel
                     disabled={current || loading || !priceId}
                     onClick={() => priceId && onCheckout(priceId)}
                 >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (current ? "Current Plan" : actionLabel || "Free Plan")}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (current ? t('account.billing.current_plan') : actionLabel || t('account.billing.free_plan'))}
                 </Button>
             </CardFooter>
         </Card>

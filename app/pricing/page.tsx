@@ -2,57 +2,61 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Check, ArrowRight, Minus, HelpCircle } from "lucide-react";
+import { ArrowRight, Check, HelpCircle, Minus } from "lucide-react";
+import { Brand } from "@/components/ui/brand";
+import { Navbar } from "@/components/landing/Navbar";
+import { useI18n } from "@/lib/i18n-context";
 
 const PricingPage = () => {
+  const { t, Trans } = useI18n();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("annually");
 
   const plans = [
     {
-      name: "Starter",
-      description: "Perfecto para tiendas nuevas que quieren validar el poder de la IA.",
+      name: t('pricing.plans.starter.name'),
+      description: t('pricing.plans.starter.description'),
       price: billingCycle === "annually" ? 15 : 19,
       credits: 100,
       badge: null,
-      cta: "Empezar Starter",
+      cta: t('pricing.plans.starter.cta'),
       features: [
-        "100 Créditos de Optimización IA / mes",
-        "Auditoría de Salud SEO ilimitada",
-        "Motor de IA Estándar (Gemini Flash)",
-        "Soporte por email",
+        `100 ${t('pricing.features.credits')}`,
+        t('pricing.features.audit'),
+        t('pricing.features.motor_std'),
+        t('pricing.features.support_email'),
       ],
       popular: false,
     },
     {
-      name: "Pro",
-      description: "La experiencia completa de Katalog AI con autonomía total.",
+      name: t('pricing.plans.pro.name'),
+      description: t('pricing.plans.pro.description'),
       price: billingCycle === "annually" ? 39 : 49,
       credits: 500,
-      badge: "Recomendado",
-      cta: "Mejorar a Pro",
+      badge: t('pricing.plans.pro.badge'),
+      cta: t('pricing.plans.pro.cta'),
       features: [
-        "500 Créditos de Optimización IA / mes",
-        "Piloto Automático (Fondo)",
-        "Brand Brain (2 Perfiles: 1 por tienda)",
-        "Sincronización Automática (Cada 1 hora)",
-        "Publicación Directa vía API",
+        `500 ${t('pricing.features.credits')}`,
+        t('pricing.features.autopilot'),
+        t('pricing.features.brand_brain'),
+        t('pricing.features.sync_auto_1h'),
+        t('pricing.features.publish_api'),
       ],
       popular: true,
     },
     {
-      name: "Negocios",
-      description: "Todo el poder de Katalog con monitoreo estratégico y máxima escala.",
+      name: t('pricing.plans.business.name'),
+      description: t('pricing.plans.business.description'),
       price: billingCycle === "annually" ? 119 : 149,
       credits: 2000,
-      badge: "Scale",
-      cta: "Escalar un negocio",
+      badge: t('pricing.plans.business.badge'),
+      cta: t('pricing.plans.business.cta'),
       features: [
-        "2,000 Créditos de Optimización IA / mes",
-        "Analíticas Avanzadas (En desarrollo)",
-        "Notificaciones de Inteligencia",
-        "Soporte VIP Directo",
-        "Prioridad Máxima en servidores",
-        "Motor IA Premium (Gemini 3.0 Pro + RAG)",
+        `2,000 ${t('pricing.features.credits')}`,
+        t('pricing.features.analytics_adv'),
+        t('pricing.features.intel_notif'),
+        t('pricing.features.support_vip'),
+        t('pricing.features.priority'),
+        t('pricing.features.motor_vip'),
       ],
       popular: false,
     },
@@ -61,43 +65,45 @@ const PricingPage = () => {
   const comparisonData = {
     categories: [
       {
-        name: "Límites de IA",
+        name: t('pricing.comparison_table.categories.limits'),
         features: [
-          { name: "Auditoría de Tienda", values: ["Ilimitada", "Ilimitada", "Ilimitada"] },
-          { name: "Créditos de Optimización", values: ["100 / mes", "500 / mes", "2,000 / mes"] },
-          { name: "Costo crédito extra", values: ["$0.20", "$0.10", "$0.05"] },
+          { name: t('pricing.comparison_table.features.audit'), values: [t('pricing.comparison.unlimited'), t('pricing.comparison.unlimited'), t('pricing.comparison.unlimited')] },
+          { name: t('pricing.comparison_table.features.credits'), values: [`100 / ${t('pricing.billing.monthly').toLowerCase()}`, `500 / ${t('pricing.billing.monthly').toLowerCase()}`, `2,000 / ${t('pricing.billing.monthly').toLowerCase()}`] },
+          { name: t('pricing.comparison_table.features.extra_cost'), values: ["$0.20", "$0.10", "$0.05"] },
         ],
       },
       {
-        name: "I. CEREBRO (Potencia)",
+        name: t('pricing.comparison_table.categories.intelligence'),
         features: [
-          { name: "Motor Cognitivo", values: ["Estándar (Flash)", "Avanzado (Pro)", "Ultra (Pro + Memoria)"] },
-          { name: "Brand Brains", values: ["1 Perfil", "2 Perfiles", "Ilimitados"] },
-          { name: "Protección anti-alucinaciones", values: [true, true, true] },
+          { name: t('pricing.comparison_table.features.motor'), values: [t('pricing.comparison_table.values.std'), t('pricing.comparison_table.values.pro'), t('pricing.comparison_table.values.ultra')] },
+          { name: t('pricing.comparison_table.features.brains'), values: [`1 ${t('pricing.features.brand_brain')}`, `2 ${t('pricing.features.brand_brain')}s`, t('pricing.comparison_table.values.stores_all')] },
+          { name: t('pricing.comparison_table.features.hallucination'), values: [true, true, true] },
         ],
       },
       {
-        name: "II. FLUJO (Autonomía)",
+        name: t('pricing.comparison_table.categories.workflow'),
         features: [
-          { name: "Nivel de Autonomía", values: ["Manual", "Piloto Automático", "Piloto Automático + Metrics"] },
-          { name: "Publicación de Fichas", values: ["1-Clic (Manual)", "1-Clic (API Directa)", "Fondo (Sin Intervención)"] },
-          { name: "Sincronización", values: ["Manual", "Automática (1h)", "Tiempo Real"] },
-          { name: "Conexión con Tiendas", values: ["1 Tienda", "2 Tiendas", "Todas las disponibles"] },
+          { name: t('pricing.comparison_table.features.autonomy'), values: [t('pricing.comparison.manual'), t('autopilot.label'), t('autopilot.label') + t('pricing.comparison_table.values.metrics')] },
+          { name: t('pricing.comparison_table.features.publishing'), values: [t('pricing.comparison_table.values.manual'), t('pricing.comparison_table.values.api'), t('pricing.comparison_table.values.background')] },
+          { name: t('pricing.comparison_table.features.sync'), values: [t('pricing.comparison.manual'), t('pricing.features.sync_auto_1h'), t('pricing.features.sync_realtime')] },
+          { name: t('pricing.comparison_table.features.stores'), values: ["1 Store", "2 Stores", t('pricing.comparison_table.values.stores_all')] },
         ],
       },
       {
-        name: "III. SOPORTE Y PRIORIDAD",
+        name: t('pricing.comparison_table.categories.support'),
         features: [
-          { name: "Prioridad de Cola", values: ["Estándar", "Alta", "Máxima Prioridad"] },
-          { name: "Soporte", values: ["Email Base", "Email Prioritario", "Soporte VIP"] },
-          { name: "Analíticas", values: ["En desarrollo", "En desarrollo", "En desarrollo"] },
+          { name: t('pricing.comparison_table.features.priority'), values: [t('pricing.comparison.priority_std'), t('pricing.comparison.priority_high'), t('pricing.comparison.priority_max')] },
+          { name: t('pricing.comparison_table.features.support_level'), values: [t('pricing.features.support_email'), t('pricing.comparison_table.values.priority_vip'), t('pricing.features.support_vip')] },
+          { name: t('pricing.comparison_table.features.analytics'), values: [t('pricing.comparison.under_dev'), t('pricing.comparison.under_dev'), t('pricing.comparison.under_dev')] },
         ],
       },
     ],
   };
 
   return (
-    <main className="min-h-screen bg-[#09090b] text-white pt-32 pb-20 px-4 Selection:bg-primary/30">
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="min-h-screen bg-[#09090b] text-white pt-32 pb-20 px-4 Selection:bg-primary/30">
       {/* Background Glow */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/30 blur-[120px] rounded-full"></div>
@@ -108,11 +114,10 @@ const PricingPage = () => {
         {/* Header Section */}
         <div className="text-center mb-16 space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
-            Planes Adaptados a tu <span className="text-primary italic">Escala</span>
+            <Trans i18nKey="pricing.title" />
           </h1>
           <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
-            Impulsa tu tienda con inteligencia artificial autónoma de última generación.
-            Optimiza ventas, catálogo y soporte sin intervención humana.
+            {t('pricing.description')}
           </p>
 
           {/* Toggle Billing */}
@@ -121,7 +126,7 @@ const PricingPage = () => {
               onClick={() => setBillingCycle("monthly")}
               className={`text-sm font-medium transition-colors ${billingCycle === "monthly" ? "text-white" : "text-zinc-500"}`}
             >
-              Mensual
+              {t('pricing.billing.monthly')}
             </button>
             <div
               className="w-14 h-7 bg-zinc-800 rounded-full p-1 cursor-pointer flex items-center relative"
@@ -136,10 +141,10 @@ const PricingPage = () => {
                 onClick={() => setBillingCycle("annually")}
                 className={`text-sm font-medium transition-colors ${billingCycle === "annually" ? "text-white" : "text-zinc-500"}`}
               >
-                Anual
+                {t('pricing.billing.annually')}
               </button>
               <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20 animate-pulse">
-                AHORRA 20%
+                {t('pricing.billing.save')}
               </span>
             </div>
           </div>
@@ -170,10 +175,10 @@ const PricingPage = () => {
               <div className="mb-8 items-baseline flex flex-col">
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-black">${plan.price}</span>
-                  <span className="text-zinc-500 text-sm">/mes</span>
+                  <span className="text-zinc-500 text-sm">/{t('pricing.billing.monthly').toLowerCase()}</span>
                 </div>
                 {billingCycle === "annually" && (
-                  <span className="text-xs text-primary/80 mt-1">Cobrado anualmente</span>
+                  <span className="text-xs text-primary/80 mt-1">{t('pricing.billing.billed_annually')}</span>
                 )}
               </div>
 
@@ -205,15 +210,15 @@ const PricingPage = () => {
         {/* Detailed Comparison Table */}
         <div className="mt-32">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Comparativa de Funciones</h2>
-            <p className="text-zinc-500">Detalles técnicos para cada nivel de suscripción.</p>
+            <h2 className="text-3xl font-bold mb-4">{t('pricing.comparison.title')}</h2>
+            <p className="text-zinc-500">{t('pricing.comparison.subtitle')}</p>
           </div>
 
           <div className="overflow-x-auto rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-white/5">
-                  <th className="p-8 text-sm font-bold text-zinc-500 uppercase tracking-widest">Funcionalidad</th>
+                  <th className="p-8 text-sm font-bold text-zinc-500 uppercase tracking-widest">{t('pricing.comparison.functionality')}</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">Starter</th>
                   <th className="p-8 text-primary font-bold text-center">Pro</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">Negocios</th>
@@ -266,33 +271,30 @@ const PricingPage = () => {
 
         {/* FAQ CTA */}
         <div className="mt-32 p-12 rounded-[3rem] bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 text-center space-y-6">
-          <h2 className="text-3xl font-bold">¿Tienes dudas sobre los créditos?</h2>
+          <h2 className="text-3xl font-bold">{t('pricing.faq_cta.title')}</h2>
           <p className="text-zinc-400 max-w-xl mx-auto">
-            1 crédito equivale a una optimización completa de un producto por la IA.
-            Si necesitas más de 2,000 al mes, pregunta por nuestro plan Custom.
+            {t('pricing.faq_cta.description')}
           </p>
           <div className="pt-4 flex flex-wrap justify-center gap-4">
             <Link
               href="/faq"
               className="px-8 py-3 bg-white text-black font-bold rounded-xl hover:bg-primary transition-colors"
             >
-              Ir al FAQ
+              {t('pricing.faq_cta.faq_btn')}
             </Link>
             <Link
               href="/contact"
               className="px-8 py-3 bg-transparent border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-colors"
             >
-              Contactar Soporte
+              {t('pricing.faq_cta.support_btn')}
             </Link>
           </div>
         </div>
 
         {/* Footer info */}
-        <div className="mt-20 text-center text-zinc-600 text-xs">
-          <p>© 2024 Katalog AI. Todos los precios están en USD. Los descuentos anuales se facturan por adelantado.</p>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 };
 

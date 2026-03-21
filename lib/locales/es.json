@@ -1,0 +1,632 @@
+{
+    "account": {
+        "tabs": {
+            "brain": "Cerebro de Marca",
+            "integrations": "Integraciones",
+            "billing": "Planes y Facturación",
+            "profile": "Mi Perfil"
+        },
+        "brain": {
+            "title": "Cerebro de Marca",
+            "subtitle": "Configura cómo la IA habla sobre tus productos.",
+            "voice_title": "Voz y Tono",
+            "voice_desc": "Define la personalidad de tus textos.",
+            "safety_title": "Seguridad y Restricciones",
+            "save_btn": "Guardar Configuración",
+            "tone_placeholder": "ej. Profesional, Ingenioso...",
+            "audience_placeholder": "ej. Gamers de la Generación Z",
+            "exclude_placeholder": "barato, descuento, baja calidad...",
+            "tone_label": "Tono",
+            "lang_label": "Idioma",
+            "audience_label": "Público Objetivo",
+            "exclude_label": "Palabras Prohibidas (CSV)"
+        },
+        "store": {
+            "title": "Integraciones",
+            "subtitle": "Conecta tu tienda para habilitar la sincronización automática.",
+            "shopify_desc": "Sincroniza productos y publica descripciones.",
+            "connect_btn": "Conectar Tienda",
+            "url_label": "URL de la Tienda",
+            "token_label": "Token de Acceso Admin",
+            "url_placeholder": "mi-tienda.myshopify.com",
+            "token_placeholder": "shpat_..."
+        },
+        "billing": {
+            "title": "Planes y Facturación",
+            "subtitle": "Gestiona tu suscripción y créditos.",
+            "manage_btn": "Gestionar Suscripción",
+            "upgrade_pro": "Mejorar a Pro",
+            "upgrade_business": "Mejorar a Business",
+            "current_plan": "Plan Actual",
+            "free_plan": "Plan Gratuito",
+            "recommended": "Recomendado",
+            "current": "Plan Actual",
+            "free": "Plan Gratuito"
+        },
+        "alerts": {
+            "brain_updated": "Cerebro de Marca Actualizado",
+            "shopify_connected": "¡Shopify Conectado!",
+            "payment_error": "Error en el pago",
+            "connection_error": "Error de conexión",
+            "no_subscription": "No se encontró suscripción activa.",
+            "portal_error": "Error en el portal",
+            "error_prefix": "Error: "
+        },
+        "profile": {
+            "title": "Mi Perfil",
+            "subtitle": "Detalles personales de la cuenta.",
+            "logout_btn": "Cerrar Sesión",
+            "theme_title": "Tema de la Interfaz",
+            "theme_desc": "Personaliza cómo se ve Katalog AI en tu pantalla.",
+            "logout_confirm_title": "¿Cerrar sesión en tu cuenta?",
+            "logout_confirm_desc": "Deberás volver a iniciar sesión para acceder a tu panel y proyectos."
+        }
+    },
+    "dashboard": {
+        "title": "Radar de Oportunidades",
+        "status": {
+            "active": "Motor Neural Activo",
+            "autopilot": "Publicación Automática del Motor Neural"
+        },
+        "actions": {
+            "refresh": "Refrescar Datos",
+            "syncing": "Sincronizando...",
+            "immediate_actions": "Acciones Inmediatas",
+            "assets_impact": "Activos con mayor impacto en ingresos",
+            "search_placeholder": "Filtrar por nombre de producto...",
+            "toasts": {
+                "sync_loading": "Sincronizando con Shopify...",
+                "sync_success": "¡Catálogo actualizado! {{count}} productos importados.",
+                "sync_error": "Error de sincronización",
+                "optimize_loading": "Notificando al Agente IA...",
+                "optimize_success": "¡Optimización en cola! Tu agente la procesará pronto.",
+                "optimize_error": "No se pudo contactar con el agente."
+            }
+        }
+    },
+    "onboarding": {
+        "setup_progress": "Progreso de Configuración",
+        "steps_completed": "Pasos Completados",
+        "steps": {
+            "connect": {
+                "title": "Conectar Tienda",
+                "desc": "Shopify integrada"
+            },
+            "train": {
+                "title": "Entrenar Cerebro",
+                "desc": "Listo para la IA"
+            },
+            "autopilot": {
+                "title": "Modo Autónomo",
+                "desc": "Poder total desbloqueado"
+            }
+        }
+    },
+    "autopilot": {
+        "label": "AI Piloto Automático",
+        "toasts": {
+            "activated": "🚀 Piloto Automático Activado",
+            "paused": "⏸️ Piloto Automático Pausado",
+            "error": "Error al comunicarse con el motor neural.",
+            "locks": {
+                "plan": "🔒 El Piloto Automático requiere un plan Pro o Negocios.",
+                "integration": "🔌 Conecta tu tienda en Settings primero.",
+                "brand": "🧠 Entrena tu Voz de Marca antes de automatizar."
+            }
+        },
+        "warnings": {
+            "credits": "⚠️ Tienes {{count}} productos pendientes.\n\nEl Piloto Automático procesará todo en un lote masivo, lo que consumirá tus créditos rápidamente.\n\n¿Deseas proceder?"
+        }
+    },
+    "faq": {
+        "title": "Preguntas",
+        "highlight": "Frecuentes",
+        "subtitle": "Todo lo que necesitas saber sobre la automatización de catálogos impulsada por Inteligencia Artificial.",
+        "search_placeholder": "Buscar una pregunta...",
+        "no_results": "No se encontraron resultados",
+        "no_results_sub": "Intenta con otro término o limpia los filtros.",
+        "clear_filters": "Limpiar filtros",
+        "legal_disclaimer": "Katalog AI utiliza modelos de lenguaje avanzados. Los resultados pueden variar según el catálogo.",
+        "categories": {
+            "all": "Todas",
+            "general": "General",
+            "ia": "Inteligencia Artificial",
+            "integrations": "Integraciones",
+            "plans": "Planes"
+        },
+        "items": [
+            {
+                "category": "General",
+                "question": "¿Qué es Katalog AI?",
+                "answer": "Katalog AI es una plataforma de automatización de catálogos de última generación que utiliza Inteligencia Artificial para optimizar descripciones, imágenes y SEO de tus productos de forma 100% autónoma y profesional."
+            },
+            {
+                "category": "General",
+                "question": "¿Cómo funciona el motor de IA?",
+                "answer": "Nuestro motor analiza cada producto de tu catálogo, detecta oportunidades de mejora y genera automáticamente títulos, descripciones y metadatos optimizados para SEO y conversión."
+            },
+            {
+                "category": "Inteligencia Artificial",
+                "question": "¿Qué modelos de IA usa Katalog AI?",
+                "answer": "Usamos modelos de última generación entrenados específicamente para e-commerce. Dependiendo del plan, se utiliza Gemini Flash o Gemini Pro con RAG, garantizando máxima precisión."
+            },
+            {
+                "category": "Inteligencia Artificial",
+                "question": "¿Katalog AI puede alucinar información falsa sobre productos?",
+                "answer": "No. Katalog AI incluye un sistema de protección anti-alucinación que verifica cada generación contra los datos reales del producto antes de publicar cualquier cambio."
+            },
+            {
+                "category": "Inteligencia Artificial",
+                "question": "¿Qué es el Brand Brain?",
+                "answer": "El Brand Brain es un perfil de marca configurable donde defines el tono, estilo y restricciones del copy generado por la IA. Así el contenido siempre suena como tu marca."
+            },
+            {
+                "category": "Integraciones",
+                "question": "¿Con qué plataformas se integra Katalog AI?",
+                "answer": "Actualmente nos integramos de forma nativa con Shopify. Soporte para WooCommerce, Tienda Nube y Magento está en desarrollo activo."
+            },
+            {
+                "category": "Integraciones",
+                "question": "¿Cuánto tiempo lleva conectar mi tienda?",
+                "answer": "La conexión con tu tienda demora menos de 5 minutos. Solo necesitás tu URL de tienda y un token de acceso de administrador."
+            },
+            {
+                "category": "Integraciones",
+                "question": "¿Katalog AI modifica mis precios o stock?",
+                "answer": "No. Katalog AI solo lee y escribe en los campos de título, descripción, metadatos y etiquetas SEO. Nunca toca precios, inventario ni configuración de pago."
+            },
+            {
+                "category": "Planes",
+                "question": "¿Puedo cambiar de plan en cualquier momento?",
+                "answer": "Sí. Podés mejorar o bajar de plan en cualquier momento desde tu panel de cuenta. Los cambios se aplican al inicio del siguiente ciclo de facturación."
+            },
+            {
+                "category": "Planes",
+                "question": "¿Qué pasa si me quedo sin créditos?",
+                "answer": "Si agotás tus créditos del mes, el Piloto Automático se pausa. Podés comprar créditos adicionales o esperar al próximo ciclo. Nunca se generan cargos inesperados."
+            },
+            {
+                "category": "Planes",
+                "question": "¿Hay un período de prueba gratuito?",
+                "answer": "Sí. Todos los planes incluyen 14 días de prueba gratuita sin necesidad de tarjeta de crédito. Podés cancelar en cualquier momento."
+            }
+        ],
+        "suggestions": {
+            "label": "¿Tenés más preguntas?",
+            "title_pre": "Hablemos",
+            "title_highlight": " directamente",
+            "title_post": " con nuestro equipo.",
+            "desc": "Si tu pregunta no está aquí, nuestro equipo de soporte te responde en menos de 24 horas.",
+            "btn_send": "Enviar mensaje",
+            "btn_support": "Ver planes de soporte",
+            "footer_wa": "WhatsApp disponible",
+            "footer_email": "soporte@katalog.ai"
+        }
+    },
+    "pricing": {
+        "title": "Precios Simples y Transparentes",
+        "description": "Empieza gratis. Escala cuando estés listo. Sin cargos ocultos.",
+        "billing": {
+            "monthly": "Mensual",
+            "annually": "Anual",
+            "save": "Ahorra 20%",
+            "billed_annually": "Facturado anualmente"
+        },
+        "plans": {
+            "starter": {
+                "name": "Starter",
+                "description": "Perfecto para descubrir el poder de la IA en tu catálogo.",
+                "cta": "Empezar Gratis"
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Para tiendas que necesitan automatización completa y publicación inteligente.",
+                "badge": "Más Popular",
+                "cta": "Ir a Pro"
+            },
+            "business": {
+                "name": "Business",
+                "description": "Máximo rendimiento para catálogos grandes y operaciones multi-tienda.",
+                "badge": "Empresarial",
+                "cta": "Contactar Ventas"
+            }
+        },
+        "features": {
+            "credits": "créditos/mes",
+            "audit": "Auditoría completa del catálogo",
+            "motor_std": "Motor IA Estándar",
+            "motor_vip": "Motor Neural VIP",
+            "support_email": "Soporte por email",
+            "support_vip": "Soporte prioritario VIP",
+            "autopilot": "Piloto automático autónomo",
+            "brand_brain": "Brand Brain",
+            "sync_auto_1h": "Auto-sincronización cada hora",
+            "sync_realtime": "Sincronización en tiempo real",
+            "publish_api": "Publicación por API",
+            "analytics_adv": "Analíticas avanzadas",
+            "intel_notif": "Alertas inteligentes",
+            "priority": "Máxima prioridad de procesamiento"
+        },
+        "comparison": {
+            "title": "Comparación Completa de Planes",
+            "subtitle": "Todas las funcionalidades lado a lado, sin letra pequeña.",
+            "functionality": "Funcionalidad",
+            "unlimited": "Ilimitado",
+            "manual": "Manual",
+            "priority_std": "Estándar",
+            "priority_high": "Alta",
+            "priority_max": "Máxima",
+            "under_dev": "Próximamente"
+        },
+        "comparison_table": {
+            "categories": {
+                "limits": "Límites y Créditos",
+                "intelligence": "Inteligencia IA",
+                "workflow": "Flujo de Trabajo y Automatización",
+                "support": "Soporte"
+            },
+            "features": {
+                "audit": "Auditoría del catálogo",
+                "credits": "Créditos",
+                "extra_cost": "Costo por crédito extra",
+                "motor": "Motor IA",
+                "brains": "Brand Brains",
+                "hallucination": "Protección anti-alucinación",
+                "autonomy": "Nivel de automatización",
+                "publishing": "Método de publicación",
+                "sync": "Sincronización",
+                "stores": "Tiendas conectadas",
+                "priority": "Prioridad en cola",
+                "support_level": "Soporte",
+                "analytics": "Panel de analíticas"
+            },
+            "values": {
+                "std": "Estándar",
+                "pro": "Pro",
+                "ultra": "Ultra",
+                "stores_all": "Tiendas ilimitadas",
+                "manual": "Solo manual",
+                "api": "API + Manual",
+                "background": "API en segundo plano",
+                "priority_vip": "Chat + Email",
+                "metrics": " + Métricas"
+            }
+        },
+        "faq_cta": {
+            "title": "¿Todavía tenés preguntas?",
+            "description": "Nuestro equipo está aquí para ayudarte a encontrar el plan correcto para tu tienda.",
+            "faq_btn": "Ver FAQ",
+            "support_btn": "Contactar Soporte"
+        },
+        "footer": "Todos los planes incluyen 14 días de prueba gratis. Cancelá en cualquier momento."
+    },
+    "integrations": {
+        "hero": {
+            "badge": "Motor Neural de Conexión",
+            "title_pre": "Conecta",
+            "title_post": "con tu Ecosistema",
+            "subtitle": "Sincroniza tu tienda en segundos. Nuestra IA se conecta directamente con tu inventario para una optimización autónoma y en tiempo real.",
+            "cta_free": "Prueba Gratis",
+            "cta_connect": "Configurar Integración"
+        },
+        "steps": {
+            "title": "Conexión en Tres Pasos",
+            "subtitle": "Sincroniza y automatiza en minutos, sin código.",
+            "step1": {
+                "title": "1. Conecta tu Tienda",
+                "desc": "Ingresa la URL de tu tienda y el token de acceso para una sincronización en tiempo real segura."
+            },
+            "step2": {
+                "title": "2. Selecciona Permisos",
+                "desc": "Katalog AI solo pide los permisos necesarios de lectura y escritura de productos."
+            },
+            "step3": {
+                "title": "3. Automatiza Todo",
+                "desc": "El motor IA comenzará a escanear tu catálogo y sincronizará las mejoras al instante."
+            }
+        },
+        "platforms": {
+            "title": "Ecosistemas",
+            "highlight": "Soportados",
+            "native": "Nativo",
+            "connected": "Conexión Lista",
+            "coming_soon": "Próximamente",
+            "shopify_desc": "Sincronización bidireccional en tiempo real."
+        },
+        "benefits": {
+            "title": "Ventajas de Integración",
+            "sync": {
+                "title": "Sincronización Inteligente",
+                "desc": "Los cambios se publican al instante sin afectar el stock o precios."
+            },
+            "security": {
+                "title": "Máxima Seguridad",
+                "desc": "Tokens encriptados y permisos de acceso granularizados."
+            },
+            "mapping": {
+                "title": "Mapeo de Metadatos",
+                "desc": "La IA inyecta etiquetas SEO y campos adaptados a cualquier tema."
+            }
+        },
+             "pricing": "Precios",
+             "faq": "FAQ",
+             "dashboard": "Dashboard"
+         }
+     },
+    "features": {
+        "hero": {
+            "badge": "Motor Neural de Análisis",
+            "title_pre": "Auditoría en",
+            "title_post": "Tiempo Real",
+            "subtitle": "Descubre exactamente dónde estás perdiendo dinero por listados deficientes. Nuestra IA analiza cada aspecto de tu catálogo en segundos.",
+            "cta": "Escanear Catálogo Gratis"
+        },
+        "dashboard_widgets": {
+            "title": "Radar de Salud del Ecosistema",
+            "subtitle": "Identifica, cuantifica y prioriza los elementos de mayor impacto.",
+            "revenue": {
+                "label": "Ingresos Anuales en Riesgo",
+                "footer": "Basado en tráfico y tasa de conversión"
+            },
+            "health": {
+                "label": "Índice de Salud Global"
+            },
+            "queue": {
+                "title": "Cola de Procesamiento",
+                "optimized": "Activos Optimizados",
+                "in_progress": "En Progreso",
+                "critical": "Alertas Críticas"
+            }
+        },
+        "autonomous": {
+            "badge": "Autopilot System",
+            "title": "Corrección Silenciosa",
+            "desc": "El Agente IA de Katalog no solo identifica problemas, sino que reescribe descripciones bloqueadas, optimiza títulos e inyecta metadatos sin que tengas que intervenir.",
+            "list": [
+                "Auditoría en tiempo real de todo el catálogo",
+                "Detección proactiva de fuga de ingresos",
+                "Optimización predictiva de metadatos SEO",
+                "Sincronización silenciosa sin bloqueos"
+            ],
+            "terminal": {
+                "analyzing": "Analizando listings...",
+                "low_conv": "Detectada baja conversión en ID 4082",
+                "executing": "Ejecutando reescritura de título SEO...",
+                "new_title": "Generando alternativa enfocada en beneficios",
+                "success": "Actualización sincronizada en Shopify"
+            }
+        },
+        "cta_final": {
+            "title": "¿Listo para llevar tu catálogo al siguiente nivel?",
+            "btn": "Comenzar Prueba Gratuita"
+        }
+    },
+    "landing": {
+        "stats": {
+            "processed": "Activos Procesados",
+            "lift": "Aumento de Ingresos Prom.",
+            "stores": "Tiendas Optimizadas"
+        },
+        "hero": {
+            "badge": "Motor Neural v2.0 Activo",
+            "title": "Tu catálogo de Shopify,\noptimizado por IA.",
+            "subtitle": "Katalog AI audita tu tienda, corrige listings de baja calidad y desbloquea ingresos ocultos mediante procesamiento neuronal avanzado. Deja de adivinar y empieza a escalar.",
+            "cta": "Conectar Tienda"
+        },
+        "mockup": {
+            "sidebar": {
+                "main": "Principal",
+                "dashboard": "Dashboard",
+                "inventory": "Inventario",
+                "brain": "Cerebro de Marca",
+                "analysis": "Análisis",
+                "audits": "Auditorías",
+                "settings": "Ajustes",
+                "user_plan": "Plan Pro"
+            },
+            "header": {
+                "title": "Radar de Oportunidades",
+                "subtitle": "Información de optimización en tiempo real",
+                "stats_label": "ESTADÍSTICAS DE CONSULTA",
+                "engine_status": "Motor Neural Activo"
+            },
+            "kpis": {
+                "revenue": {
+                    "label": "Ingresos en Riesgo",
+                    "footer": "Atención crítica necesaria"
+                },
+                "health": {
+                    "label": "Salud del Catálogo",
+                    "footer": "+4% desde el último escaneo"
+                },
+                "queue": {
+                    "label": "Cola de Optimización",
+                    "footer": "Activos procesándose"
+                }
+            },
+            "table": {
+                "title": "Problemas de Alta Prioridad",
+                "view_all": "Ver Todo",
+                "columns": {
+                    "product": "Producto",
+                    "status": "Estado",
+                    "quality": "Calidad",
+                    "loss": "Pérdida Estimada",
+                    "action": "Acción"
+                },
+                "actions": {
+                    "fix": "Corregir Ahora",
+                    "review": "Revisar",
+                    "optimize": "Optimizar"
+                }
+            }
+        },
+        "how_it_works": {
+            "title": "Cómo Funciona",
+            "subtitle": "Del caos a la claridad en tres pasos automatizados.",
+            "step1": {
+                "title": "Auditoría",
+                "desc": "La IA escanea todo tu catálogo en busca de datos faltantes y errores de conversión."
+            },
+            "step2": {
+                "title": "Optimización",
+                "desc": "Redes neuronales regeneran títulos, corrigen imágenes y priorizan por impacto en ventas."
+            },
+            "step3": {
+                "title": "Sincronización",
+                "desc": "Las actualizaciones se envían a Shopify al instante sin tiempo de inactividad."
+            }
+        },
+        "features_bento": {
+            "title": "Capacidades Principales",
+            "subtitle": "Libera el potencial oculto de tu catálogo con nuestro motor de procesamiento avanzado.",
+            "item1": {
+                "title": "Control de Salud del Inventario",
+                "desc": "Un escaneo profundo que identifica instantáneamente qué productos de tu tienda Shopify necesitan atención. Priorizamos tus activos basándonos en el impacto SEO y la completitud de los datos.",
+                "footer_risk": "Productos en Riesgo"
+            },
+            "item2": {
+                "title": "Escritura de Contenido IA",
+                "desc": "Genera títulos SEO y descripciones optimizadas para conversión. Nuestra IA analiza tus datos de Shopify para crear textos que rankean y venden.",
+                "current_listing": "Listing Actual",
+                "ai_opt": "Optimización IA"
+            },
+            "item3": {
+                "title": "Radar de Ingresos en Riesgo",
+                "desc": "No optimices a ciegas. Nuestra IA calcula el valor monetario de cada mejora, permitiéndote priorizar los cambios que realmente mueven la aguja de tus ingresos mensuales.",
+                "loss_label": "Pérdida Mensual Estimada",
+                "badge": "ALTO RIESGO",
+                "footer": "activos críticos sin optimizar"
+            },
+            "item4": {
+                "title": "Métrica de Salud Global",
+                "desc": "Analizamos la integridad de tus metadatos, calidad de etiquetas y consistencia visual para generar un diagnóstico accionable en tiempo real.",
+                "metric_label": "Optimización de Catálogo",
+                "metric_value": "Excelente"
+            },
+            "item5": {
+                "title": "Sincronización Total",
+                "desc": "Integración perfecta con Shopify. Cambios en vivo en segundos con un solo clic."
+            }
+        },
+        "pricing": {
+            "title": "Planes de Precios Claros",
+            "subtitle": "Elige el plan que mejor se adapte al tamaño de tu catálogo.",
+            "plans": {
+                "starter": {
+                    "name": "Starter",
+                    "desc": "Ideal para tiendas pequeñas que comienzan a optimizar.",
+                    "cta": "Comenzar",
+                    "features": {
+                        "item1": "Hasta 1,000 productos",
+                        "item2": "Auditoría Visual básica",
+                        "item3": "Sincronización semanal"
+                    }
+                },
+                "pro": {
+                    "badge": "Más Popular",
+                    "name": "Pro",
+                    "desc": "Para marcas en crecimiento que buscan automatización total.",
+                    "cta": "Prueba Gratuita",
+                    "features": {
+                        "item1": "Hasta 10,000 productos",
+                        "item2": "Escritura IA Ilimitada",
+                        "item3": "Revenue at Risk Dashboard",
+                        "item4": "Auto-sync diario"
+                    }
+                },
+                "enterprise": {
+                    "name": "Enterprise",
+                    "desc": "Soluciones personalizadas para volúmenes masivos.",
+                    "cta": "Contactar Ventas",
+                    "features": {
+                        "item1": "Productos ilimitados",
+                        "item2": "Modelos de IA personalizados",
+                        "item3": "Manager de éxito dedicado",
+                        "item4": "Acceso vía API"
+                    }
+                }
+            }
+        },
+        "faq": {
+            "title": "Inteligencia, simplificada.",
+            "q1": {
+                "question": "¿Modifica Katalog AI mi tienda en vivo directamente?",
+                "answer": "No inmediatamente. Katalog AI crea una versión provisional de tus cambios. Puedes revisar todas las optimizaciones propuestas en nuestro panel antes de sincronizarlas con tu tienda Shopify en un clic."
+            },
+            "q2": {
+                "question": "¿Cómo sabe la IA la voz de mi marca?",
+                "answer": "Durante la incorporación, puedes cargar guías de estilo. Nuestro motor analiza estos datos para ajustar el tono, la estructura y el vocabulario en el contenido generado automáticamente."
+            },
+            "q3": {
+                "question": "¿Es compatible con todos los temas de Shopify?",
+                "answer": "Sí, Katalog AI trabaja a nivel de datos de producto, no del tema. Los cambios en títulos, descripciones y etiquetas se reflejan perfectamente independientemente de la plantilla visual que utilices."
+            },
+            "q4": {
+                "question": "¿Cuánto tiempo se tarda en optimizar mi catálogo?",
+                "answer": "El escaneo inicial toma solo unos minutos para tiendas de hasta 10,000 productos. Las optimizaciones de IA se generan en lotes y suelen estar listas en menos de una hora."
+            }
+        },
+        "final_cta": {
+            "title": "¿Listo para reparar tu catálogo?",
+            "subtitle": "Únete a cientos de comerciantes de Shopify que ya optimizan sus ingresos con honestidad y precisión.",
+            "cta": "Prueba Gratuita"
+        }
+    },
+    "nav": {
+        "features": "Funcionalidades",
+        "how_it_works": "Integraciones",
+        "pricing": "Precios",
+        "faq": "FAQ",
+        "dashboard": "Panel de Control",
+        "inventory": "Inventario",
+        "brain": "Cerebro de Marca",
+        "integrations": "Integraciones",
+        "billing": "Facturación",
+        "settings": "Configuración",
+        "appearance": "Apariencia",
+        "open_menu": "Abrir menú"
+    },
+    "footer": {
+        "privacy": "Privacidad",
+        "terms": "Términos",
+        "support": "Soporte",
+        "copyright": "© 2024 Katalog AI. Todos los derechos reservados."
+    },
+    "common": {
+        "connect_store": "Conectar Tienda",
+        "privacy": "Política de Privacidad",
+        "terms": "Términos de Servicio",
+        "contact": "Contactar Soporte",
+        "saas_desc": "SaaS de Optimización",
+        "placeholders": {
+            "search": "Buscar productos...",
+            "filter": "Filtrar por estado"
+        },
+        "aria": {
+            "dismiss": "Descartar bienvenida",
+            "toggle_autopilot": "Alternar Auto-Piloto"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Bienvenido de nuevo",
+            "subtitle": "Ingresa tus credenciales para acceder.",
+            "google": "Iniciar sesión con Google",
+            "email_placeholder": "O continúa con el correo",
+            "email_label": "Correo de trabajo",
+            "password_label": "Contraseña",
+            "btn": "Iniciar Sesión",
+            "no_account": "¿No tienes una cuenta?",
+            "switch": "Regístrate"
+        },
+        "signup": {
+            "title": "Crear Cuenta",
+            "subtitle": "Comienza a automatizar hoy.",
+            "google": "Regístrate con Google",
+            "btn": "Registrarse",
+            "has_account": "¿Ya tienes una cuenta?",
+            "switch": "Inicia sesión"
+        }
+    }
+}

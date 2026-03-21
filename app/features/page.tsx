@@ -1,6 +1,13 @@
+"use client";
+
 import Link from 'next/link';
+import { Brand } from '@/components/ui/brand';
+import { useI18n } from '@/lib/i18n-context';
+import { Navbar } from '@/components/landing/Navbar';
 
 export default function FeaturesPage() {
+    const { t } = useI18n();
+
     return (
         <div className="bg-background-dark font-display text-slate-100 min-h-screen selection:bg-primary/30 antialiased">
             <style dangerouslySetInnerHTML={{
@@ -45,32 +52,7 @@ export default function FeaturesPage() {
                 }
             `}} />
 
-            <nav className="sticky top-0 z-50 w-full bg-background-dark/80 backdrop-blur-md border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex-1 flex justify-start">
-                        <div className="flex items-center gap-2.5">
-                            <div className="relative flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-3xl font-light">account_tree</span>
-                                <div className="absolute -top-1 -right-1 size-2 bg-primary rounded-full"></div>
-                            </div>
-                            <span className="font-bold tracking-tight text-xl text-white">Katalog AI</span>
-                        </div>
-                    </div>
-
-                    <div className="hidden md:flex flex-1 justify-center items-center gap-8">
-                        <Link className="text-sm font-medium text-primary" href="/features">Capacidades</Link>
-                        <Link className="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="/integrations">Integraciones</Link>
-                        <Link className="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="/pricing">Precios</Link>
-                        <Link className="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="/faq">FAQ</Link>
-                    </div>
-
-                    <div className="flex-1 flex justify-end items-center gap-4">
-                        <button className="bg-primary hover:bg-[#0da371] text-background-dark font-bold px-6 py-2.5 rounded-lg transition-all shadow-lg shadow-primary/20 text-sm">
-                            Connect Store
-                        </button>
-                    </div>
-                </div>
-            </nav>
+            <Navbar />
 
             <main className="relative">
                 {/* HERO SECTION */}
@@ -80,19 +62,18 @@ export default function FeaturesPage() {
                         <div className="relative z-10 text-center lg:text-left">
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
                                 <span className="size-2 rounded-full bg-primary animate-pulse"></span>
-                                <span className="text-[10px] font-bold tracking-widest uppercase text-primary">IA Generativa Avanzada</span>
+                                <span className="text-[10px] font-bold tracking-widest uppercase text-primary">{t('features.hero.badge')}</span>
                             </div>
-                            <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.1] mb-6">
-                                Agentes de IA: <br />
-                                <span className="text-primary">Aprendizaje Continuo</span>
+                            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 mb-6">
+                                {t('features.hero.title_pre')} <Brand className="text-primary italic" /> <br />{t('features.hero.title_post')}
                             </h1>
                             <p className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
-                                Nuestra IA no solo procesa datos; aprende de cada resultado para optimizar tu catálogo a largo plazo de forma autónoma.
+                                {t('features.hero.subtitle')}
                             </p>
                             <div className="mt-10 flex justify-center lg:justify-start">
-                                <button className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
-                                    Prueba Gratis
-                                </button>
+                                <Link href="/login" className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
+                                    {t('features.hero.cta')}
+                                </Link>
                             </div>
                         </div>
 
@@ -141,28 +122,28 @@ export default function FeaturesPage() {
                 <section className="py-24 bg-white/[0.01] border-y border-white/5">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="text-center mb-16">
-                            <h2 className="text-4xl font-bold text-white mb-4">Panel de Control de Alta Fidelidad</h2>
-                            <p className="text-slate-400 text-lg">Datos que impulsan decisiones estratégicas en milisegundos.</p>
+                            <h2 className="text-4xl font-bold text-white mb-4">{t('features.dashboard_widgets.title')}</h2>
+                            <p className="text-slate-400 text-lg">{t('features.dashboard_widgets.subtitle')}</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                             {/* Widget 1: Revenue at Risk */}
                             <div className="glass-card bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 hover:border-primary/30 transition-all">
                                 <div className="flex justify-between items-start mb-6">
-                                    <span className="text-slate-400 text-sm font-medium">Revenue at Risk</span>
+                                    <span className="text-slate-400 text-sm font-medium">{t('features.dashboard_widgets.revenue.label')}</span>
                                     <span className="material-symbols-outlined text-primary">trending_up</span>
                                 </div>
                                 <div className="text-4xl font-bold text-white mb-2">$42.8k</div>
                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                     <div className="h-full bg-primary w-3/4"></div>
                                 </div>
-                                <p className="text-xs text-slate-500 mt-4 italic">Optimización sugerida para 12 productos</p>
+                                <p className="text-xs text-slate-500 mt-4 italic">{t('features.dashboard_widgets.revenue.footer')}</p>
                             </div>
 
                             {/* Widget 2: Salud del Catálogo */}
                             <div className="glass-card bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 border-primary/20">
                                 <div className="flex justify-between items-start mb-6">
-                                    <span className="text-slate-400 text-sm font-medium">Salud del Catálogo</span>
+                                    <span className="text-slate-400 text-sm font-medium">{t('features.dashboard_widgets.health.label')}</span>
                                     <div className="size-2 rounded-full bg-primary emerald-pulse"></div>
                                 </div>
                                 <div className="text-5xl font-black text-primary mb-2">98.2<span className="text-xl font-normal text-slate-500">%</span></div>
@@ -175,10 +156,10 @@ export default function FeaturesPage() {
                                 </div>
                             </div>
 
-                            {/* Widget 3: Cola de Optimización (Replaced Conversión IA) */}
+                            {/* Widget 3: Cola de Optimización */}
                             <div className="glass-card bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 hover:border-white/20 transition-all flex flex-col justify-between">
                                 <div className="flex items-center justify-between mb-8">
-                                    <h3 className="text-xl font-bold tracking-tight text-slate-100">Cola de Optimización</h3>
+                                    <h3 className="text-xl font-bold tracking-tight text-slate-100">{t('features.dashboard_widgets.queue.title')}</h3>
                                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary">
                                         <span className="material-symbols-outlined text-2xl font-bold">layers</span>
                                     </div>
@@ -189,7 +170,7 @@ export default function FeaturesPage() {
                                             <div className="flex items-center justify-center size-8 rounded-full bg-primary/20 text-primary">
                                                 <span className="material-symbols-outlined text-xl">check_circle</span>
                                             </div>
-                                            <span className="text-primary font-bold text-lg">1,248 Optimizados</span>
+                                            <span className="text-primary font-bold text-lg">1,248 {t('features.dashboard_widgets.queue.optimized')}</span>
                                         </div>
                                         <div className="size-2.5 rounded-full bg-primary animate-pulse"></div>
                                     </div>
@@ -198,7 +179,7 @@ export default function FeaturesPage() {
                                             <div className="flex items-center justify-center size-8 rounded-full bg-blue-500/20 text-blue-500">
                                                 <span className="material-symbols-outlined text-xl">query_stats</span>
                                             </div>
-                                            <span className="text-blue-500 font-bold text-lg">15 En Progreso</span>
+                                            <span className="text-blue-500 font-bold text-lg">15 {t('features.dashboard_widgets.queue.in_progress')}</span>
                                         </div>
                                         <span className="material-symbols-outlined text-blue-500 text-xl animate-spin">sync</span>
                                     </div>
@@ -207,7 +188,7 @@ export default function FeaturesPage() {
                                             <div className="flex items-center justify-center size-8 rounded-full bg-red-500/20 text-red-500">
                                                 <span className="material-symbols-outlined text-xl">error</span>
                                             </div>
-                                            <span className="text-red-500 font-bold text-lg">84 Críticos</span>
+                                            <span className="text-red-500 font-bold text-lg">84 {t('features.dashboard_widgets.queue.critical')}</span>
                                         </div>
                                         <span className="material-symbols-outlined text-red-500 text-xl">warning</span>
                                     </div>
@@ -227,25 +208,29 @@ export default function FeaturesPage() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                                 <div>
                                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10 mb-6">
-                                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">Próximamente / Beta</span>
+                                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">{t('features.autonomous.badge')}</span>
                                     </div>
-                                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Modo Autónomo</h2>
+                                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t('features.autonomous.title')}</h2>
                                     <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                                        El futuro de la gestión de e-commerce. Nuestro agente de IA mejora autónomamente tus productos basándose en datos reales de rendimiento, sin necesidad de aprobaciones manuales tediosas.
+                                        {t('features.autonomous.desc')}
                                     </p>
 
                                     <ul className="space-y-4">
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            Ajustes de SEO dinámicos por hora
+                                            {t('features.autonomous.list.0') || 'Auditoría en tiempo real de todo el catálogo'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            A/B Testing de imágenes automático
+                                            {t('features.autonomous.list.1') || 'Detección proactiva de fuga de ingresos'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            Optimización de precios basada en demanda
+                                            {t('features.autonomous.list.2') || 'Optimización predictiva de metadatos SEO'}
+                                        </li>
+                                        <li className="flex items-center gap-3 text-sm text-slate-300">
+                                            <span className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            {t('features.autonomous.list.3') || 'Sincronización silenciosa sin bloqueos'}
                                         </li>
                                     </ul>
                                 </div>
@@ -259,16 +244,18 @@ export default function FeaturesPage() {
                                             <span className="ml-2 text-slate-500">Agent-Runtime v2.0.1</span>
                                         </div>
                                         <div className="border-t border-white/5 pt-3">
-                                            <p>&gt; Analizando SKU: 8849-TX...</p>
-                                            <p>&gt; Baja conversión detectada (0.8%)</p>
-                                            <p className="text-white">&gt; Ejecutando optimización de título...</p>
-                                            <p>&gt; Nuevo título: "Zapatillas Ultra-Light Pro Max"</p>
-                                            <p className="text-emerald-400">&gt; Cambio aplicado exitosamente.</p>
+                                            <p>&gt; {t('features.autonomous.terminal.analyzing')}</p>
+                                            <p>&gt; {t('features.autonomous.terminal.low_conv')}</p>
+                                            <p className="text-white">&gt; {t('features.autonomous.terminal.executing')}</p>
+                                            <p>&gt; {t('features.autonomous.terminal.new_title')} "{t('features.autonomous.terminal.new_title')}"</p>
+                                            <p className="text-emerald-400">&gt; {t('features.autonomous.terminal.success')}</p>
 
-                                            <div className="mt-4 flex items-center gap-2 bg-primary/10 p-2 rounded border border-primary/20">
-                                                <span className="material-symbols-outlined text-sm">auto_mode</span>
-                                                <span className="font-bold">MODO AUTÓNOMO ACTIVO</span>
-                                            </div>
+                                            <Link href="/" className="group flex items-center gap-2">
+                                                <div className="h-8 w-8 rounded bg-primary/20 text-primary flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                                                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                                                </div>
+                                                <Brand className="text-lg font-bold tracking-tight text-white" />
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -278,10 +265,10 @@ export default function FeaturesPage() {
                 </section>
 
                 <section className="py-24 max-w-7xl mx-auto px-6 text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">¿Listo para evolucionar tu catálogo?</h2>
-                    <button className="bg-primary hover:bg-[#0da371] text-background-dark font-black px-10 py-5 rounded-2xl text-xl shadow-2xl shadow-primary/20 transition-transform hover:-translate-y-1">
-                        Empezar Gratis Ahora
-                    </button>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">{t('features.cta_final.title')}</h2>
+                    <Link href="/login" className="inline-block bg-primary hover:bg-[#0da371] text-background-dark font-black px-10 py-5 rounded-2xl text-xl shadow-2xl shadow-primary/20 transition-transform hover:-translate-y-1">
+                        {t('features.cta_final.btn')}
+                    </Link>
                 </section>
             </main>
 
@@ -289,14 +276,14 @@ export default function FeaturesPage() {
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary text-2xl">account_tree</span>
-                        <span className="font-bold tracking-tight text-lg">Katalog AI</span>
+                        <Brand className="font-bold tracking-tight text-lg text-primary" />
                     </div>
                     <div className="flex gap-8 text-sm text-slate-500 font-medium">
-                        <Link className="hover:text-primary transition-colors" href="#">Privacy Policy</Link>
-                        <Link className="hover:text-primary transition-colors" href="#">Terms of Service</Link>
-                        <Link className="hover:text-primary transition-colors" href="#">Contact Support</Link>
+                        <Link className="hover:text-primary transition-colors" href="#">{t('common.privacy')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="#">{t('common.terms')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="#">{t('common.contact')}</Link>
                     </div>
-                    <p className="text-slate-600 text-sm">© 2024 Katalog AI Optimization SaaS.</p>
+                    <p className="text-slate-600 text-sm">© 2024 <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
                 </div>
             </footer>
         </div>

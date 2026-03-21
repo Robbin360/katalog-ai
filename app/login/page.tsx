@@ -5,7 +5,8 @@ import { login, signup, signInWithGoogle } from "./actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, ShieldCheck, Mail } from "lucide-react"
+import { Loader2, ShieldCheck } from "lucide-react"
+import { useI18n } from "@/lib/i18n-context"
 import Link from "next/link"
 
 // Icono de Google SVG
@@ -21,6 +22,7 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function LoginPage() {
+    const { t } = useI18n()
     const [isLoading, setIsLoading] = useState(false)
     const [mode, setMode] = useState<'login' | 'signup'>('login')
 
@@ -43,10 +45,10 @@ export default function LoginPage() {
                         <ShieldCheck className="h-6 w-6" />
                     </div>
                     <h1 className="text-2xl font-bold tracking-tight text-white">
-                        {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+                        {mode === 'login' ? t('auth.login.title') : t('auth.signup.title')}
                     </h1>
                     <p className="text-sm text-zinc-500">
-                        {mode === 'login' ? 'Enter credentials to access.' : 'Start automating today.'}
+                        {mode === 'login' ? t('auth.login.subtitle') : t('auth.signup.subtitle')}
                     </p>
                 </div>
 
@@ -54,26 +56,40 @@ export default function LoginPage() {
                     <form action={signInWithGoogle}>
                         <Button variant="outline" className="w-full bg-white text-black hover:bg-zinc-200 border-0 font-bold h-11" type="submit">
                             <GoogleIcon className="mr-2 h-5 w-5" />
-                            {mode === 'login' ? 'Sign in with Google' : 'Sign up with Google'}
+                            {mode === 'login' ? t('auth.login.google') : t('auth.signup.google')}
                         </Button>
                     </form>
 
-                    <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t border-zinc-800" /></div><div className="relative flex justify-center text-xs uppercase"><span className="bg-zinc-900 px-2 text-zinc-500">Or continue with email</span></div></div>
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t border-zinc-800" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-zinc-900 px-2 text-zinc-500">{t('auth.login.email_placeholder')}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <form className="space-y-4">
-                    <div className="space-y-2"><Label htmlFor="email" className="text-zinc-400">Work Email</Label><Input id="email" name="email" type="email" required className="bg-zinc-900 border-zinc-800 text-white" /></div>
-                    <div className="space-y-2"><Label htmlFor="password" className="text-zinc-400">Password</Label><Input id="password" name="password" type="password" required className="bg-zinc-900 border-zinc-800 text-white" /></div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email" className="text-zinc-400">{t('auth.login.email_label')}</Label>
+                        <Input id="email" name="email" type="email" required className="bg-zinc-900 border-zinc-800 text-white" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password" className="text-zinc-400">{t('auth.login.password_label')}</Label>
+                        <Input id="password" name="password" type="password" required className="bg-zinc-900 border-zinc-800 text-white" />
+                    </div>
 
                     <div className="pt-2 flex flex-col gap-4">
                         <Button formAction={handleAuth} disabled={isLoading} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold h-11">
                             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            {mode === 'login' ? 'Log In' : 'Sign Up'}
+                            {mode === 'login' ? t('auth.login.btn') : t('auth.signup.btn')}
                         </Button>
                         <div className="text-center text-sm text-zinc-500">
-                            {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
+                            {mode === 'login' ? t('auth.login.no_account') : t('auth.signup.has_account')}
+                            {' '}
                             <button type="button" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4">
-                                {mode === 'login' ? "Sign up" : "Log in"}
+                                {mode === 'login' ? t('auth.login.switch') : t('auth.signup.switch')}
                             </button>
                         </div>
                     </div>

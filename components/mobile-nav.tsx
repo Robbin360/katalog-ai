@@ -27,11 +27,15 @@ import {
 } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
+import { useI18n } from '@/lib/i18n-context'
+import { Brand } from '@/components/ui/brand'
+
 interface MobileNavProps {
     user: any
 }
 
 export function MobileNav({ user }: MobileNavProps) {
+    const { t } = useI18n()
     const [open, setOpen] = useState(false)
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -41,15 +45,15 @@ export function MobileNav({ user }: MobileNavProps) {
     useEffect(() => setMounted(true), [])
 
     const navItems = [
-        { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-        { name: 'Inventory', icon: Package, href: '/inventory' },
-        { name: 'Brand Brain', icon: BrainCircuit, href: '/account?tab=brain' },
-        { name: 'Integrations', icon: Zap, href: '/account?tab=integrations' },
+        { name: t('nav.dashboard'), icon: LayoutDashboard, href: '/dashboard' },
+        { name: t('nav.inventory'), icon: Package, href: '/inventory' },
+        { name: t('nav.brain'), icon: BrainCircuit, href: '/account?tab=brain' },
+        { name: t('nav.integrations'), icon: Zap, href: '/account?tab=integrations' },
     ]
 
     const footerItems = [
-        { name: 'Billing', icon: CreditCard, href: '/account?tab=billing' },
-        { name: 'Settings', icon: Settings, href: '/account?tab=profile' },
+        { name: t('nav.billing'), icon: CreditCard, href: '/account?tab=billing' },
+        { name: t('nav.settings'), icon: Settings, href: '/account?tab=profile' },
     ]
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
@@ -60,7 +64,7 @@ export function MobileNav({ user }: MobileNavProps) {
             <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden text-muted-foreground hover:text-foreground -ml-2">
                     <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
+                    <span className="sr-only">{t('nav.open_menu')}</span>
                 </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0 flex flex-col bg-card border-r border-border">
@@ -75,7 +79,7 @@ export function MobileNav({ user }: MobileNavProps) {
                                 className="w-8 h-8 object-contain"
                             />
                         )}
-                        <span className="font-bold text-foreground">Katalog AI</span>
+                        <Brand className="font-bold text-foreground" />
                     </SheetTitle>
                 </SheetHeader>
 
@@ -142,7 +146,7 @@ export function MobileNav({ user }: MobileNavProps) {
                             className="w-full justify-start gap-3 px-3 py-2 h-auto text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl"
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5" />}
-                            <span>Appearance</span>
+                            <span>{t('nav.appearance')}</span>
                         </Button>
                     )}
 

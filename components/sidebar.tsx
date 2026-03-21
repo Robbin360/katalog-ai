@@ -31,12 +31,16 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+import { useI18n } from '@/lib/i18n-context'
+import { Brand } from '@/components/ui/brand'
+
 interface SidebarProps {
     initialCollapsed?: boolean
     user: any
 }
 
 export default function Sidebar({ initialCollapsed = false, user }: SidebarProps) {
+    const { t } = useI18n()
     const [isCollapsed, setIsCollapsed] = useState(initialCollapsed)
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -46,15 +50,15 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
     useEffect(() => setMounted(true), [])
 
     const navItems = [
-        { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-        { name: 'Inventory', icon: Package, href: '/inventory' }, // Separate route to avoid highlight collision
-        { name: 'Brand Brain', icon: BrainCircuit, href: '/account?tab=brain' },
-        { name: 'Integrations', icon: Zap, href: '/account?tab=integrations' },
+        { name: t('nav.dashboard'), icon: LayoutDashboard, href: '/dashboard' },
+        { name: t('nav.inventory'), icon: Package, href: '/inventory' }, // Separate route to avoid highlight collision
+        { name: t('nav.brain'), icon: BrainCircuit, href: '/account?tab=brain' },
+        { name: t('nav.integrations'), icon: Zap, href: '/account?tab=integrations' },
     ]
 
     const footerItems = [
-        { name: 'Billing', icon: CreditCard, href: '/account?tab=billing' },
-        { name: 'Settings', icon: Settings, href: '/account?tab=profile' },
+        { name: t('nav.billing'), icon: CreditCard, href: '/account?tab=billing' },
+        { name: t('nav.settings'), icon: Settings, href: '/account?tab=profile' },
     ]
 
     const toggleSidebar = () => {
@@ -101,9 +105,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
                                             className="h-10 w-10 object-contain shrink-0 transition-all"
                                             priority
                                         />
-                                        <span className="text-lg font-bold tracking-tight text-foreground truncate">
-                                            Katalog AI
-                                        </span>
+                                        <Brand className="text-lg font-bold tracking-tight text-foreground" />
                                     </>
                                 ) : (
                                     <div className="h-10 w-full animate-pulse bg-muted rounded-lg" />
@@ -207,7 +209,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
                             )}
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5" />}
-                            {!isCollapsed && <span className="text-sm">Appearance</span>}
+                            {!isCollapsed && <span className="text-sm">{t('nav.appearance')}</span>}
                         </Button>
                     )}
 

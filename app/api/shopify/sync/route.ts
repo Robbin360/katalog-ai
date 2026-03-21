@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Please connect Shopify in Settings first." }, { status: 400 })
     }
 
-    // 3. Llamar a Shopify (Traemos los últimos 50 productos)
+    // 3. Llamar a Shopify (Traemos productos con datos de inventario)
     const shopifyUrl = `https://${integration.shop_url}/admin/api/2024-01/products.json?limit=50`
 
     const res = await fetch(shopifyUrl, {
@@ -40,22 +40,38 @@ export async function POST(req: Request) {
     if (!res.ok) throw new Error("Shopify API Error")
     const { products } = await res.json()
 
-    // 4. Mapear datos para nuestra tabla shopify_products
-    const productsToSync = products.map((p: any) => ({
-      user_id: user.id,
-      shopify_id: p.id.toString(),
-      title: p.title,
-      current_title: p.title,
-      current_body_html: p.body_html,
-      current_tags: p.tags,
-      vendor: p.vendor,
-      price: p.variants[0]?.price || 0,
-      image_url: p.images[0]?.src || null,
-      audit_status: 'PENDING_AUDIT',
-      updated_at: new Date().toISOString()
-    }))
+    // 4. Mapear datos con LÓGICA FINANCIERA (NUEVO)
+    const productsToSync = products.map((p: any) => {
 
-    // 5. Inyectar en Supabase (UPSERT: si ya existe por shopify_id, lo actualiza)
+      // Calcular Stock Total (sumando todas las variantes/tallas/colores)
+      const totalStock = p.variants?.reduce((acc: number, v: any) => acc + (v.inventory_quantity || 0), 0) || 0;
+
+      // Obtener Precios (Tomamos el de la variante principal)
+      const currentPrice = p.variants[0]?.price ? parseFloat(p.variants[0].price) : 0;
+      const comparePrice = p.variants[0]?.compare_at_price ? parseFloat(p.variants[0].compare_at_price) : null;
+
+      return {
+        user_id: user.id,
+        shopify_id: p.id.toString(),
+        title: p.title,
+        current_title: p.title,
+        current_body_html: p.body_html,
+        current_tags: p.tags,
+        vendor: p.vendor,
+        image_url: p.images[0]?.src || null, // Guardamos solo la URL
+
+        // --- LOS DATOS NUEVOS PARA LA IA ---
+        price: currentPrice,
+        compare_at_price: comparePrice,
+        inventory_quantity: totalStock,
+        audit_status: 'PENDING_AUDIT',
+
+        updated_at: new Date().toISOString()
+      }
+    })
+
+    // 5. Inyectar en Supabase (UPSERT)
+    // Actualiza los datos si el producto ya existía, o lo crea si es nuevo
     const { error: dbError } = await supabase
       .from('shopify_products')
       .upsert(productsToSync, { onConflict: 'user_id, shopify_id' })
@@ -65,7 +81,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       count: productsToSync.length,
-      message: `Successfully synced ${productsToSync.length} products.`
+      message: `Successfully synced ${productsToSync.length} products with financial data.`
     })
 
   } catch (error: any) {

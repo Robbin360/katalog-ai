@@ -46,6 +46,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useI18n } from "@/lib/i18n-context"
 
 import { Product, InventoryResponse } from "@/types/inventory"
 
@@ -60,6 +61,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 export default function InventoryPage() {
+    const { t } = useI18n()
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('all')
     const [page, setPage] = useState(1)
@@ -158,7 +160,7 @@ export default function InventoryPage() {
                 <div className="relative w-full sm:w-96">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="Search products..."
+                        placeholder={t('common.placeholders.search')}
                         className="pl-9 bg-card border-border"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -167,7 +169,7 @@ export default function InventoryPage() {
                 <div className="flex gap-3">
                     <Select value={statusFilter} onValueChange={handleFilterChange}>
                         <SelectTrigger className="w-[180px] bg-card border-border">
-                            <SelectValue placeholder="Filter by status" />
+                            <SelectValue placeholder={t('common.placeholders.filter')} />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Status</SelectItem>

@@ -1,4 +1,6 @@
 import { cookies } from "next/headers";
+import Link from "next/link";
+import { Brand } from "@/components/ui/brand";
 import Sidebar from "@/components/sidebar";
 import { MobileNav } from "@/components/mobile-nav";
 import { supabase } from "@/lib/supabase";
@@ -17,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <div className="md:hidden flex items-center p-4 border-b border-border bg-card sticky top-0 z-50 gap-3">
                 <MobileNav user={user} />
                 <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg tracking-tight text-foreground">Katalog AI</span>
+                    <Brand className="font-bold text-lg tracking-tight text-foreground" />
                 </div>
             </div>
 
