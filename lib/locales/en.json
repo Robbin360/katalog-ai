@@ -52,17 +52,16 @@
             "portal_error": "Portal Error",
             "invalid_shopify_url": "Invalid Shopify URL format. Must be: store.myshopify.com",
             "error_prefix": "Error: "
+        },
+        "profile": {
+            "title": "My Profile",
+            "subtitle": "Personal account details.",
+            "logout_btn": "Log Out",
+            "theme_title": "Interface Theme",
+            "theme_desc": "Customize how Katalog AI looks on your screen.",
+            "logout_confirm_title": "Log out of your account?",
+            "logout_confirm_desc": "You will need to log in again to access your dashboard and projects."
         }
-    },
-    "dashboard": {
-        "title": "Opportunity Radar",
-        "status": {
-            "active": "Neural Engine Active",
-            "autopilot": "Neural Engine Auto-Publishing"
-        }
-    },
-    "autopilot": {
-        "label": "Autopilot"
     },
     "dashboard": {
         "title": "Opportunity Radar",
@@ -84,6 +83,40 @@
                 "optimize_success": "Optimization queued! Your agent will process it soon.",
                 "optimize_error": "Could not contact agent."
             }
+        }
+    },
+    "onboarding": {
+        "setup_progress": "Setup Progress",
+        "steps_completed": "Steps Completed",
+        "steps": {
+            "connect": {
+                "title": "Connect Store",
+                "desc": "Shopify integrated"
+            },
+            "train": {
+                "title": "Train Brain",
+                "desc": "Ready for AI"
+            },
+            "autopilot": {
+                "title": "Autonomous Mode",
+                "desc": "Full power unlocked"
+            }
+        }
+    },
+    "autopilot": {
+        "label": "AI Autopilot",
+        "toasts": {
+            "activated": "🚀 Autopilot Activated",
+            "paused": "⏸️ Autopilot Paused",
+            "error": "Error communicating with the neural engine.",
+            "locks": {
+                "plan": "🔒 Autopilot requires a Pro or Business plan.",
+                "integration": "🔌 Connect your store in Settings first.",
+                "brand": "🧠 Train your Brand Voice before automating."
+            }
+        },
+        "warnings": {
+            "credits": "⚠️ You have {{count}} pending products.\n\nAutopilot will process everything in a massive batch, which will consume your credits quickly.\n\nDo you want to proceed?"
         }
     },
     "faq": {
@@ -363,12 +396,6 @@
                 "title": "Metadata Mapping",
                 "desc": "AI injects SEO tags and fields adapted to any theme."
             }
-        },
-        "nav": {
-            "features": "Features",
-            "integrations": "Integrations",
-            "pricing": "Pricing",
-            "faq": "FAQ"
         }
     },
     "landing": {

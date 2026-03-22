@@ -213,7 +213,7 @@ function ConnectStoreBanner() {
                 </div>
             </div>
 
-            <Link href="/integrations" className="relative z-10 w-full md:w-auto">
+            <Link href="/account?tab=integrations" className="relative z-10 w-full md:w-auto">
                 <Button className="w-full bg-emerald-500 text-white hover:bg-emerald-600 font-bold px-8 h-12 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)]">
                     Connect Store Now
                 </Button>
@@ -466,7 +466,7 @@ export default function DashboardPage() {
                                 <TableCell className="py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="h-10 w-10 rounded-md overflow-hidden border border-border bg-muted shrink-0">
-                                            {product.image ? <img src={product.image} alt={product.title} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-muted" />}
+                                            {product.image ? <img src={product.image} alt={product.title} className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="h-full w-full bg-muted" />}
                                         </div>
                                         <div className="flex flex-col min-w-0">
                                             <span className="font-medium text-foreground truncate max-w-[200px]">{product.title}</span>
@@ -496,7 +496,7 @@ export default function DashboardPage() {
                                             <SheetHeader className="space-y-4">
                                                 <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border">REF: {product.shopifyId}</Badge></div>
                                                 <SheetTitle className="text-xl font-bold text-foreground">{product.title}</SheetTitle>
-                                                <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" />}</div>
+                                                <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" referrerPolicy="no-referrer" />}</div>
                                             </SheetHeader>
                                             <div className="mt-8 space-y-6">
                                                 <Tabs defaultValue="optimization" className="w-full">

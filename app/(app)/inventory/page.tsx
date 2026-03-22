@@ -238,6 +238,7 @@ export default function InventoryPage() {
                                                     src={product.image}
                                                     alt={product.title}
                                                     className="h-full w-full object-cover"
+                                                    referrerPolicy="no-referrer"
                                                 />
                                             ) : (
                                                 <div className="h-full w-full flex items-center justify-center bg-secondary text-secondary-foreground">
