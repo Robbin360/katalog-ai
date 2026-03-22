@@ -50,6 +50,7 @@
             "connection_error": "Error de conexión",
             "no_subscription": "No se encontró suscripción activa.",
             "portal_error": "Error en el portal",
+            "invalid_shopify_url": "Formato de URL de Shopify inválido. Debe ser: tienda.myshopify.com",
             "error_prefix": "Error: "
         },
         "profile": {
@@ -347,12 +348,8 @@
                 "title": "Mapeo de Metadatos",
                 "desc": "La IA inyecta etiquetas SEO y campos adaptados a cualquier tema."
             }
-        },
-             "pricing": "Precios",
-             "faq": "FAQ",
-             "dashboard": "Dashboard"
-         }
-     },
+        }
+    },
     "features": {
         "hero": {
             "badge": "Motor Neural de Análisis",

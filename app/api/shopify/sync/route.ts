@@ -27,6 +27,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Please connect Shopify in Settings first." }, { status: 400 })
     }
 
+    // Validación de seguridad (SSRF Mitigation)
+    const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/;
+    if (!shopUrlPattern.test(integration.shop_url)) {
+      return NextResponse.json({ error: "Invalid Shopify URL format detected." }, { status: 400 });
+    }
+
     // 3. Llamar a Shopify (Traemos productos con datos de inventario)
     const shopifyUrl = `https://${integration.shop_url}/admin/api/2024-01/products.json?limit=50`
 

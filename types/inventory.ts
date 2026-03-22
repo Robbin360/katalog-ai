@@ -1,15 +1,22 @@
-export type ProductStatus = 'DONE' | 'PENDING' | 'ERROR' | 'IDLE';
+export type ProductStatus = 'PENDING_AUDIT' | 'NEEDS_REVIEW' | 'OPTIMIZED' | 'IDLE';
 
 export interface Product {
     id: string;
+    shopifyId: string;
     title: string;
     image: string | null;
-    status: ProductStatus;
+    status: string; // Dynamic string for audit_status
     healthScore: number;
     createdAt: string;
     platform: string;
     revenueImpact?: number;
-    fullData?: any; // To store raw AI output or Shopify data if needed
+    currentBodyHtml?: string;
+    aiProposal?: {
+        new_title?: string;
+        new_body_html?: string;
+        [key: string]: any;
+    };
+    fullData?: any; 
 }
 
 export interface DashboardData {

@@ -46,7 +46,12 @@
         "alerts": {
             "brain_updated": "Brand Brain Updated",
             "shopify_connected": "Shopify Connected!",
-            "priority": "Maximum Priority on servers"
+            "payment_error": "Payment Error",
+            "connection_error": "Connection Error",
+            "no_subscription": "No active subscription found.",
+            "portal_error": "Portal Error",
+            "invalid_shopify_url": "Invalid Shopify URL format. Must be: store.myshopify.com",
+            "error_prefix": "Error: "
         }
     },
     "dashboard": {
@@ -58,6 +63,28 @@
     },
     "autopilot": {
         "label": "Autopilot"
+    },
+    "dashboard": {
+        "title": "Opportunity Radar",
+        "status": {
+            "active": "Neural Engine Active",
+            "autopilot": "Neural Engine Auto-Publishing"
+        },
+        "actions": {
+            "refresh": "Refresh Data",
+            "syncing": "Syncing...",
+            "immediate_actions": "Immediate Actions",
+            "assets_impact": "Assets with highest revenue impact",
+            "search_placeholder": "Filter by product name...",
+            "toasts": {
+                "sync_loading": "Syncing with Shopify...",
+                "sync_success": "Catalog updated! {{count}} products imported.",
+                "sync_error": "Sync error",
+                "optimize_loading": "Notifying AI Agent...",
+                "optimize_success": "Optimization queued! Your agent will process it soon.",
+                "optimize_error": "Could not contact agent."
+            }
+        }
     },
     "faq": {
         "title": "Frequently Asked",
@@ -524,7 +551,7 @@
         "dashboard": "Dashboard",
         "inventory": "Inventory",
         "brain": "Brand Brain",
-        "integrations": "Integraciones",
+        "integrations": "Integrations",
         "billing": "Billing",
         "settings": "Settings",
         "appearance": "Appearance",

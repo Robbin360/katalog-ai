@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
+import DOMPurify from "isomorphic-dompurify"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -221,10 +222,10 @@ function ConnectStoreBanner() {
     );
 }
 
-const StatusBadge = ({ status }: { status: ProductStatus }) => {
-    if (status === 'DONE') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
-    if (status === 'ERROR') return <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> At Risk</Badge>
-    return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+const StatusBadge = ({ status }: { status: string }) => {
+    if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
+    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
+    return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
 // --- MAIN PAGE ---
@@ -241,11 +242,11 @@ export default function DashboardPage() {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) return null
 
-            const { data: products } = await supabase.from('products_queue').select('*').order('created_at', { ascending: false })
+            const { data: products } = await supabase.from('shopify_products').select('id, shopify_id, current_title, current_body_html, audit_status, audit_score, image_url, ai_proposal, created_at').order('created_at', { ascending: false })
             const { data: profile } = await supabase.from('profiles').select('plan_tier, onboarding_dismissed, auto_pilot_enabled').eq('id', user.id).single()
             const { count: shopifyCount } = await supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('provider', 'shopify')
             const { count: integrationCount } = await supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
-            const { count: queuedCount } = await supabase.from('products_queue').select('*', { count: 'exact', head: true }).in('status', ['QUEUED', 'PENDING_AUDIT'])
+            const { count: queuedCount } = await supabase.from('shopify_products').select('*', { count: 'exact', head: true }).eq('audit_status', 'PENDING_AUDIT')
             const { data: brandRules } = await supabase.from('brand_rules').select('tone_voice, forbidden_words').eq('user_id', user.id).maybeSingle()
 
             return {
@@ -280,23 +281,24 @@ export default function DashboardPage() {
         await supabase.from('profiles').update({ onboarding_dismissed: true }).eq('id', user.id)
     }
 
-    const products: Product[] = dashboardData?.products?.map((p: any) => {
-        const ai = p.ai_output || {}
-        const title = ai.product_title || ai.producto || p.raw_data?.title || "Untitled Product"
+    const products: any[] = dashboardData?.products?.map((p: any) => {
+        const proposal = p.ai_proposal || {}
         return {
             id: p.id,
-            title: title,
-            image: p.original_image_url,
-            status: p.status,
-            healthScore: p.status === 'DONE' ? 98 : (p.status === 'ERROR' ? 20 : 50),
-            revenueImpact: p.status === 'DONE' ? 0 : 50,
-            fullData: ai,
+            shopifyId: p.shopify_id,
+            title: p.current_title || "Untitled Product",
+            image: p.image_url,
+            status: p.audit_status,
+            healthScore: p.audit_score || 0,
+            revenueImpact: p.audit_score < 80 ? (80 - p.audit_score) : 0,
+            currentBodyHtml: p.current_body_html,
+            aiProposal: proposal,
             createdAt: new Date(p.created_at).toLocaleDateString(),
             platform: 'Shopify'
         }
     }) || []
 
-    const unoptimizedProducts = products.filter((p) => p.status !== 'DONE')
+    const unoptimizedProducts = products.filter((p) => p.status !== 'OPTIMIZED')
 
     // KPI Calculations
     const totalCount = products.length
@@ -469,8 +471,8 @@ export default function DashboardPage() {
                                         <div className="flex flex-col min-w-0">
                                             <span className="font-medium text-foreground truncate max-w-[200px]">{product.title}</span>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[10px] text-muted-foreground font-mono truncate max-w-[80px]">ID: {product.id}</span>
-                                                <span className={`text-[10px] font-bold md:hidden ${product.healthScore > 80 ? 'text-emerald-500' : 'text-red-500'}`}>{product.healthScore}% Score</span>
+                                                <span className="text-[10px] text-muted-foreground font-mono truncate max-w-[120px]">REF: {product.shopifyId}</span>
+                                                <span className={`text-[10px] font-bold md:hidden ${product.healthScore >= 80 ? 'text-emerald-500' : 'text-red-500'}`}>{product.healthScore}% Score</span>
                                             </div>
                                         </div>
                                     </div>
@@ -478,11 +480,11 @@ export default function DashboardPage() {
                                 <TableCell><StatusBadge status={product.status} /></TableCell>
                                 <TableCell className="hidden md:table-cell">
                                     <div className="flex items-center gap-2">
-                                        <span className={`text-sm font-semibold ${product.healthScore > 80 ? 'text-emerald-500' : 'text-red-500'}`}>{product.healthScore}%</span>
+                                        <span className={`text-sm font-semibold ${product.healthScore >= 80 ? 'text-emerald-500' : 'text-amber-500'}`}>{product.healthScore}%</span>
                                         <Progress
                                             value={product.healthScore}
                                             className="w-16 h-1 bg-muted"
-                                            indicatorClassName={product.healthScore > 80 ? 'bg-emerald-500' : 'bg-red-500'}
+                                            indicatorClassName={product.healthScore >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}
                                         />
                                     </div>
                                 </TableCell>
@@ -490,52 +492,88 @@ export default function DashboardPage() {
                                 <TableCell className="text-right">
                                     <Sheet>
                                         <SheetTrigger asChild><Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent"><ArrowUpRight className="h-4 w-4" /></Button></SheetTrigger>
-                                        <SheetContent className="bg-card border-border text-foreground sm:max-w-xl overflow-y-auto">
+                                        <SheetContent className="bg-card border-border text-foreground sm:max-w-2xl overflow-y-auto">
                                             <SheetHeader className="space-y-4">
-                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border">ID: {product.id}</Badge></div>
+                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border">REF: {product.shopifyId}</Badge></div>
                                                 <SheetTitle className="text-xl font-bold text-foreground">{product.title}</SheetTitle>
                                                 <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" />}</div>
                                             </SheetHeader>
                                             <div className="mt-8 space-y-6">
                                                 <Tabs defaultValue="optimization" className="w-full">
-                                                    <TabsList className="w-full bg-zinc-900 border-zinc-800"><TabsTrigger value="optimization" className="flex-1">AI Optimization</TabsTrigger><TabsTrigger value="json" className="flex-1">Raw Data</TabsTrigger></TabsList>
-                                                    <TabsContent value="optimization" className="mt-4 space-y-4">
-                                                        {product.status === 'DONE' ? (
-                                                            <div className="space-y-4">
-                                                                <div className="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20"><p className="text-xs text-emerald-500 font-bold mb-2">SEO TITLE</p><p className="text-sm text-foreground font-medium">{product.fullData.product_title}</p></div>
-                                                                <div className="prose prose-invert dark:prose-invert text-sm text-muted-foreground"><div dangerouslySetInnerHTML={{ __html: product.fullData.description_html || "<p>No data.</p>" }} /></div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="p-8 text-center border border-dashed border-border rounded-xl space-y-4 bg-accent/20">
-                                                                <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                                                    <BrainCircuit className="w-6 h-6 text-primary animate-pulse" />
+                                                    <TabsList className="w-full bg-zinc-900 border-zinc-800"><TabsTrigger value="optimization" className="flex-1">Antes y Después (IA)</TabsTrigger><TabsTrigger value="json" className="flex-1">Metadata</TabsTrigger></TabsList>
+                                                    <TabsContent value="optimization" className="mt-4 space-y-6">
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                            {/* ANTES */}
+                                                            <div className="space-y-3">
+                                                                <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-500"></div>
+                                                                    Estado Actual
+                                                                </h4>
+                                                                <div className="p-4 rounded-xl border border-border bg-muted/20 min-h-[200px]">
+                                                                    <div className="prose prose-invert dark:prose-invert text-xs text-muted-foreground font-light leading-relaxed">
+                                                                        <div dangerouslySetInnerHTML={{ 
+                                                                            __html: product.currentBodyHtml 
+                                                                                ? DOMPurify.sanitize(product.currentBodyHtml) 
+                                                                                : "<p>Sin descripción.</p>" 
+                                                                        }} />
+                                                                    </div>
                                                                 </div>
-                                                                <div className="space-y-1">
-                                                                    <p className="font-semibold text-foreground">Needs Optimization</p>
-                                                                    <p className="text-xs text-muted-foreground">This asset hasn't been processed by the AI Agent yet.</p>
-                                                                </div>
-                                                                <Button
-                                                                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                                                                    onClick={() => handleOptimize(product.id)}
-                                                                >
-                                                                    <Zap className="mr-2 h-4 w-4 fill-current" />
-                                                                    Optimize Now
-                                                                </Button>
                                                             </div>
-                                                        )}
+
+                                                            {/* DESPUÉS */}
+                                                            <div className="space-y-3">
+                                                                <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-500 flex items-center gap-2">
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
+                                                                    Propuesta IA
+                                                                </h4>
+                                                                <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 min-h-[200px] relative overflow-hidden group">
+                                                                    {product.status === 'OPTIMIZED' || product.aiProposal?.new_title ? (
+                                                                        <div className="space-y-4">
+                                                                            <div className="space-y-1">
+                                                                                <p className="text-[10px] text-indigo-400 font-bold">NUEVO TÍTULO</p>
+                                                                                <p className="text-sm text-foreground font-semibold leading-tight">{product.aiProposal.new_title}</p>
+                                                                            </div>
+                                                                            <div className="space-y-1">
+                                                                                <p className="text-[10px] text-indigo-400 font-bold">CONTENIDO OPTIMIZADO</p>
+                                                                                <div className="prose prose-invert dark:prose-invert text-xs text-zinc-300 font-light leading-relaxed">
+                                                                                    <div dangerouslySetInnerHTML={{ 
+                                                                                        __html: product.aiProposal.new_body_html 
+                                                                                            ? DOMPurify.sanitize(product.aiProposal.new_body_html) 
+                                                                                            : "<p>Generando propuesta...</p>" 
+                                                                                    }} />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className="flex flex-col items-center justify-center min-h-[160px] text-center space-y-3">
+                                                                            <BrainCircuit className="w-8 h-8 text-indigo-500/50" />
+                                                                            <p className="text-xs text-muted-foreground">Pendiente de optimización masiva.</p>
+                                                                            <Button 
+                                                                                size="sm" 
+                                                                                variant="outline" 
+                                                                                className="border-indigo-500/50 text-indigo-400 hover:bg-indigo-500 hover:text-white"
+                                                                                onClick={() => handleOptimize(product.id)}
+                                                                            >
+                                                                                Optimizar Ahora
+                                                                            </Button>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </TabsContent>
-                                                    <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(product.fullData, null, 2)}</pre></TabsContent>
+                                                    <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(product.aiProposal, null, 2)}</pre></TabsContent>
                                                 </Tabs>
                                             </div>
                                             <SheetFooter className="mt-10">
-                                                {product.status === 'DONE' ? (
-                                                    <Button className="w-full bg-foreground text-background hover:bg-foreground/90" onClick={() => { navigator.clipboard.writeText(product.fullData.description_html); toast.success("HTML Copied") }}>
-                                                        <Copy className="mr-2 h-4 w-4" /> Copy HTML
+                                                {product.status === 'OPTIMIZED' ? (
+                                                    <Button className="w-full bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => { navigator.clipboard.writeText(product.aiProposal.new_body_html); toast.success("Copiado al portapapeles") }}>
+                                                        <Check className="mr-2 h-4 w-4" /> Aplicar Cambios en Shopify
                                                     </Button>
-                                                ) : product.status === 'PENDING' ? (
+                                                ) : product.status === 'PENDING_AUDIT' ? (
                                                     <Button disabled className="w-full bg-muted text-muted-foreground flex items-center gap-2">
                                                         <Loader2 className="h-4 w-4 animate-spin" />
-                                                        Agent Working...
+                                                        Procesando...
                                                     </Button>
                                                 ) : null}
                                             </SheetFooter>

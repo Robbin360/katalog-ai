@@ -138,6 +138,12 @@ export default function AccountPage() {
             if (!userId) return
 
             const cleanUrl = shopUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+            
+            // Validación de seguridad para prevenir SSRF
+            const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/;
+            if (!shopUrlPattern.test(cleanUrl)) {
+                throw new Error(t('account.alerts.invalid_shopify_url'));
+            }
 
             const { error } = await supabase.from('integrations').upsert({
                 user_id: userId,

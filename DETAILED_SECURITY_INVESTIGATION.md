@@ -1,4 +1,65 @@
 # Investigación Detallada de Vulnerabilidades - Katalog AI
+# Informe de Investigación Profunda: Errores y Rendimiento 🔍⚡
+
+Tras una auditoría exhaustiva usando navegación real, inspección de red y contrastación con la documentación oficial de Next.js y Supabase, he identificado los fallos raíz que afectan a Katalog AI.
+
+## 🔴 Errores Críticos Identificados (Error 400 Bad Request)
+
+He detectado una **desconexión total** entre cómo se guardan los datos y cómo se intentan leer, lo que provoca que el Dashboard esté vacío y falle:
+
+1.  **Inconsistencia de Tablas**:
+    *   **Backend (Sync)**: El proceso de sincronización ([route.ts](file:///c:/proyectos/katalog-ai/app/api/shopify/sync/route.ts)) guarda los productos en la tabla `shopify_products`.
+    *   **Frontend (UI)**: El Dashboard e Inventario intentan leer de una tabla llamada `products_queue`.
+2.  **Inconsistencia de Columnas (Causa del Error 400)**:
+    *   **Backend**: Usa la columna `audit_status` para el estado del producto.
+    *   **Frontend**: Busca la columna `status`. Al no existir `status` en el esquema que el frontend espera, Supabase devuelve un **400 Bad Request**.
+
+## 🐢 Análisis de Lentitud (Basado en Docs Oficiales)
+
+1.  **Compilación de Next.js 16.2.1**:
+    *   Esta versión es experimental. Según foros oficiales y reportes de GitHub, **Turbopack en Windows** tiene problemas de "file locking", lo que causa que el "Fast Refresh" tarde más de 20 segundos.
+    *   **Solución**: Bajar a Next.js 15 estable o forzar el uso de Webpack garantiza una respuesta inmediata.
+2.  **Invalidación Masiva de Caché**:
+    *   El uso de `revalidatePath("/", "layout")` es demasiado agresivo. Según la documentación de Next.js, esto purga **toda la caché del router del cliente**.
+    *   **Impacto**: Al hacer login, el navegador tiene que volver a descargar y procesar cada ruta visiteda, causando los 15-20 segundos de espera antes de ver datos.
+
+## 🛠️ Plan de Acción Recomendado
+
+1.  **Unificar Esquema**: Cambiar el backend para que use `products_queue` y la columna `status` (o viceversa) para que el Dashboard pueda mostrar datos reales.
+2.  **Refinar Revalidación**: Cambiar el "nuclear" `revalidatePath("/", "layout")` por una revalidación dirigida exclusivamente al Dashboard.
+3.  **Implementar Middleware**: Crear un `middleware.ts` para gestionar la sesión de Supabase de forma nativa, eliminando la latencia de comprobaciones manuales en cada página.
+
+---
+
+# Informe de Investigación de Rendimiento Previo...
+
+He realizado un análisis técnico para identificar las causas de la lentitud en el inicio del servidor, el sistema de caché, el login y las integraciones. A continuación, presento los hallazgos principales:
+
+## 🔍 Hallazgos Principales
+
+### 1. Servidor de Desarrollo y Versión de Next.js
+- **Versión Anómala**: El proyecto está usando `Next.js 16.2.1`. Dado que la versión estable actual es la 15.x, esta versión experimental o personalizada puede tener inestabilidades significativas en **Turbopack**, lo que explica por qué el servidor tarda tanto en estar "listo".
+- **Falta de Middleware**: No se detectó un archivo `middleware.ts`. En aplicaciones con Supabase, la falta de un middleware centralizado para refrescar sesiones puede causar que cada página tenga que realizar comprobaciones redundantes, aumentando la latencia percibida.
+
+### 2. Caché del Sistema de Archivos (Filesystem Cache)
+- **Subutilización de Caché**: Tras 4 horas de ejecución, el directorio `.next/cache` solo contiene **3 archivos**. 
+- **Impacto**: Esto indica que Next.js **no está cacheando** las compilaciones ni los datos de forma efectiva. Cada vez que navegas o guardas un cambio, el servidor probablemente está reconstruyendo gran parte de la aplicación desde cero en lugar de usar resultados previos.
+
+### 3. Lentitud en el Login e Integraciones
+- **Invalidación "Nuclear"**: En `app/login/actions.ts`, se utiliza `revalidatePath("/", "layout")`. 
+    - **Por qué es lento**: Esta función obliga a Next.js a purgar la caché de **toda la aplicación**. Al hacer login, el servidor tiene que re-renderizar cada componente y ruta la próxima vez que se acceda, lo que genera ese retraso prolongado antes de entrar al Dashboard.
+- **Consultas Paralelas**: Las integraciones en la página de cuenta están bien estructuradas con `Promise.all`, pero se ven afectadas por la lentitud general del motor de renderizado y la falta de caché persistente.
+
+## 💡 Recomendaciones (Sin aplicar cambios aún)
+
+1. **Optimizar Revalidación**: Cambiar `revalidatePath("/", "layout")` por revalidaciones más específicas o basadas en tags para no "matar" toda la caché en cada login.
+2. **Revisar Versión de Next.js**: Considerar si es necesario estar en la v16 experimental o si bajar a v15 estable mejoraría la velocidad del servidor de desarrollo.
+3. **Persistencia de Caché**: Investigar si hay algún proceso (como antivirus o permisos de Windows) que esté borrando el contenido de `.next/cache` constantemente.
+4. **Implementar Middleware**: Añadir un `middleware.ts` ligero para manejar la sesión de Supabase de forma centralizada y eficiente.
+
+---
+
+# INVESTIGACIÓN DE SEGURIDAD DETALLADA (Documento Original)
 
 **Fecha:** 20 de Marzo, 2026  
 **Investigación basada en evidencia real del código

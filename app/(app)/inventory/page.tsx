@@ -55,9 +55,9 @@ const PAGE_SIZE = 10;
 // --- COMPONENTS ---
 
 const StatusBadge = ({ status }: { status: string }) => {
-    if (status === 'DONE') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
-    if (status === 'ERROR') return <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Error</Badge>
-    return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+    if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
+    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
+    return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
 export default function InventoryPage() {
@@ -71,15 +71,15 @@ export default function InventoryPage() {
         queryKey: ['inventory', page, statusFilter, searchTerm],
         queryFn: async () => {
             let query = supabase
-                .from('products_queue')
-                .select('*', { count: 'exact' })
+                .from('shopify_products')
+                .select('id, shopify_id, current_title, audit_status, audit_score, image_url, created_at', { count: 'exact' })
 
             if (statusFilter !== 'all') {
-                query = query.eq('status', statusFilter)
+                query = query.eq('audit_status', statusFilter)
             }
 
             if (searchTerm) {
-                query = query.ilike('raw_data->>title', `%${searchTerm}%`)
+                query = query.ilike('current_title', `%${searchTerm}%`)
             }
 
             const from = (page - 1) * PAGE_SIZE
@@ -92,17 +92,16 @@ export default function InventoryPage() {
             if (error) throw error
 
             const products = (data || []).map((p: any) => {
-                const ai = p.ai_output || {}
-                const title = ai.product_title || ai.producto || p.raw_data?.title || "Untitled Product"
                 return {
                     id: p.id,
-                    title: title,
-                    image: p.original_image_url,
-                    status: p.status,
-                    healthScore: p.status === 'DONE' ? 98 : (p.status === 'ERROR' ? 20 : 50),
+                    shopifyId: p.shopify_id,
+                    title: p.current_title || "Untitled Product",
+                    image: p.image_url,
+                    status: p.audit_status,
+                    healthScore: p.audit_score || 0,
                     createdAt: new Date(p.created_at).toLocaleDateString(),
                     platform: 'Shopify'
-                } as Product
+                }
             })
 
             return {
@@ -172,10 +171,10 @@ export default function InventoryPage() {
                             <SelectValue placeholder={t('common.placeholders.filter')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="DONE">Optimized</SelectItem>
-                            <SelectItem value="PENDING">Pending</SelectItem>
-                            <SelectItem value="ERROR">Errors</SelectItem>
+                            <SelectItem value="all">Todo el Catálogo</SelectItem>
+                            <SelectItem value="OPTIMIZED">Optimizado</SelectItem>
+                            <SelectItem value="NEEDS_REVIEW">Needs Review</SelectItem>
+                            <SelectItem value="PENDING_AUDIT">Pending Audit</SelectItem>
                         </SelectContent>
                     </Select>
                     <Button variant="outline" size="icon" className="shrink-0">
@@ -252,8 +251,8 @@ export default function InventoryPage() {
                                             {product.title}
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <div className="text-[10px] text-muted-foreground truncate max-w-[100px]">
-                                                ID: {product.id}
+                                            <div className="text-[10px] text-muted-foreground truncate max-w-[120px]">
+                                                REF: {product.shopifyId}
                                             </div>
                                             <div className={`text-[10px] font-bold md:hidden ${product.healthScore >= 90 ? 'text-emerald-500' :
                                                 product.healthScore >= 50 ? 'text-yellow-500' : 'text-red-500'
@@ -301,8 +300,8 @@ export default function InventoryPage() {
                                                 <DropdownMenuItem onClick={async () => {
                                                     toast.promise(async () => {
                                                         const { error } = await supabase
-                                                            .from('products_queue')
-                                                            .update({ status: 'PENDING' })
+                                                            .from('shopify_products')
+                                                            .update({ audit_status: 'PENDING_AUDIT' })
                                                             .eq('id', product.id);
 
                                                         if (error) throw error;
