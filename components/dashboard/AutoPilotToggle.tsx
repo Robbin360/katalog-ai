@@ -109,8 +109,8 @@ export function AutoPilotToggle({ data }: { data: AutoPilotData }) {
     };
 
     return (
-        <motion.div animate={controls} className="flex items-center gap-3 bg-zinc-900/50 px-3 py-1.5 rounded-full border border-border/50">
-            <span className="text-sm font-bold tracking-tight text-white hidden md:block select-none">
+        <motion.div animate={controls} className="flex items-center gap-3 bg-secondary/80 dark:bg-zinc-900/50 px-3 py-1.5 rounded-full border border-border/50 shadow-sm">
+            <span className="text-sm font-bold tracking-tight text-foreground dark:text-white hidden md:block select-none">
                 {t('autopilot.label')}
             </span>
             <button
@@ -118,7 +118,7 @@ export function AutoPilotToggle({ data }: { data: AutoPilotData }) {
                 disabled={isUpdating}
                 className={`relative flex h-8 w-14 items-center rounded-full p-1 transition-all duration-300 outline-none ${data.enabled
                     ? "bg-gradient-to-r from-indigo-600 to-cyan-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] border-transparent"
-                    : "bg-zinc-800 border border-border/80 hover:bg-zinc-700"
+                    : "bg-black/10 dark:bg-zinc-800 border border-border/80 hover:bg-black/20 dark:hover:bg-zinc-700"
                     } ${isUpdating ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
                 aria-label={t('common.aria.toggle_autopilot')}
             >
@@ -132,15 +132,15 @@ export function AutoPilotToggle({ data }: { data: AutoPilotData }) {
                     }}
                     className={`flex h-6 w-6 items-center justify-center rounded-full shadow-md z-10 ${data.enabled
                         ? "mx-0 bg-white ml-auto"
-                        : "mx-0 bg-zinc-400/90 ml-0"
+                        : "mx-0 bg-white dark:bg-zinc-400/90 ml-0 shadow-sm"
                         }`}
                 >
-                    <Zap className={`h-3.5 w-3.5 ${data.enabled ? "fill-current text-indigo-500" : "text-zinc-800"}`} />
+                    <Zap className={`h-3.5 w-3.5 ${data.enabled ? "fill-current text-indigo-500" : "text-muted-foreground dark:text-zinc-800"}`} />
                 </motion.div>
 
                 {/* Fondo de carga (si está actualizando) */}
                 {isUpdating && (
-                    <div className="absolute inset-0 bg-black/20 rounded-full animate-pulse z-20"></div>
+                    <div className="absolute inset-0 bg-black/10 dark:bg-black/20 rounded-full animate-pulse z-20"></div>
                 )}
             </button>
         </motion.div>

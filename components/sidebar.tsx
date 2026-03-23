@@ -202,7 +202,11 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                            onClick={() => {
+                                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                                setTheme(newTheme);
+                                document.cookie = `theme=${newTheme}; path=/; max-age=31536000; SameSite=Lax`;
+                            }}
                             className={cn(
                                 "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent",
                                 isCollapsed && "justify-center px-0"
