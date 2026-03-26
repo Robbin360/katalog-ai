@@ -348,8 +348,8 @@ export default function DashboardPage() {
         toast.promise(
             async () => {
                 const { error } = await supabase
-                    .from('products_queue')
-                    .update({ status: 'PENDING' })
+                    .from('shopify_products')
+                    .update({ audit_status: 'PENDING_AUDIT' })
                     .eq('id', productId);
 
                 if (error) throw error;

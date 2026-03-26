@@ -62,7 +62,7 @@ export async function signup(formData: FormData) {
     }
 
     revalidatePath("/", "layout")
-    redirect("/dashboard")
+    redirect("/login?success=check-email")
 }
 
 export async function signInWithGoogle() {
@@ -89,6 +89,22 @@ export async function signInWithGoogle() {
     if (data.url) {
         redirect(data.url)
     }
+}
+
+export async function resetPassword(formData: FormData) {
+    const supabase = await createClient()
+    const email = formData.get("email") as string
+    const origin = (await headers()).get('origin') || 'http://localhost:3000'
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${origin}/auth/callback?next=/account`,
+    })
+
+    if (error) {
+        redirect("/login?error=reset-failed")
+    }
+
+    redirect("/login?success=reset-sent")
 }
 
 export async function signout() {
