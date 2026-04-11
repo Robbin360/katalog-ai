@@ -80,7 +80,7 @@ export async function signInWithSlack() {
     const origin = (await headers()).get('origin') || 'http://localhost:3000'
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'slack',
+        provider: 'slack_oidc',
         options: { redirectTo: `${origin}/auth/callback` },
     })
     if (error) { console.error("❌ ERROR SLACK:", error.message); redirect("/login?error=slack-failed") }
