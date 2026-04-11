@@ -94,7 +94,10 @@ export async function signInWithX() {
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'twitter', // En Supabase, X se sigue llamando 'twitter' en el código
-        options: { redirectTo: `${origin}/auth/callback` },
+        options: {
+            redirectTo: `${origin}/auth/callback?next=/dashboard`,
+            scopes: 'users.read tweet.read',
+        },
     })
     if (error) { console.error("❌ ERROR X:", error.message); redirect("/login?error=x-failed") }
     if (data.url) redirect(data.url)
