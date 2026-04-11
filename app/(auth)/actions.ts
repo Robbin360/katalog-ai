@@ -93,7 +93,7 @@ export async function signInWithX() {
     const origin = (await headers()).get('origin') || 'http://localhost:3000'
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'twitter', // En Supabase, X se sigue llamando 'twitter' en el código
+        provider: 'x', // OAuth 2.0 — el nuevo y recomendado
         options: {
             redirectTo: `${origin}/auth/callback?next=/dashboard`,
             scopes: 'users.read tweet.read',
