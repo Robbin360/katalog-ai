@@ -102,7 +102,7 @@ export default function UpdatePasswordPage() {
                                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-slate-400 dark:text-[#d4d4d8]/40 hover:text-[#10b77f] dark:hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                                 aria-label="Toggle password visibility"
                             >
-                                <span className="material-symbols-outlined text-[20px]">
+                                <span className="material-symbols-outlined text-[20px] notranslate">
                                     {showPassword ? "visibility_off" : "visibility"}
                                 </span>
                             </button>
@@ -139,7 +139,7 @@ export default function UpdatePasswordPage() {
                                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-slate-400 dark:text-[#d4d4d8]/40 hover:text-[#10b77f] dark:hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                                 aria-label="Toggle confirm password visibility"
                             >
-                                <span className="material-symbols-outlined text-[20px]">
+                                <span className="material-symbols-outlined text-[20px] notranslate">
                                     {showConfirm ? "visibility_off" : "visibility"}
                                 </span>
                             </button>

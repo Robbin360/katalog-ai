@@ -15,7 +15,7 @@ export function AuthThemeToggle() {
             <button
                 aria-label="Change theme"
                 onClick={() => setTheme(isDark ? "light" : "dark")}
-                className="relative flex items-center w-[72px] h-9 bg-black/10 dark:bg-white/[0.05] backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full transition-all duration-500 cursor-pointer shadow-lg p-1 overflow-hidden"
+                className="relative notranslate flex items-center w-[72px] h-9 bg-black/10 dark:bg-white/[0.05] backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full transition-all duration-500 cursor-pointer shadow-lg p-1 overflow-hidden"
             >
                 {/* Sliding Knob */}
                 <div

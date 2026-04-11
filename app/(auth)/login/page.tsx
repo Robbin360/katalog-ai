@@ -80,7 +80,7 @@ export default function LoginPage() {
                             className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-[#d4d4d8]/40 hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                             aria-label="Toggle password visibility"
                         >
-                            <span className="material-symbols-outlined text-[20px]">
+                            <span className="material-symbols-outlined text-[20px] notranslate">
                                 {showPassword ? "visibility_off" : "visibility"}
                             </span>
                         </button>

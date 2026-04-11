@@ -37,6 +37,8 @@ export async function proxy(request: NextRequest) {
         path.startsWith('/signup') ||
         path.startsWith('/forgot-password') ||
         path.startsWith('/update-password') ||
+        path.startsWith('/privacy') ||
+        path.startsWith('/terms') ||
         path.startsWith('/auth') ||
         path.startsWith('/api');
 

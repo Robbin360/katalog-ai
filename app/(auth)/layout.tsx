@@ -151,7 +151,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                         {([
                             { label: "Privacy",  href: "/privacy"  },
                             { label: "Terms",    href: "/terms"    },
-                            { label: "Security", href: "/security" },
                         ] as const).map(({ label, href }) => (
                             <Link
                                 key={href}
@@ -163,7 +162,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                         ))}
                     </div>
                     <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-white/20 transition-colors duration-700">
-                        © 2024 Katalog AI. Secure Infrastructure.
+                        © {new Date().getFullYear()} <span className="notranslate">Katalog AI</span>. Secure Infrastructure.
                     </p>
                 </footer>
             </main>
