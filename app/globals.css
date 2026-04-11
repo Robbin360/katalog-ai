@@ -39,6 +39,18 @@
   
   --background-image-neural-glow: radial-gradient(circle at 50% 0%, rgba(16, 183, 127, 0.15) 0%, rgba(9, 9, 11, 0) 50%);
   --background-image-grid-pattern: linear-gradient(to right, #27272a 1px, transparent 1px), linear-gradient(to bottom, #27272a 1px, transparent 1px);
+  
+  --animate-fade-in: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 @layer base {

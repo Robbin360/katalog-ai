@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// En Next.js 16, la convención es 'proxy' en lugar de 'middleware'
 export async function proxy(request: NextRequest) {
     let response = NextResponse.next({
         request: {
@@ -33,6 +34,9 @@ export async function proxy(request: NextRequest) {
     const isPublicRoute =
         path === '/' ||
         path.startsWith('/login') ||
+        path.startsWith('/signup') ||
+        path.startsWith('/forgot-password') ||
+        path.startsWith('/update-password') ||
         path.startsWith('/auth') ||
         path.startsWith('/api');
 
@@ -43,8 +47,8 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
-    // Si está logueado y va a la Landing o al Login -> Al Dashboard
-    if (user && (path === '/' || path.startsWith('/login'))) {
+    // Si está logueado y va a la Landing o al Auth Suite -> Al Dashboard
+    if (user && (path === '/' || path.startsWith('/login') || path.startsWith('/signup') || path.startsWith('/forgot-password') || path.startsWith('/update-password'))) {
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
         return NextResponse.redirect(url)

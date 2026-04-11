@@ -13,15 +13,18 @@ export const Navbar = () => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link 
           href="/"
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center cursor-pointer"
+          translate="no"
         >
-          <div 
-            className="flex h-8 w-8 items-center justify-center rounded bg-primary/20 text-primary notranslate"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-dark.svg"
+            alt="Katalog AI"
+            draggable={false}
             translate="no"
-          >
-            <span className="material-symbols-outlined text-xl" translate="no" lang="zxx">auto_awesome</span>
-          </div>
-          <span className="text-lg font-bold tracking-tight text-white notranslate" translate="no">Katalog AI</span>
+            className="h-10 w-auto select-none"
+            style={{ objectFit: "contain" }}
+          />
         </Link>
         
         <div className="hidden md:flex items-center gap-8">
