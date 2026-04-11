@@ -19,7 +19,7 @@ import {
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { signout } from "@/app/login/actions"
+import { signout } from "@/app/(auth)/actions"
 import {
     Dialog,
     DialogContent,
