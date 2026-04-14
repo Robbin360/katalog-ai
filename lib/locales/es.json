@@ -10,16 +10,45 @@
             "title": "Cerebro de Marca",
             "subtitle": "Configura cómo la IA habla sobre tus productos.",
             "voice_title": "Voz y Tono",
+            "voice_subtitle": "¿Cómo suena tu marca cuando habla?",
             "voice_desc": "Define la personalidad de tus textos.",
-            "safety_title": "Seguridad y Restricciones",
-            "save_btn": "Guardar Configuración",
-            "tone_placeholder": "ej. Profesional, Ingenioso...",
-            "audience_placeholder": "ej. Gamers de la Generación Z",
-            "exclude_placeholder": "barato, descuento, baja calidad...",
-            "tone_label": "Tono",
+            "audience_title": "Público Objetivo",
+            "audience_subtitle": "¿Quién te compra principalmente?",
+            "buyer_type": "Tipo de comprador",
+            "lang_title": "Idioma y vocabulario",
+            "lang_subtitle": "Idioma del copy y palabras que la IA nunca debe usar.",
             "lang_label": "Idioma",
-            "audience_label": "Público Objetivo",
-            "exclude_label": "Palabras Prohibidas (CSV)"
+            "forbidden_label": "Palabras prohibidas",
+            "forbidden_placeholder": "Escribe y presiona Enter...",
+            "instruction_header": "Instrucción que recibe el agente",
+            "save_btn": "Guardar Brand Brain",
+            "saving_btn": "Guardando...",
+            "loading": "Cargando Brand Brain...",
+            "badge_default": "predeterminado",
+            "toasts": {
+                "success": "Brand Brain guardado",
+                "error": "Error al guardar. Intenta de nuevo."
+            },
+            "tones": {
+                "general": { "label": "General", "desc": "Adaptable a cualquier tipo de producto" },
+                "profesional": { "label": "Profesional", "desc": "Claro, directo, orientado a resultados" },
+                "cercano": { "label": "Cercano", "desc": "Amigable, accesible, sin tecnicismos" },
+                "técnico": { "label": "Técnico", "desc": "Especificaciones, datos, evidencia" },
+                "aspiracional": { "label": "Aspiracional", "desc": "Lifestyle, deseo, exclusividad" },
+                "urgente": { "label": "Urgente", "desc": "Ofertas, escasez, CTA fuerte" }
+            },
+            "audiences": {
+                "consumidor": { "label": "Consumidor final", "desc": "B2C — decisión rápida, emocional" },
+                "empresas": { "label": "Empresas", "desc": "B2B — decisión racional, ROI primero" },
+                "revendedor": { "label": "Revendedor", "desc": "Mayorista, distribuidor, volumen" },
+                "profesional": { "label": "Profesional", "desc": "Experto en el tema, valora precisión" }
+            },
+            "preview": {
+                "write": "Escribe copy en {{lang}} adaptando el tono al contexto de cada producto.",
+                "write_with_tone": "Escribe copy en {{lang}} con tono {{tone}} para {{audience}}.",
+                "public": "Audiencia: {{audience}}.",
+                "never": " Nunca uses: {{words}}."
+            }
         },
         "store": {
             "title": "Integraciones",

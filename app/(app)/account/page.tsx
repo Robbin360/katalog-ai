@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Brand } from "@/components/ui/brand"
+import { BrandBrainTab } from "@/components/account/BrandBrain"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -58,12 +59,6 @@ export default function AccountPage() {
     const [loadingCheckout, setLoadingCheckout] = useState(false)
     const [loadingPortal, setLoadingPortal] = useState(false)
 
-    // Estados del Formulario (Brand Brain)
-    const [tone, setTone] = useState("")
-    const [language, setLanguage] = useState("English")
-    const [audience, setAudience] = useState("General")
-    const [forbidden, setForbidden] = useState("")
-
     // Estados de Integración
     const [shopUrl, setShopUrl] = useState("")
     const [shopToken, setShopToken] = useState("")
@@ -92,44 +87,12 @@ export default function AccountPage() {
 
     // Sincronizar estado local
     useEffect(() => {
-        if (accountData?.rules) {
-            setTone(accountData.rules.tone_voice || "")
-            setLanguage(accountData.rules.language || "English")
-            setAudience(accountData.rules.target_audience || "")
-            setForbidden(accountData.rules.forbidden_words?.join(", ") || "")
-        }
         if (accountData?.integration) {
             setShopUrl(accountData.integration.shop_url || "")
         }
     }, [accountData])
 
     // --- ACCIONES ---
-
-    const handleSaveBrain = async () => {
-        setIsSaving(true)
-        try {
-            const userId = accountData?.user?.id
-            if (!userId) return
-
-            const forbiddenArray = forbidden.split(",").map(s => s.trim()).filter(s => s.length > 0)
-
-            const { error } = await supabase.from('brand_rules').upsert({
-                user_id: userId,
-                tone_voice: tone,
-                language: language,
-                target_audience: audience,
-                forbidden_words: forbiddenArray
-            }, { onConflict: 'user_id' })
-
-            if (error) throw error
-            alert(t('account.alerts.brain_updated'))
-            queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
-        } catch (error: any) {
-            alert(t('account.alerts.error_prefix') + error.message)
-        } finally {
-            setIsSaving(false)
-        }
-    }
 
     const handleSaveIntegration = async () => {
         setIsSaving(true)
@@ -234,51 +197,7 @@ export default function AccountPage() {
                             <p className="text-muted-foreground text-sm">{t('account.brain.subtitle')}</p>
                         </div>
 
-                        <Card className="bg-card border-border">
-                            <CardHeader>
-                                <CardTitle className="text-base text-card-foreground">{t('account.brain.voice_title')}</CardTitle>
-                                <CardDescription>{t('account.brain.voice_desc')}</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-muted-foreground">{t('account.brain.tone_label')}</Label>
-                                    <Input value={tone} onChange={(e) => setTone(e.target.value)} className="bg-background border-border text-foreground" placeholder={t('account.brand.tone_placeholder')} />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-muted-foreground">{t('account.brain.lang_label')}</Label>
-                                        <Input value={language} onChange={(e) => setLanguage(e.target.value)} className="bg-background border-border text-foreground" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-muted-foreground">{t('account.brain.audience_label')}</Label>
-                                        <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="bg-background border-border text-foreground" placeholder={t('account.brand.audience_placeholder')} />
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card border-border">
-                            <CardHeader>
-                                <CardTitle className="text-base text-card-foreground">Safety & Constraints</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-2">
-                                    <Label className="text-muted-foreground">Forbidden Words (CSV)</Label>
-                                    <Textarea
-                                        value={forbidden}
-                                        onChange={(e) => setForbidden(e.target.value)}
-                                        className="bg-background border-border min-h-[100px] text-foreground"
-                                        placeholder={t('account.brand.exclude_placeholder')}
-                                    />
-                                </div>
-                            </CardContent>
-                            <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
-                                <Button onClick={handleSaveBrain} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                                    Save Configuration
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                        <BrandBrainTab />
                     </div>
                 )}
 
