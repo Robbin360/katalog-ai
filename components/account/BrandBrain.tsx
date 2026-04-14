@@ -33,8 +33,8 @@ const TONES: { value: ToneVoice; label: string; desc: string; isDefault?: boolea
   { value: "urgente",      label: "Urgente",       desc: "Ofertas, escasez, CTA fuerte" },
 ]
 
-const AUDIENCES: { value: TargetAudience; label: string; desc: string }[] = [
-  { value: "consumidor",  label: "Consumidor final", desc: "B2C — decisión rápida, emocional" },
+const AUDIENCES: { value: TargetAudience; label: string; desc: string; isDefault?: boolean }[] = [
+  { value: "consumidor",  label: "Consumidor final", desc: "B2C — decisión rápida, emocional", isDefault: true },
   { value: "empresas",    label: "Empresas",          desc: "B2B — decisión racional, ROI primero" },
   { value: "revendedor",  label: "Revendedor",        desc: "Mayorista, distribuidor, volumen" },
   { value: "profesional", label: "Profesional",       desc: "Experto en el tema, valora precisión" },
@@ -125,7 +125,7 @@ function OptionCard({ label, desc, isDefault, active, onClick, t_badge }: {
       onClick={onClick}
       className={cn(
         "glass-card relative flex flex-col gap-1 rounded-xl border p-3 text-left transition-all duration-150",
-        active ? "border-primary bg-primary/10 shadow-glow" : "border-white/10 hover:border-white/20"
+        active ? "border-primary bg-primary/10 animate-active-pulse" : "border-white/10 hover:border-white/20"
       )}
     >
       {isDefault && (
@@ -255,8 +255,10 @@ export function BrandBrainTab() {
               key={a_meta.value}
               label={t(`account.brain.audiences.${a_meta.value}.label`)}
               desc={t(`account.brain.audiences.${a_meta.value}.desc`)}
+              isDefault={a_meta.isDefault}
               active={rules.target_audience === a_meta.value}
               onClick={() => patch({ target_audience: a_meta.value })}
+              t_badge={t('account.brain.badge_default')}
             />
           ))}
         </div>
