@@ -13,9 +13,10 @@ import { Brand } from "@/components/ui/brand"
 import { BrandBrainTab } from "@/components/account/BrandBrain"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
 import {
     User, BrainCircuit, Store, CreditCard, ArrowLeft,
-    Save, Loader2, Check, ExternalLink, LogOut, Calendar, Sun, Moon, Laptop
+    Save, Loader2, Check, ExternalLink, LogOut, Calendar, Sun, Moon, Laptop, Eye, EyeOff
 } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -62,18 +63,33 @@ export default function AccountPage() {
     // Estados de Integración
     const [shopUrl, setShopUrl] = useState("")
     const [shopToken, setShopToken] = useState("")
+    const [showToken, setShowToken] = useState(true) // Visible por defecto para verificar al pegar
 
     // 1. FETCH DATOS GLOBAL
-    const { data: accountData, isLoading } = useQuery({
+    const { data: accountData, isLoading, isError } = useQuery({
         queryKey: ['account-data-full'],
+        retry: 1,
+        staleTime: 1000 * 60 * 5, // Previene refetch agresivo al volver con el botón "Atrás"
         queryFn: async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) throw new Error("No user")
 
             const [profileReq, rulesReq, integrationReq] = await Promise.all([
-                supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-                supabase.from('brand_rules').select('*').eq('user_id', user.id).maybeSingle(),
-                supabase.from('integrations').select('*').eq('user_id', user.id).eq('provider', 'shopify').maybeSingle()
+                supabase.from('profiles')
+                    .select('id, plan_tier, onboarding_dismissed, auto_pilot_enabled, full_name, email')
+                    .eq('id', user.id)
+                    .maybeSingle(),
+                
+                supabase.from('brand_rules')
+                    .select('id, tone_voice, target_audience, language, forbidden_words')
+                    .eq('user_id', user.id)
+                    .maybeSingle(),
+                
+                supabase.from('integrations')
+                    .select('id, provider, shop_url')
+                    .eq('user_id', user.id)
+                    .eq('provider', 'shopify')
+                    .maybeSingle()
             ])
 
             return {
@@ -116,10 +132,10 @@ export default function AccountPage() {
             }, { onConflict: 'user_id, provider' })
 
             if (error) throw error
-            alert(t('account.alerts.shopify_connected'))
+            toast.success("Tienda Conectada exitosamente", { description: "Tus productos e inventario ahora están listos para ser sincronizados." })
             queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
         } catch (error: any) {
-            alert(t('account.alerts.error_prefix') + error.message)
+            toast.error("Error al conectar la tienda", { description: error.message })
         } finally {
             setIsSaving(false)
         }
@@ -134,8 +150,12 @@ export default function AccountPage() {
                 body: JSON.stringify({ priceId })
             })
             const data = await response.json()
-            if (data.url) window.location.href = data.url
-            else alert(t('account.alerts.payment_error'))
+            if (data.url) {
+                // Abrimos Stripe en nueva pestaña para no destruir el router de Next.js
+                window.open(data.url, '_blank', 'noopener,noreferrer')
+            } else {
+                alert(t('account.alerts.payment_error'))
+            }
         } catch (error) {
             alert(t('account.alerts.connection_error'))
         } finally {
@@ -148,8 +168,12 @@ export default function AccountPage() {
         try {
             const response = await fetch('/api/portal', { method: 'POST' })
             const data = await response.json()
-            if (data.url) window.location.href = data.url
-            else alert(t('account.alerts.no_subscription'))
+            if (data.url) {
+                // Abrimos Stripe en nueva pestaña para no destruir el router de Next.js
+                window.open(data.url, '_blank', 'noopener,noreferrer')
+            } else {
+                alert(t('account.alerts.no_subscription'))
+            }
         } catch (error) {
             alert(t('account.alerts.portal_error'))
         } finally {
@@ -177,6 +201,7 @@ export default function AccountPage() {
     }
 
     if (isLoading) return <div className="h-screen bg-background flex items-center justify-center text-muted-foreground"><Loader2 className="w-6 h-6 animate-spin" /></div>
+    if (isError) return <div className="h-screen bg-background flex flex-col items-center justify-center space-y-4 text-muted-foreground"><p>Error connecting to database.</p><Button onClick={() => window.location.reload()} variant="outline">Refresh Page</Button></div>
 
     const { user, profile } = accountData || {}
     const plan = profile?.plan_tier || 'starter'
@@ -209,38 +234,59 @@ export default function AccountPage() {
                             <p className="text-muted-foreground text-sm">{t('account.store.subtitle')}</p>
                         </div>
 
-                        <Card className="bg-card border-border">
-                            <CardHeader>
+                        <Card className="bg-card border-border shadow-2xl overflow-hidden relative">
+                            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                            <CardHeader className="border-b border-border bg-muted/30 pb-6">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-                                            <Store className="w-6 h-6 text-emerald-500" />
+                                        <div className="p-3 bg-muted rounded-xl border border-border shadow-inner relative flex items-center justify-center">
+                                            {/* White background pill to fill the transparent 'S' cut-out of the SVG */}
+                                            <div className="absolute w-[10px] h-[14px] bg-white dark:bg-white rounded-full mt-2 z-0" />
+                                            <img src="https://cdn.simpleicons.org/shopify/95BF47" alt="Shopify Logo" className="w-6 h-6 object-contain select-none relative z-10" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-base text-card-foreground">Shopify</CardTitle>
-                                            <CardDescription>{t('account.store.shopify_desc')}</CardDescription>
+                                            <CardTitle className="text-xl text-foreground font-bold tracking-tight">Shopify Integration</CardTitle>
+                                            <CardDescription className="text-muted-foreground mt-1">Connect your store via Admin API to sync products and inventory.</CardDescription>
                                         </div>
                                     </div>
                                     {accountData?.integration ? (
-                                        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Connected</Badge>
+                                        <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 px-3 py-1 font-medium tracking-wide">Connected</Badge>
                                     ) : (
-                                        <Badge variant="outline" className="text-muted-foreground border-border">Not Connected</Badge>
+                                        <Badge variant="outline" className="text-muted-foreground border-border bg-muted/50 px-3 py-1 font-medium tracking-wide">Not Connected</Badge>
                                     )}
                                 </div>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-muted-foreground">{t('account.store.url_label')}</Label>
-                                    <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder={t('account.store.url_placeholder')} className="bg-background border-border text-foreground" />
+                            <CardContent className="space-y-6 pt-6">
+                                <div className="space-y-3">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Store URL</Label>
+                                    <div className="flex items-center rounded-lg border border-border bg-muted/50 overflow-hidden focus-within:ring-1 focus-within:ring-ring focus-within:border-ring transition-all">
+                                        <div className="bg-muted px-3 flex items-center justify-center h-11 border-r border-border pointer-events-none select-none">
+                                            <span className="text-muted-foreground font-mono text-sm leading-none">https://</span>
+                                        </div>
+                                        <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder="mi-tienda.myshopify.com" className="bg-transparent border-0 text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0 px-3 h-11 shadow-none w-full rounded-none font-mono text-sm" />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-muted-foreground">{t('account.store.token_label')}</Label>
-                                    <Input type="password" value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder={t('account.store.token_placeholder')} className="bg-background border-border text-foreground" />
+                                <div className="space-y-3">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Admin API Access Token</Label>
+                                    <div className="flex items-center rounded-lg border border-border bg-muted/50 overflow-hidden focus-within:ring-1 focus-within:ring-ring focus-within:border-ring transition-all">
+                                        <Input type={showToken ? "text" : "password"} value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder="shpat_....................." className="bg-transparent border-0 text-foreground placeholder:text-muted-foreground/50 font-mono focus-visible:ring-0 focus-visible:ring-offset-0 px-3 h-11 shadow-none w-full rounded-none" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowToken(!showToken)}
+                                            className="px-3 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                                            aria-label={showToken ? "Hide token" : "Show token"}
+                                        >
+                                            {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
+                                    <p className="text-[11px] text-muted-foreground font-medium tracking-wide">
+                                        Ensure token has read/write permissions for <span className="text-foreground/70 font-mono">Products</span> and <span className="text-foreground/70 font-mono">Inventory</span>.
+                                    </p>
                                 </div>
                             </CardContent>
-                            <CardFooter className="bg-muted/50 border-t border-border p-4 flex justify-end">
-                                <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : t('account.store.connect_btn')}
+                            <CardFooter className="bg-muted/40 border-t border-border p-6 flex justify-end">
+                                <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-[#95bf47] text-white hover:bg-[#7a9d36] font-bold px-8 h-11 shadow-[0_0_15px_rgba(149,191,71,0.2)] transition-all">
+                                    {isSaving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Connecting...</> : "Connect Store"}
                                 </Button>
                             </CardFooter>
                         </Card>

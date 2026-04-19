@@ -124,22 +124,24 @@ function OptionCard({ label, desc, isDefault, active, onClick, t_badge }: {
       type="button"
       onClick={onClick}
       className={cn(
-        "glass-card relative flex flex-col gap-1 rounded-xl border p-3 text-left transition-all duration-150",
-        active ? "border-primary bg-primary/10 animate-active-pulse" : "border-white/10 hover:border-white/20"
+        "relative flex flex-col gap-1 rounded-xl border p-3 text-left transition-all duration-150",
+        active
+          ? "border-primary bg-primary/10 animate-active-pulse"
+          : "border-border hover:border-border/80 bg-card"
       )}
     >
       {isDefault && (
         <span className={cn(
           "absolute right-2 top-2 rounded-full border px-2 py-0.5 text-[10px]",
-          active ? "border-primary/40 text-primary" : "border-white/10 text-white/30"
+          active ? "border-primary/40 text-primary" : "border-border text-muted-foreground/50"
         )}>
           {t_badge || "default"}
         </span>
       )}
-      <span className={cn("text-sm font-medium", active ? "text-primary" : "text-white/80")}>
+      <span className={cn("text-sm font-medium", active ? "text-primary" : "text-foreground/80")}>
         {label}
       </span>
-      <span className="text-xs text-white/40 leading-snug">{desc}</span>
+      <span className="text-xs text-muted-foreground leading-snug">{desc}</span>
     </button>
   )
 }
@@ -155,7 +157,7 @@ function PillOption({ label, active, onClick }: {
         "rounded-full border px-4 py-1.5 text-xs transition-all duration-150",
         active
           ? "border-primary bg-primary/10 text-primary"
-          : "border-white/10 text-white/40 hover:border-white/20 hover:text-white/60"
+          : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground/60"
       )}
     >
       {label}
@@ -213,7 +215,7 @@ export function BrandBrainTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <span className="text-sm text-white/30">{t('account.brain.loading')}</span>
+        <span className="text-sm text-muted-foreground">{t('account.brain.loading')}</span>
       </div>
     )
   }
@@ -221,10 +223,10 @@ export function BrandBrainTab() {
   return (
     <div className="space-y-4 max-w-full">
 
-      <div className="glass-card rounded-2xl border border-white/10 p-5 space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
         <div>
-          <p className="text-sm font-medium text-white/80">{t('account.brain.voice_title')}</p>
-          <p className="text-xs text-white/40 mt-0.5">{t('account.brain.voice_subtitle')}</p>
+          <p className="text-sm font-medium text-foreground/80">{t('account.brain.voice_title')}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('account.brain.voice_subtitle')}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
           {TONES.map((t_meta) => (
@@ -241,12 +243,12 @@ export function BrandBrainTab() {
         </div>
       </div>
 
-      <div className="glass-card rounded-2xl border border-white/10 p-5 space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
         <div>
-          <p className="text-sm font-medium text-white/80">{t('account.brain.audience_title')}</p>
-          <p className="text-xs text-white/40 mt-0.5">{t('account.brain.audience_subtitle')}</p>
+          <p className="text-sm font-medium text-foreground/80">{t('account.brain.audience_title')}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('account.brain.audience_subtitle')}</p>
         </div>
-        <Label className="text-[11px] uppercase tracking-widest text-white/25 block">
+        <Label className="text-[11px] uppercase tracking-widest text-muted-foreground/50 block">
           {t('account.brain.buyer_type')}
         </Label>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
@@ -264,13 +266,13 @@ export function BrandBrainTab() {
         </div>
       </div>
 
-      <div className="glass-card rounded-2xl border border-white/10 p-5 space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
         <div>
-          <p className="text-sm font-medium text-white/80">{t('account.brain.lang_title')}</p>
-          <p className="text-xs text-white/40 mt-0.5">{t('account.brain.lang_subtitle')}</p>
+          <p className="text-sm font-medium text-foreground/80">{t('account.brain.lang_title')}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('account.brain.lang_subtitle')}</p>
         </div>
         <div>
-          <Label className="text-[11px] uppercase tracking-widest text-white/25 mb-2 block">
+          <Label className="text-[11px] uppercase tracking-widest text-muted-foreground/50 mb-2 block">
             {t('account.brain.lang_label')}
           </Label>
           <div className="flex flex-wrap gap-2">
@@ -285,21 +287,21 @@ export function BrandBrainTab() {
           </div>
         </div>
         <div>
-          <Label className="text-[11px] uppercase tracking-widest text-white/25 mb-2 block">
+          <Label className="text-[11px] uppercase tracking-widest text-muted-foreground/50 mb-2 block">
             {t('account.brain.forbidden_label')}
           </Label>
-          <div className="glass-card flex flex-wrap gap-1.5 rounded-xl border border-white/10 p-2.5 min-h-[44px] items-center">
+          <div className="flex flex-wrap gap-1.5 rounded-xl border border-border bg-muted/30 p-2.5 min-h-[44px] items-center">
             {rules.forbidden_words.map((word) => (
               <Badge
                 key={word}
                 variant="secondary"
-                className="flex items-center gap-1 bg-white/8 text-white/60 border-white/10 text-xs font-normal"
+                className="flex items-center gap-1 bg-muted text-foreground/60 border-border text-xs font-normal"
               >
                 {word}
                 <button
                   type="button"
                   onClick={() => removeTag(word)}
-                  className="ml-0.5 text-white/30 hover:text-white/70 transition-colors leading-none"
+                  className="ml-0.5 text-muted-foreground hover:text-foreground transition-colors leading-none"
                 >
                   ×
                 </button>
@@ -311,17 +313,17 @@ export function BrandBrainTab() {
               onKeyDown={handleTagKeyDown}
               onBlur={addTag}
               placeholder={t('account.brain.forbidden_placeholder')}
-              className="h-auto flex-1 min-w-[140px] border-none bg-transparent p-0 text-xs text-white/60 placeholder:text-white/20 focus-visible:ring-0 shadow-none"
+              className="h-auto flex-1 min-w-[140px] border-none bg-transparent p-0 text-xs text-foreground/60 placeholder:text-muted-foreground/40 focus-visible:ring-0 shadow-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/8 bg-white/3 px-4 py-3">
-        <p className="text-[11px] uppercase tracking-widest text-white/20 mb-1.5">
+      <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
+        <p className="text-[11px] uppercase tracking-widest text-muted-foreground/40 mb-1.5">
           {t('account.brain.instruction_header')}
         </p>
-        <p className="text-xs text-white/45 leading-relaxed italic">
+        <p className="text-xs text-muted-foreground leading-relaxed italic">
           {buildPreview(rules, t)}
         </p>
       </div>

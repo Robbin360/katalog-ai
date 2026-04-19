@@ -10,7 +10,7 @@ import {
     TrendingDown, Activity, Zap, Search, Filter, ArrowUpRight,
     AlertCircle, CheckCircle2, Clock, Loader2, Copy,
     Store, Rocket, BrainCircuit, X, Check, RefreshCw,
-    Settings, CreditCard, LogOut
+    Settings, CreditCard, LogOut, PackageOpen
 } from 'lucide-react';
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n-context";
@@ -234,7 +234,25 @@ export default function DashboardPage() {
     const { t } = useI18n();
     const [searchTerm, setSearchTerm] = useState('');
     const [isSyncing, setIsSyncing] = useState(false);
+    const [inspectingId, setInspectingId] = useState<string | null>(null);
     const queryClient = useQueryClient();
+
+    // --- QUERY: DETALLES DE PRODUCTO (LAZY LOADING) ---
+    const { data: productDetail, isLoading: isLoadingDetail } = useQuery({
+        queryKey: ['product-detail', inspectingId],
+        queryFn: async () => {
+            if (!inspectingId) return null
+            const { data, error } = await supabase
+                .from('shopify_products')
+                .select('id, current_body_html, ai_proposal')
+                .eq('id', inspectingId)
+                .single()
+            if (error) throw error
+            return data
+        },
+        enabled: !!inspectingId,
+        staleTime: 1000 * 60 * 5 // 5 minutos de cache
+    })
 
     const { data: dashboardData, isLoading } = useQuery({
         queryKey: ['dashboard-full'],
@@ -242,18 +260,45 @@ export default function DashboardPage() {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) return null
 
-            const { data: products } = await supabase.from('shopify_products').select('id, shopify_id, current_title, current_body_html, audit_status, audit_score, image_url, ai_proposal, created_at').order('created_at', { ascending: false })
-            const { data: profile } = await supabase.from('profiles').select('plan_tier, onboarding_dismissed, auto_pilot_enabled').eq('id', user.id).single()
-            const { count: shopifyCount } = await supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('provider', 'shopify')
-            const { count: integrationCount } = await supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
-            const { count: queuedCount } = await supabase.from('shopify_products').select('*', { count: 'exact', head: true }).eq('audit_status', 'PENDING_AUDIT')
-            const { data: brandRules } = await supabase.from('brand_rules').select('tone_voice, forbidden_words').eq('user_id', user.id).maybeSingle()
+            // Ejecutamos todas las consultas en paralelo para máxima velocidad
+            const [
+                productsReq,
+                profileReq,
+                shopifyCountReq,
+                integrationCountReq,
+                queuedCountReq,
+                brandRulesReq
+            ] = await Promise.all([
+                // Consulta ligera: sin HTML pesado ni JSONs grandes, con límite de 50
+                supabase.from('shopify_products')
+                    .select('id, shopify_id, current_title, audit_status, audit_score, image_url, created_at, inventory_quantity, sales_last_7_days')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false })
+                    .limit(50),
+                
+                supabase.from('profiles').select('plan_tier, onboarding_dismissed, auto_pilot_enabled').eq('id', user.id).single(),
+                
+                supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('provider', 'shopify'),
+                
+                supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+                
+                supabase.from('shopify_products').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('audit_status', 'PENDING_AUDIT'),
+                
+                supabase.from('brand_rules').select('tone_voice, forbidden_words').eq('user_id', user.id).maybeSingle()
+            ])
+
+            const products = productsReq.data || []
+            const profile = profileReq.data
+            const shopifyCount = shopifyCountReq.count
+            const integrationCount = integrationCountReq.count
+            const queuedCount = queuedCountReq.count
+            const brandRules = brandRulesReq.data
 
             return {
-                products: products || [],
+                products,
                 userStatus: {
                     dismissed: profile?.onboarding_dismissed || false,
-                    isPro: profile?.plan_tier === 'pro' || profile?.plan_tier === 'business', // Added business plan check
+                    isPro: profile?.plan_tier === 'pro' || profile?.plan_tier === 'business',
                     hasShopify: (shopifyCount || 0) > 0,
                     hasProducts: (products?.length || 0) > 0
                 },
@@ -266,7 +311,7 @@ export default function DashboardPage() {
                 }
             }
         },
-        refetchInterval: 5000
+        refetchInterval: 30000 // Aumentado a 30s para evitar saturación
     })
 
     const dismissOnboarding = async () => {
@@ -286,7 +331,7 @@ export default function DashboardPage() {
         return {
             id: p.id,
             shopifyId: p.shopify_id,
-            title: p.current_title || "Untitled Product",
+            current_title: p.current_title || "Untitled Product",
             image: p.image_url,
             status: p.audit_status,
             healthScore: p.audit_score || 0,
@@ -294,7 +339,9 @@ export default function DashboardPage() {
             currentBodyHtml: p.current_body_html,
             aiProposal: proposal,
             createdAt: new Date(p.created_at).toLocaleDateString(),
-            platform: 'Shopify'
+            platform: 'Shopify',
+            inventoryQuantity: p.inventory_quantity || 0,
+            salesLast7Days: p.sales_last_7_days || 0
         }
     }) || []
 
@@ -307,7 +354,7 @@ export default function DashboardPage() {
     const healthPercentage = totalCount > 0 ? Math.round((optimizedCount / totalCount) * 100) : 0
     const revenueAtRisk = unoptimizedCount * 50
 
-    const filteredProducts = unoptimizedProducts.filter((p) => p.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredProducts = unoptimizedProducts.filter((p) => p.current_title.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleSync = async () => {
         setIsSyncing(true);
@@ -424,7 +471,8 @@ export default function DashboardPage() {
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12">Asset</TableHead>
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center">Status</TableHead>
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 hidden md:table-cell">Quality Score</TableHead>
-                            <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-right hidden md:table-cell">Est. Loss</TableHead>
+                            <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center hidden md:table-cell">Stock</TableHead>
+                            <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center hidden md:table-cell">Ventas (7d)</TableHead>
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-right">Inspect</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -435,13 +483,14 @@ export default function DashboardPage() {
                                     <TableCell className="py-4"><div className="flex items-center gap-3"><Skeleton className="h-10 w-10 rounded-md" /><div className="space-y-2"><Skeleton className="h-4 w-[150px]" /><Skeleton className="h-3 w-[80px]" /></div></div></TableCell>
                                     <TableCell><Skeleton className="h-5 w-[80px] rounded-full" /></TableCell>
                                     <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                                    <TableCell className="text-right"><Skeleton className="h-4 w-[50px] ml-auto" /></TableCell>
+                                    <TableCell className="text-center hidden md:table-cell"><Skeleton className="h-4 w-[40px] mx-auto" /></TableCell>
+                                    <TableCell className="text-center hidden md:table-cell"><Skeleton className="h-4 w-[40px] mx-auto" /></TableCell>
                                     <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-md ml-auto" /></TableCell>
                                 </TableRow>
                             ))
                         ) : filteredProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent border-none">
-                                <TableCell colSpan={5} className="p-0 border-none">
+                                <TableCell colSpan={6} className="p-0 border-none">
                                     <div className="flex flex-col items-center justify-center min-h-[450px] w-full py-16 px-6">
                                         <div className="flex flex-col items-center text-center max-w-md w-full animate-in fade-in zoom-in-95 duration-500">
                                             <div className="relative mb-8">
@@ -466,10 +515,10 @@ export default function DashboardPage() {
                                 <TableCell className="py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="h-10 w-10 rounded-md overflow-hidden border border-border bg-muted shrink-0">
-                                            {product.image ? <img src={product.image} alt={product.title} className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="h-full w-full bg-muted" />}
+                                            {product.image ? <img src={product.image} alt={product.current_title} className="h-full w-full object-contain" referrerPolicy="no-referrer" /> : <div className="h-full w-full bg-muted" />}
                                         </div>
                                         <div className="flex flex-col min-w-0">
-                                            <span className="font-medium text-foreground truncate max-w-[200px]">{product.title}</span>
+                                            <span className="font-medium text-foreground truncate max-w-[200px]">{product.current_title}</span>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[10px] text-muted-foreground font-mono truncate max-w-[120px]">REF: {product.shopifyId}</span>
                                                 <span className={`text-[10px] font-bold md:hidden ${product.healthScore >= 80 ? 'text-emerald-500' : 'text-red-500'}`}>{product.healthScore}% Score</span>
@@ -488,14 +537,38 @@ export default function DashboardPage() {
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell font-mono text-zinc-300">{product.revenueImpact > 0 ? `-$${product.revenueImpact}` : '—'}</TableCell>
+                                <TableCell className="hidden md:table-cell text-center">
+                                    <div className="flex items-center justify-center gap-2">
+                                        <PackageOpen className={`w-4 h-4 ${(product.inventoryQuantity > 20 && product.salesLast7Days < 5) ? 'text-red-500' : 'text-zinc-500'}`} />
+                                        <span className={`text-sm font-mono ${(product.inventoryQuantity > 20 && product.salesLast7Days < 5) ? 'text-red-400 font-bold' : 'text-zinc-300'}`}>
+                                            {product.inventoryQuantity}
+                                        </span>
+                                    </div>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell text-center">
+                                    <div className="flex items-center justify-center gap-2">
+                                        {(product.inventoryQuantity > 20 && product.salesLast7Days < 5) && <TrendingDown className="w-4 h-4 text-red-500 animate-pulse" />}
+                                        <span className={`text-sm font-mono ${(product.inventoryQuantity > 20 && product.salesLast7Days < 5) ? 'text-red-400 font-bold' : 'text-zinc-300'}`}>
+                                            {product.salesLast7Days}
+                                        </span>
+                                    </div>
+                                </TableCell>
                                 <TableCell className="text-right">
-                                    <Sheet>
-                                        <SheetTrigger asChild><Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent"><ArrowUpRight className="h-4 w-4" /></Button></SheetTrigger>
+                                    <Sheet onOpenChange={(open) => !open && setInspectingId(null)}>
+                                        <SheetTrigger asChild>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm" 
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent"
+                                                onClick={() => setInspectingId(product.id)}
+                                            >
+                                                <ArrowUpRight className="h-4 w-4" />
+                                            </Button>
+                                        </SheetTrigger>
                                         <SheetContent className="bg-card border-border text-foreground sm:max-w-2xl overflow-y-auto">
                                             <SheetHeader className="space-y-4">
                                                 <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border">REF: {product.shopifyId}</Badge></div>
-                                                <SheetTitle className="text-xl font-bold text-foreground">{product.title}</SheetTitle>
+                                                <SheetTitle className="text-xl font-bold text-foreground">{product.current_title}</SheetTitle>
                                                 <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" referrerPolicy="no-referrer" />}</div>
                                             </SheetHeader>
                                             <div className="mt-8 space-y-6">
@@ -509,14 +582,22 @@ export default function DashboardPage() {
                                                                     <div className="w-1.5 h-1.5 rounded-full bg-zinc-500"></div>
                                                                     Estado Actual
                                                                 </h4>
-                                                                <div className="p-4 rounded-xl border border-border bg-muted/20 min-h-[200px]">
-                                                                    <div className="prose prose-invert dark:prose-invert text-xs text-muted-foreground font-light leading-relaxed">
-                                                                        <div dangerouslySetInnerHTML={{ 
-                                                                            __html: product.currentBodyHtml 
-                                                                                ? DOMPurify.sanitize(product.currentBodyHtml) 
-                                                                                : "<p>Sin descripción.</p>" 
-                                                                        }} />
-                                                                    </div>
+                                                                <div className="p-4 rounded-xl border border-border bg-muted/20 min-h-[200px] flex flex-col">
+                                                                    {isLoadingDetail ? (
+                                                                        <div className="flex-1 flex flex-col gap-2">
+                                                                            <Skeleton className="h-4 w-full" />
+                                                                            <Skeleton className="h-4 w-3/4" />
+                                                                            <Skeleton className="h-4 w-5/6" />
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className="prose prose-invert dark:prose-invert text-xs text-muted-foreground font-light leading-relaxed">
+                                                                            <div dangerouslySetInnerHTML={{ 
+                                                                                __html: productDetail?.current_body_html 
+                                                                                    ? DOMPurify.sanitize(productDetail.current_body_html) 
+                                                                                    : "<p>Sin descripción.</p>" 
+                                                                            }} />
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
 
@@ -527,18 +608,24 @@ export default function DashboardPage() {
                                                                     Propuesta IA
                                                                 </h4>
                                                                 <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 min-h-[200px] relative overflow-hidden group">
-                                                                    {product.status === 'OPTIMIZED' || product.aiProposal?.new_title ? (
+                                                                    {isLoadingDetail ? (
+                                                                        <div className="flex-1 flex flex-col gap-2">
+                                                                            <Skeleton className="h-4 w-full" />
+                                                                            <Skeleton className="h-4 w-3/4" />
+                                                                            <Skeleton className="h-4 w-5/6" />
+                                                                        </div>
+                                                                    ) : product.status === 'OPTIMIZED' || productDetail?.ai_proposal?.new_title ? (
                                                                         <div className="space-y-4">
                                                                             <div className="space-y-1">
                                                                                 <p className="text-[10px] text-indigo-400 font-bold">NUEVO TÍTULO</p>
-                                                                                <p className="text-sm text-foreground font-semibold leading-tight">{product.aiProposal.new_title}</p>
+                                                                                <p className="text-sm text-foreground font-semibold leading-tight">{productDetail?.ai_proposal?.new_title}</p>
                                                                             </div>
                                                                             <div className="space-y-1">
                                                                                 <p className="text-[10px] text-indigo-400 font-bold">CONTENIDO OPTIMIZADO</p>
                                                                                 <div className="prose prose-invert dark:prose-invert text-xs text-zinc-300 font-light leading-relaxed">
                                                                                     <div dangerouslySetInnerHTML={{ 
-                                                                                        __html: product.aiProposal.new_body_html 
-                                                                                            ? DOMPurify.sanitize(product.aiProposal.new_body_html) 
+                                                                                        __html: productDetail?.ai_proposal?.new_body_html 
+                                                                                            ? DOMPurify.sanitize(productDetail.ai_proposal.new_body_html) 
                                                                                             : "<p>Generando propuesta...</p>" 
                                                                                     }} />
                                                                                 </div>
@@ -562,12 +649,18 @@ export default function DashboardPage() {
                                                             </div>
                                                         </div>
                                                     </TabsContent>
-                                                    <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(product.aiProposal, null, 2)}</pre></TabsContent>
+                                                    <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(productDetail?.ai_proposal, null, 2)}</pre></TabsContent>
                                                 </Tabs>
                                             </div>
                                             <SheetFooter className="mt-10">
-                                                {product.status === 'OPTIMIZED' ? (
-                                                    <Button className="w-full bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => { navigator.clipboard.writeText(product.aiProposal.new_body_html); toast.success("Copiado al portapapeles") }}>
+                                                {product.status === 'OPTIMIZED' && productDetail?.ai_proposal?.new_body_html ? (
+                                                    <Button 
+                                                        className="w-full bg-emerald-600 text-white hover:bg-emerald-700" 
+                                                        onClick={() => { 
+                                                            navigator.clipboard.writeText(productDetail.ai_proposal.new_body_html); 
+                                                            toast.success("Copiado al portapapeles") 
+                                                        }}
+                                                    >
                                                         <Check className="mr-2 h-4 w-4" /> Aplicar Cambios en Shopify
                                                     </Button>
                                                 ) : product.status === 'PENDING_AUDIT' ? (

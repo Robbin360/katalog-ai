@@ -95,7 +95,7 @@ export default function InventoryPage() {
                 return {
                     id: p.id,
                     shopifyId: p.shopify_id,
-                    title: p.current_title || "Untitled Product",
+                    current_title: p.current_title || "Untitled Product",
                     image: p.image_url,
                     status: p.audit_status,
                     healthScore: p.audit_score || 0,
@@ -128,7 +128,7 @@ export default function InventoryPage() {
 
     // --- FILTERING ---
     const filteredProducts = products?.filter((product: Product) => {
-        const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesSearch = product.current_title.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesStatus = statusFilter === 'all' || product.status === statusFilter
         return matchesSearch && matchesStatus
     }) || []
@@ -236,8 +236,8 @@ export default function InventoryPage() {
                                             {product.image ? (
                                                 <img
                                                     src={product.image}
-                                                    alt={product.title}
-                                                    className="h-full w-full object-cover"
+                                                    alt={product.current_title}
+                                                    className="h-full w-full object-contain"
                                                     referrerPolicy="no-referrer"
                                                 />
                                             ) : (
@@ -248,8 +248,8 @@ export default function InventoryPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="font-medium text-foreground truncate max-w-[280px]" title={product.title}>
-                                            {product.title}
+                                        <div className="font-medium text-foreground truncate max-w-[280px]" title={product.current_title}>
+                                            {product.current_title}
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div className="text-[10px] text-muted-foreground truncate max-w-[120px]">

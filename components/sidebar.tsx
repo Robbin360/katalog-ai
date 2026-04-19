@@ -8,7 +8,7 @@ import {
     LayoutDashboard,
     Package,
     BrainCircuit,
-    Settings,
+    User,
     ChevronLeft,
     ChevronRight,
     TrendingUp,
@@ -58,7 +58,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
 
     const footerItems = [
         { name: t('nav.billing'), icon: CreditCard, href: '/account?tab=billing' },
-        { name: t('nav.settings'), icon: Settings, href: '/account?tab=profile' },
+        { name: t('nav.profile'), icon: User, href: '/account?tab=profile' },
     ]
 
     const toggleSidebar = () => {
@@ -217,10 +217,13 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
                         </Button>
                     )}
 
-                    <div className={cn(
-                        "flex items-center gap-3 p-2 rounded-xl transition-colors hover:bg-accent group cursor-pointer",
-                        isCollapsed && "justify-center"
-                    )}>
+                    <Link
+                        href="/account?tab=profile"
+                        className={cn(
+                            "flex items-center gap-3 p-2 rounded-xl transition-colors hover:bg-accent group",
+                            isCollapsed && "justify-center"
+                        )}
+                    >
                         <Avatar className="h-9 w-9 shrink-0">
                             <AvatarImage src={user?.user_metadata?.avatar_url} />
                             <AvatarFallback className="bg-primary text-primary-foreground text-xs">{initials}</AvatarFallback>
@@ -231,7 +234,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
                                 <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
                             </div>
                         )}
-                    </div>
+                    </Link>
                 </div>
             </aside>
         </TooltipProvider>

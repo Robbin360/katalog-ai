@@ -9,7 +9,7 @@ import {
     LayoutDashboard,
     Package,
     BrainCircuit,
-    Settings,
+    User,
     CreditCard,
     Zap,
     Menu,
@@ -53,7 +53,7 @@ export function MobileNav({ user }: MobileNavProps) {
 
     const footerItems = [
         { name: t('nav.billing'), icon: CreditCard, href: '/account?tab=billing' },
-        { name: t('nav.settings'), icon: Settings, href: '/account?tab=profile' },
+        { name: t('nav.profile'), icon: User, href: '/account?tab=profile' },
     ]
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
@@ -150,7 +150,11 @@ export function MobileNav({ user }: MobileNavProps) {
                         </Button>
                     )}
 
-                    <div className="flex items-center gap-3 p-2 rounded-xl bg-accent/50 border border-border/50">
+                    <Link
+                        href="/account?tab=profile"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-3 p-2 rounded-xl bg-accent/50 border border-border/50 hover:bg-accent transition-colors"
+                    >
                         <Avatar className="h-9 w-9 shrink-0">
                             <AvatarImage src={user?.user_metadata?.avatar_url} />
                             <AvatarFallback className="bg-primary text-primary-foreground text-xs">{initials}</AvatarFallback>
@@ -159,7 +163,7 @@ export function MobileNav({ user }: MobileNavProps) {
                             <span className="text-sm font-medium text-foreground truncate">{displayName}</span>
                             <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </SheetContent>
         </Sheet>

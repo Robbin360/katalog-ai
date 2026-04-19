@@ -3,7 +3,7 @@ export type ProductStatus = 'PENDING_AUDIT' | 'NEEDS_REVIEW' | 'OPTIMIZED' | 'ID
 export interface Product {
     id: string;
     shopifyId: string;
-    title: string;
+    current_title: string;
     image: string | null;
     status: string; // Dynamic string for audit_status
     healthScore: number;
