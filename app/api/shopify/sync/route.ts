@@ -132,7 +132,6 @@ export async function POST(req: Request) {
       return {
         user_id: user.id,
         shopify_id: numericId,
-        title: p.title,
         current_title: p.title,
         current_body_html: p.descriptionHtml,
         vendor: p.vendor,
