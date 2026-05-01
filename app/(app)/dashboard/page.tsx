@@ -230,11 +230,14 @@ const StatusBadge = ({ status }: { status: string }) => {
 
 // --- MAIN PAGE ---
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+
 export default function DashboardPage() {
     const { t } = useI18n();
     const [searchTerm, setSearchTerm] = useState('');
     const [isSyncing, setIsSyncing] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
+    const [isOptimizing, setIsOptimizing] = useState(false);
     const [inspectingId, setInspectingId] = useState<string | null>(null);
     const queryClient = useQueryClient();
 
@@ -393,22 +396,28 @@ export default function DashboardPage() {
     };
 
     const handleOptimize = async (productId: string) => {
-        toast.promise(
-            async () => {
-                const { error } = await supabase
-                    .from('shopify_products')
-                    .update({ audit_status: 'PENDING_AUDIT' })
-                    .eq('id', productId);
+        setIsOptimizing(true);
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/optimize`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId }),
+            });
 
-                if (error) throw error;
-                queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
-            },
-            {
-                loading: t('dashboard.toasts.optimize_loading'),
-                success: t('dashboard.toasts.optimize_success'),
-                error: t('dashboard.toasts.optimize_error')
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                toast.error(data.error || 'AI Engine: Connection failed');
+                return;
             }
-        );
+
+            toast.success('AI Engine: Optimization Complete');
+            queryClient.invalidateQueries({ queryKey: ['product-detail', productId] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
+        } catch (err: any) {
+            toast.error('AI Engine: Connection failed');
+        } finally {
+            setIsOptimizing(false);
+        }
     };
 
     const handlePublishToShopify = async (productId: string) => {
@@ -688,11 +697,15 @@ export default function DashboardPage() {
                                                                             <p className="text-xs text-muted-foreground">Pending bulk optimization.</p>
                                                                             <Button 
                                                                                 size="sm" 
-                                                                                variant="outline" 
-                                                                                className="border-indigo-500/50 text-indigo-400 hover:bg-indigo-500 hover:text-white"
+                                                                                className="bg-indigo-600 text-white hover:bg-indigo-700 font-bold shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all"
                                                                                 onClick={() => handleOptimize(product.id)}
+                                                                                disabled={isOptimizing}
                                                                             >
-                                                                                Optimize Now
+                                                                                {isOptimizing ? (
+                                                                                    <span className="flex items-center"><Loader2 className="w-3 h-3 mr-2 animate-spin" /> Optimizing...</span>
+                                                                                ) : (
+                                                                                    <span className="flex items-center"><Sparkles className="w-3 h-3 mr-2" /> Optimize Now</span>
+                                                                                )}
                                                                             </Button>
                                                                         </div>
                                                                     )}
