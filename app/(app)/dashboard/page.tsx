@@ -8,9 +8,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
     TrendingDown, Activity, Zap, Search, Filter, ArrowUpRight,
-    AlertCircle, CheckCircle2, Clock, Loader2, Copy,
+    AlertCircle, CheckCircle2, Clock, Loader2, Copy, Sparkles,
     Store, Rocket, BrainCircuit, X, Check, RefreshCw,
-    Settings, CreditCard, LogOut, PackageOpen
+    Settings, CreditCard, LogOut, PackageOpen, UploadCloud
 } from 'lucide-react';
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n-context";
@@ -234,6 +234,7 @@ export default function DashboardPage() {
     const { t } = useI18n();
     const [searchTerm, setSearchTerm] = useState('');
     const [isSyncing, setIsSyncing] = useState(false);
+    const [isPublishing, setIsPublishing] = useState(false);
     const [inspectingId, setInspectingId] = useState<string | null>(null);
     const queryClient = useQueryClient();
 
@@ -410,6 +411,30 @@ export default function DashboardPage() {
         );
     };
 
+    const handlePublishToShopify = async (productId: string) => {
+        setIsPublishing(true);
+        try {
+            const response = await fetch('/api/shopify/publish', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                toast.error(data.error || 'Failed to publish to Shopify.');
+                return;
+            }
+            toast.success('Successfully published to Shopify!');
+            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
+            queryClient.invalidateQueries({ queryKey: ['shopify-inventory'] });
+            setInspectingId(null);
+        } catch (err: any) {
+            toast.error(err.message || 'An unexpected error occurred.');
+        } finally {
+            setIsPublishing(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-background text-foreground p-8 font-sans selection:bg-primary/30">
 
@@ -565,22 +590,25 @@ export default function DashboardPage() {
                                                 <ArrowUpRight className="h-4 w-4" />
                                             </Button>
                                         </SheetTrigger>
-                                        <SheetContent className="bg-card border-border text-foreground sm:max-w-2xl overflow-y-auto">
+                                        <SheetContent className="bg-card border-border text-foreground sm:max-w-3xl overflow-y-auto flex flex-col px-8">
                                             <SheetHeader className="space-y-4">
-                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border">REF: {product.shopifyId}</Badge></div>
+                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border mr-8">REF: {product.shopifyId}</Badge></div>
                                                 <SheetTitle className="text-xl font-bold text-foreground">{product.current_title}</SheetTitle>
+                                                <SheetDescription className="sr-only">
+                                                    Review AI optimization proposals and publish to Shopify.
+                                                </SheetDescription>
                                                 <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" referrerPolicy="no-referrer" />}</div>
                                             </SheetHeader>
-                                            <div className="mt-8 space-y-6">
+                                            <div className="mt-8 space-y-6 flex-1">
                                                 <Tabs defaultValue="optimization" className="w-full">
-                                                    <TabsList className="w-full bg-zinc-900 border-zinc-800"><TabsTrigger value="optimization" className="flex-1">Antes y Después (IA)</TabsTrigger><TabsTrigger value="json" className="flex-1">Metadata</TabsTrigger></TabsList>
+                                                    <TabsList className="w-full bg-muted border-border"><TabsTrigger value="optimization" className="flex-1">Before & After (AI)</TabsTrigger><TabsTrigger value="json" className="flex-1">Metadata</TabsTrigger></TabsList>
                                                     <TabsContent value="optimization" className="mt-4 space-y-6">
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                            {/* ANTES */}
+                                                            {/* BEFORE */}
                                                             <div className="space-y-3">
                                                                 <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                                                                     <div className="w-1.5 h-1.5 rounded-full bg-zinc-500"></div>
-                                                                    Estado Actual
+                                                                    Current State
                                                                 </h4>
                                                                 <div className="p-4 rounded-xl border border-border bg-muted/20 min-h-[200px] flex flex-col">
                                                                     {isLoadingDetail ? (
@@ -590,22 +618,22 @@ export default function DashboardPage() {
                                                                             <Skeleton className="h-4 w-5/6" />
                                                                         </div>
                                                                     ) : (
-                                                                        <div className="prose prose-invert dark:prose-invert text-xs text-muted-foreground font-light leading-relaxed">
+                                                                        <div className="prose prose-sm prose-invert dark:prose-invert max-w-none text-xs text-muted-foreground font-light leading-relaxed">
                                                                             <div dangerouslySetInnerHTML={{ 
                                                                                 __html: productDetail?.current_body_html 
                                                                                     ? DOMPurify.sanitize(productDetail.current_body_html) 
-                                                                                    : "<p>Sin descripción.</p>" 
+                                                                                    : "<p>No description available.</p>" 
                                                                             }} />
                                                                         </div>
                                                                     )}
                                                                 </div>
                                                             </div>
 
-                                                            {/* DESPUÉS */}
+                                                            {/* AFTER (AI PROPOSAL) */}
                                                             <div className="space-y-3">
                                                                 <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-500 flex items-center gap-2">
                                                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
-                                                                    Propuesta IA
+                                                                    AI Proposal
                                                                 </h4>
                                                                 <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 min-h-[200px] relative overflow-hidden group">
                                                                     {isLoadingDetail ? (
@@ -616,17 +644,40 @@ export default function DashboardPage() {
                                                                         </div>
                                                                     ) : product.status === 'OPTIMIZED' || productDetail?.ai_proposal?.new_title ? (
                                                                         <div className="space-y-4">
+                                                                            {/* AI AUDIT INSIGHTS */}
+                                                                            {(() => {
+                                                                                const auditReasons = productDetail?.ai_proposal?.audit_log || productDetail?.ai_proposal?.registro_de_auditoria || [];
+                                                                                if (auditReasons.length > 0) {
+                                                                                    return (
+                                                                                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                                                                                            <p className="text-[10px] text-indigo-400 font-bold flex items-center gap-1.5">
+                                                                                                <Sparkles className="w-3 h-3" /> AI AUDIT INSIGHTS
+                                                                                            </p>
+                                                                                            <ul className="space-y-1">
+                                                                                                {auditReasons.map((reason: string, i: number) => (
+                                                                                                    <li key={i} className="text-[11px] text-indigo-300/80 flex items-start gap-1.5">
+                                                                                                        <span className="text-indigo-400 mt-0.5">•</span>
+                                                                                                        <span>{reason}</span>
+                                                                                                    </li>
+                                                                                                ))}
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    );
+                                                                                }
+                                                                                return null;
+                                                                            })()}
+
                                                                             <div className="space-y-1">
-                                                                                <p className="text-[10px] text-indigo-400 font-bold">NUEVO TÍTULO</p>
+                                                                                <p className="text-[10px] text-indigo-400 font-bold">NEW TITLE</p>
                                                                                 <p className="text-sm text-foreground font-semibold leading-tight">{productDetail?.ai_proposal?.new_title}</p>
                                                                             </div>
                                                                             <div className="space-y-1">
-                                                                                <p className="text-[10px] text-indigo-400 font-bold">CONTENIDO OPTIMIZADO</p>
-                                                                                <div className="prose prose-invert dark:prose-invert text-xs text-zinc-300 font-light leading-relaxed">
+                                                                                <p className="text-[10px] text-indigo-400 font-bold">OPTIMIZED CONTENT</p>
+                                                                                <div className="prose prose-sm prose-invert dark:prose-invert max-w-none text-xs text-zinc-300 font-light leading-relaxed">
                                                                                     <div dangerouslySetInnerHTML={{ 
                                                                                         __html: productDetail?.ai_proposal?.new_body_html 
                                                                                             ? DOMPurify.sanitize(productDetail.ai_proposal.new_body_html) 
-                                                                                            : "<p>Generando propuesta...</p>" 
+                                                                                            : "<p>Generating proposal...</p>" 
                                                                                     }} />
                                                                                 </div>
                                                                             </div>
@@ -634,14 +685,14 @@ export default function DashboardPage() {
                                                                     ) : (
                                                                         <div className="flex flex-col items-center justify-center min-h-[160px] text-center space-y-3">
                                                                             <BrainCircuit className="w-8 h-8 text-indigo-500/50" />
-                                                                            <p className="text-xs text-muted-foreground">Pendiente de optimización masiva.</p>
+                                                                            <p className="text-xs text-muted-foreground">Pending bulk optimization.</p>
                                                                             <Button 
                                                                                 size="sm" 
                                                                                 variant="outline" 
                                                                                 className="border-indigo-500/50 text-indigo-400 hover:bg-indigo-500 hover:text-white"
                                                                                 onClick={() => handleOptimize(product.id)}
                                                                             >
-                                                                                Optimizar Ahora
+                                                                                Optimize Now
                                                                             </Button>
                                                                         </div>
                                                                     )}
@@ -652,21 +703,23 @@ export default function DashboardPage() {
                                                     <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(productDetail?.ai_proposal, null, 2)}</pre></TabsContent>
                                                 </Tabs>
                                             </div>
-                                            <SheetFooter className="mt-10">
-                                                {product.status === 'OPTIMIZED' && productDetail?.ai_proposal?.new_body_html ? (
+                                            <SheetFooter className="mt-10 sticky bottom-0 bg-card pt-4 pb-2 border-t border-border -mx-6 px-6">
+                                                {(product.status === 'OPTIMIZED' || product.status === 'NEEDS_REVIEW') && productDetail?.ai_proposal?.new_body_html ? (
                                                     <Button 
-                                                        className="w-full bg-emerald-600 text-white hover:bg-emerald-700" 
-                                                        onClick={() => { 
-                                                            navigator.clipboard.writeText(productDetail.ai_proposal.new_body_html); 
-                                                            toast.success("Copiado al portapapeles") 
-                                                        }}
+                                                        className="w-full bg-indigo-600 text-white hover:bg-indigo-700 font-bold h-11 shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all" 
+                                                        onClick={() => handlePublishToShopify(product.id)}
+                                                        disabled={isPublishing}
                                                     >
-                                                        <Check className="mr-2 h-4 w-4" /> Aplicar Cambios en Shopify
+                                                        {isPublishing ? (
+                                                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publishing...</>
+                                                        ) : (
+                                                            <><UploadCloud className="mr-2 h-4 w-4" /> Publish to Shopify</>
+                                                        )}
                                                     </Button>
                                                 ) : product.status === 'PENDING_AUDIT' ? (
                                                     <Button disabled className="w-full bg-muted text-muted-foreground flex items-center gap-2">
                                                         <Loader2 className="h-4 w-4 animate-spin" />
-                                                        Procesando...
+                                                        Processing...
                                                     </Button>
                                                 ) : null}
                                             </SheetFooter>
