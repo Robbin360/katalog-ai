@@ -225,9 +225,9 @@ function ConnectStoreBanner() {
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
-    if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
-    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
-    return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
+    if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 font-medium"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
+    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20 px-2 py-0.5 font-medium"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
+    return <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-500/20 px-2 py-0.5 font-medium"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
 // --- MAIN PAGE ---
