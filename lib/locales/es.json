@@ -145,7 +145,11 @@
             }
         },
         "warnings": {
-            "credits": "⚠️ Tienes {{count}} productos pendientes.\n\nEl Piloto Automático procesará todo en un lote masivo, lo que consumirá tus créditos rápidamente.\n\n¿Deseas proceder?"
+            "credits": "⚠️ Tienes {{count}} productos pendientes.\n\nEl Piloto Automático procesará todo en un lote masivo, lo que consumirá tus créditos rápidamente.\n\n¿Deseas proceder?",
+            "credits_title": "Advertencia de Consumo de Créditos",
+            "credits_body": "Tienes {{count}} productos en la cola. Activar el Piloto Automático los procesará todos en un lote masivo, lo que consumirá tus créditos rápidamente. ¿Estás seguro de que deseas continuar?",
+            "cancel": "Cancelar",
+            "confirm": "Activar Piloto Automático"
         }
     },
     "faq": {

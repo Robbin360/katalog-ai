@@ -145,7 +145,11 @@
             }
         },
         "warnings": {
-            "credits": "⚠️ You have {{count}} pending products.\n\nAutopilot will process everything in a massive batch, which will consume your credits quickly.\n\nDo you want to proceed?"
+            "credits": "⚠️ You have {{count}} pending products.\n\nAutopilot will process everything in a massive batch, which will consume your credits quickly.\n\nDo you want to proceed?",
+            "credits_title": "Credit Consumption Warning",
+            "credits_body": "You have {{count}} products in the queue. Activating Autopilot will process them all in a massive batch, which will consume your credits rapidly. Are you sure you want to proceed?",
+            "cancel": "Cancel",
+            "confirm": "Activate Autopilot"
         }
     },
     "faq": {

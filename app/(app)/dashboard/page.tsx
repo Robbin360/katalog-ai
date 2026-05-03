@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n-context";
 import { Brand } from "@/components/ui/brand";
 import { AutoPilotToggle } from "@/components/dashboard/AutoPilotToggle";
+import ProductSheet from "@/components/dashboard/ProductSheet";
+import { useFoundryStore } from "@/store/useFoundryStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -236,27 +238,13 @@ export default function DashboardPage() {
     const { t } = useI18n();
     const [searchTerm, setSearchTerm] = useState('');
     const [isSyncing, setIsSyncing] = useState(false);
-    const [isPublishing, setIsPublishing] = useState(false);
-    const [isOptimizing, setIsOptimizing] = useState(false);
-    const [inspectingId, setInspectingId] = useState<string | null>(null);
+    const { openProduct } = useFoundryStore();
     const queryClient = useQueryClient();
+    const [isMounted, setIsMounted] = React.useState(false);
 
-    // --- QUERY: DETALLES DE PRODUCTO (LAZY LOADING) ---
-    const { data: productDetail, isLoading: isLoadingDetail } = useQuery({
-        queryKey: ['product-detail', inspectingId],
-        queryFn: async () => {
-            if (!inspectingId) return null
-            const { data, error } = await supabase
-                .from('shopify_products')
-                .select('id, current_body_html, ai_proposal')
-                .eq('id', inspectingId)
-                .single()
-            if (error) throw error
-            return data
-        },
-        enabled: !!inspectingId,
-        staleTime: 1000 * 60 * 5 // 5 minutos de cache
-    })
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const { data: dashboardData, isLoading } = useQuery({
         queryKey: ['dashboard-full'],
@@ -288,7 +276,7 @@ export default function DashboardPage() {
                 
                 supabase.from('shopify_products').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('audit_status', 'PENDING_AUDIT'),
                 
-                supabase.from('brand_rules').select('tone_voice, forbidden_words').eq('user_id', user.id).maybeSingle()
+                supabase.from('brand_rules').select('id, updated_at, created_at').eq('user_id', user.id).maybeSingle()
             ])
 
             const products = productsReq.data || []
@@ -296,9 +284,17 @@ export default function DashboardPage() {
             const shopifyCount = shopifyCountReq.count
             const integrationCount = integrationCountReq.count
             const queuedCount = queuedCountReq.count
-            const brandRules = brandRulesReq.data
+            const brandRulesRow = brandRulesReq.data
+
+            // Determinar si el usuario entrenó su Brand Brain:
+            // La fila existe Y fue modificada después de su creación
+            const hasTrainedBrain = brandRulesRow != null
+                && brandRulesRow.updated_at != null
+                && brandRulesRow.created_at != null
+                && brandRulesRow.updated_at !== brandRulesRow.created_at
 
             return {
+                userId: user.id,
                 products,
                 userStatus: {
                     dismissed: profile?.onboarding_dismissed || false,
@@ -310,7 +306,7 @@ export default function DashboardPage() {
                     enabled: profile?.auto_pilot_enabled || false,
                     integrationCount: integrationCount || 0,
                     queuedCount: queuedCount || 0,
-                    brandRules: brandRules || { tone_voice: 'Professional and Persuasive', forbidden_words: [] },
+                    hasTrainedBrain,
                     plan: profile?.plan_tier || 'starter'
                 }
             }
@@ -395,55 +391,7 @@ export default function DashboardPage() {
         });
     };
 
-    const handleOptimize = async (productId: string) => {
-        setIsOptimizing(true);
-        try {
-            const response = await fetch(`${BACKEND_URL}/api/optimize`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ product_id: productId }),
-            });
-
-            if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
-                toast.error(data.error || 'AI Engine: Connection failed');
-                return;
-            }
-
-            toast.success('AI Engine: Optimization Complete');
-            queryClient.invalidateQueries({ queryKey: ['product-detail', productId] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
-        } catch (err: any) {
-            toast.error('AI Engine: Connection failed');
-        } finally {
-            setIsOptimizing(false);
-        }
-    };
-
-    const handlePublishToShopify = async (productId: string) => {
-        setIsPublishing(true);
-        try {
-            const response = await fetch('/api/shopify/publish', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId }),
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                toast.error(data.error || 'Failed to publish to Shopify.');
-                return;
-            }
-            toast.success('Successfully published to Shopify!');
-            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
-            queryClient.invalidateQueries({ queryKey: ['shopify-inventory'] });
-            setInspectingId(null);
-        } catch (err: any) {
-            toast.error(err.message || 'An unexpected error occurred.');
-        } finally {
-            setIsPublishing(false);
-        }
-    };
-
+    // AI Optimization and Publishing logic has been moved to ProductSheet.tsx
     return (
         <div className="min-h-screen bg-background text-foreground p-8 font-sans selection:bg-primary/30">
 
@@ -465,8 +413,8 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    {dashboardData?.autoPilotData && (
-                        <AutoPilotToggle data={dashboardData.autoPilotData} />
+                    {dashboardData?.autoPilotData && dashboardData?.userId && (
+                        <AutoPilotToggle data={dashboardData.autoPilotData} userId={dashboardData.userId} />
                     )}
                     <Button variant="outline" className="border-border hover:bg-accent text-sm font-semibold h-11" onClick={handleSync} disabled={isSyncing}>
                         {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('dashboard.actions.syncing')}</> : <><RefreshCw className="mr-2 h-4 w-4" /> {t('dashboard.actions.refresh')}</>}
@@ -511,7 +459,7 @@ export default function DashboardPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {isLoading ? (
+                        {(!isMounted || isLoading) ? (
                             Array.from({ length: 3 }).map((_, i) => (
                                 <TableRow key={i} className="border-border">
                                     <TableCell className="py-4"><div className="flex items-center gap-3"><Skeleton className="h-10 w-10 rounded-md" /><div className="space-y-2"><Skeleton className="h-4 w-[150px]" /><Skeleton className="h-3 w-[80px]" /></div></div></TableCell>
@@ -588,156 +536,14 @@ export default function DashboardPage() {
                                     </div>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <Sheet onOpenChange={(open) => !open && setInspectingId(null)}>
-                                        <SheetTrigger asChild>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm" 
-                                                className="text-muted-foreground hover:text-foreground hover:bg-accent"
-                                                onClick={() => setInspectingId(product.id)}
-                                            >
-                                                <ArrowUpRight className="h-4 w-4" />
-                                            </Button>
-                                        </SheetTrigger>
-                                        <SheetContent className="bg-card border-border text-foreground sm:max-w-3xl overflow-y-auto flex flex-col px-8">
-                                            <SheetHeader className="space-y-4">
-                                                <div className="flex justify-between items-start"><StatusBadge status={product.status} /><Badge variant="outline" className="text-muted-foreground border-border mr-8">REF: {product.shopifyId}</Badge></div>
-                                                <SheetTitle className="text-xl font-bold text-foreground">{product.current_title}</SheetTitle>
-                                                <SheetDescription className="sr-only">
-                                                    Review AI optimization proposals and publish to Shopify.
-                                                </SheetDescription>
-                                                <div className="h-48 w-full bg-background rounded-xl overflow-hidden border border-border flex items-center justify-center">{product.image && <img src={product.image} className="h-full object-contain" alt="preview" referrerPolicy="no-referrer" />}</div>
-                                            </SheetHeader>
-                                            <div className="mt-8 space-y-6 flex-1">
-                                                <Tabs defaultValue="optimization" className="w-full">
-                                                    <TabsList className="w-full bg-muted border-border"><TabsTrigger value="optimization" className="flex-1">Before & After (AI)</TabsTrigger><TabsTrigger value="json" className="flex-1">Metadata</TabsTrigger></TabsList>
-                                                    <TabsContent value="optimization" className="mt-4 space-y-6">
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                            {/* BEFORE */}
-                                                            <div className="space-y-3">
-                                                                <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                                                                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-500"></div>
-                                                                    Current State
-                                                                </h4>
-                                                                <div className="p-4 rounded-xl border border-border bg-muted/20 min-h-[200px] flex flex-col">
-                                                                    {isLoadingDetail ? (
-                                                                        <div className="flex-1 flex flex-col gap-2">
-                                                                            <Skeleton className="h-4 w-full" />
-                                                                            <Skeleton className="h-4 w-3/4" />
-                                                                            <Skeleton className="h-4 w-5/6" />
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div className="prose prose-sm prose-invert dark:prose-invert max-w-none text-xs text-muted-foreground font-light leading-relaxed">
-                                                                            <div dangerouslySetInnerHTML={{ 
-                                                                                __html: productDetail?.current_body_html 
-                                                                                    ? DOMPurify.sanitize(productDetail.current_body_html) 
-                                                                                    : "<p>No description available.</p>" 
-                                                                            }} />
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-
-                                                            {/* AFTER (AI PROPOSAL) */}
-                                                            <div className="space-y-3">
-                                                                <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-500 flex items-center gap-2">
-                                                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
-                                                                    AI Proposal
-                                                                </h4>
-                                                                <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 min-h-[200px] relative overflow-hidden group">
-                                                                    {isLoadingDetail ? (
-                                                                        <div className="flex-1 flex flex-col gap-2">
-                                                                            <Skeleton className="h-4 w-full" />
-                                                                            <Skeleton className="h-4 w-3/4" />
-                                                                            <Skeleton className="h-4 w-5/6" />
-                                                                        </div>
-                                                                    ) : product.status === 'OPTIMIZED' || productDetail?.ai_proposal?.new_title ? (
-                                                                        <div className="space-y-4">
-                                                                            {/* AI AUDIT INSIGHTS */}
-                                                                            {(() => {
-                                                                                const auditReasons = productDetail?.ai_proposal?.audit_log || productDetail?.ai_proposal?.registro_de_auditoria || [];
-                                                                                if (auditReasons.length > 0) {
-                                                                                    return (
-                                                                                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                                                                                            <p className="text-[10px] text-indigo-400 font-bold flex items-center gap-1.5">
-                                                                                                <Sparkles className="w-3 h-3" /> AI AUDIT INSIGHTS
-                                                                                            </p>
-                                                                                            <ul className="space-y-1">
-                                                                                                {auditReasons.map((reason: string, i: number) => (
-                                                                                                    <li key={i} className="text-[11px] text-indigo-300/80 flex items-start gap-1.5">
-                                                                                                        <span className="text-indigo-400 mt-0.5">•</span>
-                                                                                                        <span>{reason}</span>
-                                                                                                    </li>
-                                                                                                ))}
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                    );
-                                                                                }
-                                                                                return null;
-                                                                            })()}
-
-                                                                            <div className="space-y-1">
-                                                                                <p className="text-[10px] text-indigo-400 font-bold">NEW TITLE</p>
-                                                                                <p className="text-sm text-foreground font-semibold leading-tight">{productDetail?.ai_proposal?.new_title}</p>
-                                                                            </div>
-                                                                            <div className="space-y-1">
-                                                                                <p className="text-[10px] text-indigo-400 font-bold">OPTIMIZED CONTENT</p>
-                                                                                <div className="prose prose-sm prose-invert dark:prose-invert max-w-none text-xs text-zinc-300 font-light leading-relaxed">
-                                                                                    <div dangerouslySetInnerHTML={{ 
-                                                                                        __html: productDetail?.ai_proposal?.new_body_html 
-                                                                                            ? DOMPurify.sanitize(productDetail.ai_proposal.new_body_html) 
-                                                                                            : "<p>Generating proposal...</p>" 
-                                                                                    }} />
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div className="flex flex-col items-center justify-center min-h-[160px] text-center space-y-3">
-                                                                            <BrainCircuit className="w-8 h-8 text-indigo-500/50" />
-                                                                            <p className="text-xs text-muted-foreground">Pending bulk optimization.</p>
-                                                                            <Button 
-                                                                                size="sm" 
-                                                                                className="bg-indigo-600 text-white hover:bg-indigo-700 font-bold shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all"
-                                                                                onClick={() => handleOptimize(product.id)}
-                                                                                disabled={isOptimizing}
-                                                                            >
-                                                                                {isOptimizing ? (
-                                                                                    <span className="flex items-center"><Loader2 className="w-3 h-3 mr-2 animate-spin" /> Optimizing...</span>
-                                                                                ) : (
-                                                                                    <span className="flex items-center"><Sparkles className="w-3 h-3 mr-2" /> Optimize Now</span>
-                                                                                )}
-                                                                            </Button>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </TabsContent>
-                                                    <TabsContent value="json"><pre className="text-[10px] text-muted-foreground p-4 bg-background rounded-lg overflow-x-auto border border-border">{JSON.stringify(productDetail?.ai_proposal, null, 2)}</pre></TabsContent>
-                                                </Tabs>
-                                            </div>
-                                            <SheetFooter className="mt-10 sticky bottom-0 bg-card pt-4 pb-2 border-t border-border -mx-6 px-6">
-                                                {(product.status === 'OPTIMIZED' || product.status === 'NEEDS_REVIEW') && productDetail?.ai_proposal?.new_body_html ? (
-                                                    <Button 
-                                                        className="w-full bg-indigo-600 text-white hover:bg-indigo-700 font-bold h-11 shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all" 
-                                                        onClick={() => handlePublishToShopify(product.id)}
-                                                        disabled={isPublishing}
-                                                    >
-                                                        {isPublishing ? (
-                                                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publishing...</>
-                                                        ) : (
-                                                            <><UploadCloud className="mr-2 h-4 w-4" /> Publish to Shopify</>
-                                                        )}
-                                                    </Button>
-                                                ) : product.status === 'PENDING_AUDIT' ? (
-                                                    <Button disabled className="w-full bg-muted text-muted-foreground flex items-center gap-2">
-                                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                                        Processing...
-                                                    </Button>
-                                                ) : null}
-                                            </SheetFooter>
-                                        </SheetContent>
-                                    </Sheet>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className="text-muted-foreground hover:text-foreground hover:bg-accent"
+                                        onClick={() => openProduct(product.id)}
+                                    >
+                                        <ArrowUpRight className="h-4 w-4" />
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -746,6 +552,7 @@ export default function DashboardPage() {
             </Card>
 
             {!isLoading && !dashboardData?.userStatus?.hasShopify && <ConnectStoreBanner />}
+            <ProductSheet />
         </div>
     );
 }

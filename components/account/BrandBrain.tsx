@@ -101,12 +101,13 @@ async function saveBrandRules(rules: BrandRules): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error("No user authenticated")
 
-  const payload = {
+    const payload = {
     user_id: user.id,
     tone_voice: rules.tone_voice,
     target_audience: rules.target_audience,
     language: rules.language,
     forbidden_words: rules.forbidden_words,
+    updated_at: new Date().toISOString()
   }
 
   const { error } = await supabase
