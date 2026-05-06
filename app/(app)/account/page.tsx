@@ -35,6 +35,7 @@ import {
 
 import { useSearchParams, useRouter } from "next/navigation"
 import { useI18n } from "@/lib/i18n-context"
+import { ShopifyCard } from "@/components/dashboard/integrations/ShopifyCard"
 
 export default function AccountPage() {
     const searchParams = useSearchParams()
@@ -56,14 +57,8 @@ export default function AccountPage() {
     useEffect(() => setMounted(true), [])
 
     // Estados de Carga
-    const [isSaving, setIsSaving] = useState(false)
     const [loadingCheckout, setLoadingCheckout] = useState(false)
     const [loadingPortal, setLoadingPortal] = useState(false)
-
-    // Estados de Integración
-    const [shopUrl, setShopUrl] = useState("")
-    const [shopToken, setShopToken] = useState("")
-    const [showToken, setShowToken] = useState(true) // Visible por defecto para verificar al pegar
 
     // 1. FETCH DATOS GLOBAL
     const { data: accountData, isLoading, isError } = useQuery({
@@ -101,45 +96,7 @@ export default function AccountPage() {
         }
     })
 
-    // Sincronizar estado local
-    useEffect(() => {
-        if (accountData?.integration) {
-            setShopUrl(accountData.integration.shop_url || "")
-        }
-    }, [accountData])
-
     // --- ACCIONES ---
-
-    const handleSaveIntegration = async () => {
-        setIsSaving(true)
-        try {
-            const userId = accountData?.user?.id
-            if (!userId) return
-
-            const cleanUrl = shopUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
-            
-            // Validación de seguridad para prevenir SSRF
-            const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/;
-            if (!shopUrlPattern.test(cleanUrl)) {
-                throw new Error(t('account.alerts.invalid_shopify_url'));
-            }
-
-            const { error } = await supabase.from('integrations').upsert({
-                user_id: userId,
-                provider: 'shopify',
-                shop_url: cleanUrl,
-                access_token: shopToken
-            }, { onConflict: 'user_id, provider' })
-
-            if (error) throw error
-            toast.success("Tienda Conectada exitosamente", { description: "Tus productos e inventario ahora están listos para ser sincronizados." })
-            queryClient.invalidateQueries({ queryKey: ['account-data-full'] })
-        } catch (error: any) {
-            toast.error("Error al conectar la tienda", { description: error.message })
-        } finally {
-            setIsSaving(false)
-        }
-    }
 
     const handleCheckout = async (priceId: string) => {
         setLoadingCheckout(true)
@@ -233,63 +190,14 @@ export default function AccountPage() {
                             <h1 className="text-2xl font-bold text-foreground mb-1">{t('account.store.title')}</h1>
                             <p className="text-muted-foreground text-sm">{t('account.store.subtitle')}</p>
                         </div>
-
-                        <Card className="bg-card border-border shadow-2xl overflow-hidden relative">
-                            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
-                            <CardHeader className="border-b border-border bg-muted/30 pb-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-muted rounded-xl border border-border shadow-inner relative flex items-center justify-center">
-                                            {/* White background pill to fill the transparent 'S' cut-out of the SVG */}
-                                            <div className="absolute w-[10px] h-[14px] bg-white dark:bg-white rounded-full mt-2 z-0" />
-                                            <img src="https://cdn.simpleicons.org/shopify/95BF47" alt="Shopify Logo" className="w-6 h-6 object-contain select-none relative z-10" />
-                                        </div>
-                                        <div>
-                                            <CardTitle className="text-xl text-foreground font-bold tracking-tight">Shopify Integration</CardTitle>
-                                            <CardDescription className="text-muted-foreground mt-1">Connect your store via Admin API to sync products and inventory.</CardDescription>
-                                        </div>
-                                    </div>
-                                    {accountData?.integration ? (
-                                        <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 px-3 py-1 font-medium tracking-wide">Connected</Badge>
-                                    ) : (
-                                        <Badge variant="outline" className="text-muted-foreground border-border bg-muted/50 px-3 py-1 font-medium tracking-wide">Not Connected</Badge>
-                                    )}
-                                </div>
-                            </CardHeader>
-                            <CardContent className="space-y-6 pt-6">
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Store URL</Label>
-                                    <div className="flex items-center rounded-lg border border-border bg-muted/50 overflow-hidden focus-within:ring-1 focus-within:ring-ring focus-within:border-ring transition-all">
-                                        <div className="bg-muted px-3 flex items-center justify-center h-11 border-r border-border pointer-events-none select-none">
-                                            <span className="text-muted-foreground font-mono text-sm leading-none">https://</span>
-                                        </div>
-                                        <Input value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder="mi-tienda.myshopify.com" className="bg-transparent border-0 text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0 px-3 h-11 shadow-none w-full rounded-none font-mono text-sm" />
-                                    </div>
-                                </div>
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Admin API Access Token</Label>
-                                    <div className="flex items-center rounded-lg border border-border bg-muted/50 overflow-hidden focus-within:ring-1 focus-within:ring-ring focus-within:border-ring transition-all">
-                                        <Input type={showToken ? "text" : "password"} value={shopToken} onChange={(e) => setShopToken(e.target.value)} placeholder="shpat_....................." className="bg-transparent border-0 text-foreground placeholder:text-muted-foreground/50 font-mono focus-visible:ring-0 focus-visible:ring-offset-0 px-3 h-11 shadow-none w-full rounded-none" />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowToken(!showToken)}
-                                            className="px-3 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-                                            aria-label={showToken ? "Hide token" : "Show token"}
-                                        >
-                                            {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                    <p className="text-[11px] text-muted-foreground font-medium tracking-wide">
-                                        Ensure token has read/write permissions for <span className="text-foreground/70 font-mono">Products</span> and <span className="text-foreground/70 font-mono">Inventory</span>.
-                                    </p>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="bg-muted/40 border-t border-border p-6 flex justify-end">
-                                <Button onClick={handleSaveIntegration} disabled={isSaving} className="bg-[#95bf47] text-white hover:bg-[#7a9d36] font-bold px-8 h-11 shadow-[0_0_15px_rgba(149,191,71,0.2)] transition-all">
-                                    {isSaving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Connecting...</> : "Connect Store"}
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                        
+                        {accountData?.user?.id ? (
+                            <ShopifyCard userId={accountData.user.id} />
+                        ) : (
+                            <div className="flex items-center justify-center p-8 border border-border rounded-xl">
+                                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                            </div>
+                        )}
                     </div>
                 )}
 

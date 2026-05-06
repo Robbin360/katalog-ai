@@ -125,24 +125,24 @@ function OptionCard({ label, desc, isDefault, active, onClick, t_badge }: {
       type="button"
       onClick={onClick}
       className={cn(
-        "relative flex flex-col gap-1 rounded-xl border p-3 text-left transition-all duration-150",
+        "relative flex flex-col gap-1 rounded-xl border p-3 text-left transition-all duration-200",
         active
-          ? "border-primary bg-primary/10 animate-active-pulse"
-          : "border-border hover:border-border/80 bg-card"
+          ? "ring-2 ring-emerald-500 bg-emerald-500/10 border-transparent dark:bg-emerald-500/10"
+          : "border-border bg-card hover:bg-muted dark:border-zinc-800 dark:hover:bg-zinc-900/50 dark:bg-transparent"
       )}
     >
       {isDefault && (
         <span className={cn(
           "absolute right-2 top-2 rounded-full border px-2 py-0.5 text-[10px]",
-          active ? "border-primary/40 text-primary" : "border-border text-muted-foreground/50"
+          active ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "border-border text-muted-foreground/50 dark:border-zinc-800 dark:text-zinc-500"
         )}>
           {t_badge || "default"}
         </span>
       )}
-      <span className={cn("text-sm font-medium", active ? "text-primary" : "text-foreground/80")}>
+      <span className={cn("text-sm font-medium", active ? "text-emerald-700 dark:text-emerald-400" : "text-foreground/80 dark:text-zinc-300")}>
         {label}
       </span>
-      <span className="text-xs text-muted-foreground leading-snug">{desc}</span>
+      <span className="text-xs text-muted-foreground dark:text-zinc-500 leading-snug">{desc}</span>
     </button>
   )
 }
@@ -155,10 +155,10 @@ function PillOption({ label, active, onClick }: {
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full border px-4 py-1.5 text-xs transition-all duration-150",
+        "rounded-full border px-4 py-1.5 text-xs transition-all duration-200",
         active
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground/60"
+          ? "ring-2 ring-emerald-500 bg-emerald-500/10 border-transparent text-emerald-700 dark:text-emerald-400"
+          : "border-border bg-card hover:bg-muted text-muted-foreground dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900/50 dark:hover:text-zinc-300 dark:bg-transparent"
       )}
     >
       {label}
