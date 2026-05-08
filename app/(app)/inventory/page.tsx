@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -15,7 +15,8 @@ import {
     Clock,
     Eye,
     RefreshCw,
-    Download
+    Download,
+    Loader2
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -62,9 +63,27 @@ const StatusBadge = ({ status }: { status: string }) => {
 
 export default function InventoryPage() {
     const { t } = useI18n()
+    const queryClient = useQueryClient()
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('all')
     const [page, setPage] = useState(1)
+    const [isSyncing, setIsSyncing] = useState(false)
+
+    const handleSync = async () => {
+        setIsSyncing(true)
+        try {
+            const res = await fetch('/api/shopify/sync', { method: 'POST' })
+            if (!res.ok) {
+                throw new Error("Sync failed. Check your Shopify credentials in Settings.")
+            }
+            toast.success("Store synced successfully!")
+            queryClient.invalidateQueries({ queryKey: ['inventory'] })
+        } catch (error: any) {
+            toast.error(error.message || "An unexpected error occurred.")
+        } finally {
+            setIsSyncing(false)
+        }
+    }
 
     // --- DATA FETCHING ---
     const { data, isLoading } = useQuery<InventoryResponse>({
@@ -146,11 +165,13 @@ export default function InventoryPage() {
                     <Button variant="outline" className="gap-2">
                         <Download className="w-4 h-4" /> Export
                     </Button>
-                    <Link href="/dashboard">
-                        <Button className="gap-2">
-                            <RefreshCw className="w-4 h-4" /> Sync Store
-                        </Button>
-                    </Link>
+                    <Button onClick={handleSync} disabled={isSyncing} className="gap-2">
+                        {isSyncing ? (
+                            <><Loader2 className="w-4 h-4 animate-spin" /> Syncing...</>
+                        ) : (
+                            <><RefreshCw className="w-4 h-4" /> Sync Store</>
+                        )}
+                    </Button>
                 </div>
             </div>
 

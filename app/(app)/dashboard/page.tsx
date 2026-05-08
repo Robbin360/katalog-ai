@@ -7,16 +7,17 @@ import DOMPurify from "isomorphic-dompurify"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
-    TrendingDown, Activity, Zap, Search, Filter, ArrowUpRight,
+    TrendingDown, Search, Filter, ArrowUpRight,
     AlertCircle, CheckCircle2, Clock, Loader2, Copy, Sparkles,
     Store, Rocket, BrainCircuit, X, Check, RefreshCw,
-    Settings, CreditCard, LogOut, PackageOpen, UploadCloud
+    Settings, CreditCard, LogOut, PackageOpen, UploadCloud, AlertTriangle
 } from 'lucide-react';
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n-context";
 import { Brand } from "@/components/ui/brand";
 import { AutoPilotToggle } from "@/components/dashboard/AutoPilotToggle";
 import ProductSheet from "@/components/dashboard/ProductSheet";
+import KPIGrid from "@/components/dashboard/KPIGrid";
 import { useFoundryStore } from "@/store/useFoundryStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -133,71 +134,8 @@ function OnboardingDeck({ status, onDismiss }: {
     )
 }
 
-// --- AUXILIARY COMPONENTS (KPIs) ---
-const KPICard = ({ title, value, icon: Icon, trend, glowColor, subtitle, loading }: {
-    title: string,
-    value: string | number,
-    icon: any,
-    trend?: { label: string, type: 'pos' | 'neg' },
-    glowColor: string,
-    subtitle: string,
-    loading?: boolean
-}) => (
-    <Card className={`bg-card/50 backdrop-blur-sm border-border hover:bg-card transition-all duration-300 relative overflow-hidden group`}>
-        {/* Glow Effect */}
-        <div className={`absolute -right-4 -top-4 h-24 w-24 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40`} style={{ backgroundColor: glowColor }}></div>
-
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</CardTitle>
-            <div className={`p-2 rounded-lg bg-background border border-border shadow-inner text-foreground`}>
-                <Icon className="h-4 w-4" style={{ color: glowColor }} />
-            </div>
-        </CardHeader>
-        <CardContent>
-            <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-bold tracking-tight text-foreground">{loading ? "..." : value}</div>
-                {trend && (
-                    <Badge variant="outline" className={`text-[10px] font-bold px-1.5 py-0 rounded-full ${trend.type === 'pos' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"
-                        }`}>
-                        {trend.label}
-                    </Badge>
-                )}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5 leading-relaxed">{subtitle}</p>
-        </CardContent>
-    </Card>
-);
-
-const KPIGrid = ({ revenue, health, queue, loading }: { revenue: number, health: number, queue: number, loading: boolean }) => (
-    <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <KPICard
-            title="Revenue at Risk"
-            value={`$${revenue.toLocaleString()}.00`}
-            icon={TrendingDown}
-            trend={{ label: "High Risk", type: "neg" }}
-            glowColor="#ef4444"
-            subtitle="Est. monthly loss due to unoptimized assets"
-            loading={loading}
-        />
-        <KPICard
-            title="Catalog Health"
-            value={`${health}%`}
-            icon={Activity}
-            trend={{ label: health > 80 ? "Healthy" : "Needs Attention", type: health > 80 ? "pos" : "neg" }}
-            glowColor="#eab308"
-            subtitle="Overall quality score across all store products"
-            loading={loading}
-        />
-        <KPICard
-            title="Optimization Queue"
-            value={queue}
-            icon={Zap}
-            glowColor="#3b82f6"
-            subtitle="Assets analyzed and ready for AI processing"
-            loading={loading}
-        />
-    </div>
-);
+// KPICard and KPIGrid have been extracted to components/dashboard/KPIGrid.tsx
+// They now self-manage data via Supabase Realtime (WebSocket)
 
 // --- COMPONENT: CONNECT STORE BANNER ---
 function ConnectStoreBanner() {
@@ -225,6 +163,7 @@ function ConnectStoreBanner() {
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
+    if (status === 'ERROR') return <Badge variant="outline" className="bg-destructive/10 dark:bg-red-500/10 text-destructive dark:text-red-500 border-destructive/20 dark:border-red-500/20 px-2 py-0.5 font-medium"><AlertTriangle className="h-3 w-3 mr-1" /> Error</Badge>
     if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 font-medium"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
     if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20 px-2 py-0.5 font-medium"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
     return <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-500/20 px-2 py-0.5 font-medium"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
@@ -347,12 +286,7 @@ export default function DashboardPage() {
 
     const unoptimizedProducts = products.filter((p) => p.status !== 'OPTIMIZED')
 
-    // KPI Calculations
-    const totalCount = products.length
-    const unoptimizedCount = unoptimizedProducts.length
-    const optimizedCount = totalCount - unoptimizedCount
-    const healthPercentage = totalCount > 0 ? Math.round((optimizedCount / totalCount) * 100) : 0
-    const revenueAtRisk = unoptimizedCount * 50
+    // KPI Calculations removed — now served by Supabase Realtime via user_kpis table
 
     const filteredProducts = unoptimizedProducts.filter((p) => p.current_title.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -426,7 +360,7 @@ export default function DashboardPage() {
                 <OnboardingDeck status={dashboardData.userStatus} onDismiss={dismissOnboarding} />
             )}
 
-            <KPIGrid revenue={revenueAtRisk} health={healthPercentage} queue={unoptimizedCount} loading={isLoading} />
+            {dashboardData?.userId && <KPIGrid userId={dashboardData.userId} />}
 
             <Card className="bg-card/50 backdrop-blur-md border-border overflow-hidden shadow-2xl">
                 <CardHeader className="border-b border-border/50 bg-muted/20 px-6 py-6 transition-colors">

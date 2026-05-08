@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, useAnimation } from "framer-motion";
 import { Zap, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
@@ -43,11 +43,9 @@ export function AutoPilotToggle({ data, userId }: AutoPilotToggleProps) {
     const queryClient = useQueryClient();
 
     // Sincronizar estado optimista cuando el padre recibe datos frescos de React Query
-    const prevEnabled = useRef(data.enabled);
-    if (prevEnabled.current !== data.enabled) {
-        prevEnabled.current = data.enabled;
+    React.useEffect(() => {
         setOptimisticEnabled(data.enabled);
-    }
+    }, [data.enabled]);
 
     // Animación de Error (Shake)
     const triggerShake = async () => {

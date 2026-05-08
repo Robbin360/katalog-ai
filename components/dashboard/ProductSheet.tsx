@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Sparkles, BrainCircuit, Loader2, UploadCloud, CheckCircle2, AlertCircle, Clock } from "lucide-react"
+import { Sparkles, BrainCircuit, Loader2, UploadCloud, CheckCircle2, AlertCircle, Clock, AlertTriangle, RefreshCw } from "lucide-react"
 import DOMPurify from "isomorphic-dompurify"
 import { useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -21,6 +21,7 @@ import { toast } from "sonner"
 import { useFoundryStore } from "@/store/useFoundryStore"
 
 const StatusBadge = ({ status }: { status: string }) => {
+    if (status === 'ERROR') return <Badge variant="outline" className="bg-destructive/10 dark:bg-red-500/10 text-destructive dark:text-red-500 border-destructive/20 dark:border-red-500/20 px-2 py-0.5"><AlertTriangle className="h-3 w-3 mr-1" /> Error</Badge>
     if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
     if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
     return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
@@ -126,6 +127,26 @@ export default function ProductSheet() {
                 </SheetHeader>
                 
                 <div className="mt-8 space-y-6 flex-1">
+                    {productDetail?.audit_status === 'ERROR' ? (
+                        <div className="bg-destructive/10 dark:bg-red-950/30 border border-destructive/20 dark:border-red-900/50 text-destructive dark:text-red-400 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertTriangle className="w-5 h-5" />
+                                <h3>Optimization Failed</h3>
+                            </div>
+                            <pre className="text-xs font-mono whitespace-pre-wrap bg-background/50 dark:bg-black/20 p-4 rounded-lg border border-destructive/10 dark:border-red-900/30">
+                                {productDetail?.error_log || "An unknown error occurred during optimization."}
+                            </pre>
+                            <Button 
+                                variant="destructive" 
+                                onClick={handleOptimize} 
+                                disabled={isOptimizing}
+                                className="mt-2 bg-destructive dark:bg-red-950 hover:bg-destructive/90 dark:hover:bg-red-900 text-destructive-foreground dark:text-red-400 border border-transparent dark:border-red-900/50"
+                            >
+                                {isOptimizing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                                {isOptimizing ? "Retrying..." : "Retry Optimization ↻"}
+                            </Button>
+                        </div>
+                    ) : (
                     <Tabs defaultValue="optimization" className="w-full">
                         <TabsList className="w-full bg-muted border-border">
                             <TabsTrigger value="optimization" className="flex-1">Before & After (AI)</TabsTrigger>
@@ -239,6 +260,7 @@ export default function ProductSheet() {
                             </pre>
                         </TabsContent>
                     </Tabs>
+                    )}
                 </div>
                 
                 <SheetFooter className="mt-10 sticky bottom-0 bg-card pt-4 pb-2 border-t border-border -mx-6 px-6">
