@@ -50,17 +50,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useI18n } from "@/lib/i18n-context"
 
 import { Product, InventoryResponse } from "@/types/inventory"
+import { StatusBadge } from "@/components/ui/status-badge"
 
 const PAGE_SIZE = 10;
 
 // --- COMPONENTS ---
 
-const StatusBadge = ({ status }: { status: string }) => {
-    if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
-    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
-    return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
-};
-
+// StatusBadge has been centralized to @/components/ui/status-badge
 export default function InventoryPage() {
     const { t } = useI18n()
     const queryClient = useQueryClient()
@@ -192,10 +188,14 @@ export default function InventoryPage() {
                             <SelectValue placeholder={t('common.placeholders.filter')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Todo el Catálogo</SelectItem>
-                            <SelectItem value="OPTIMIZED">Optimizado</SelectItem>
-                            <SelectItem value="NEEDS_REVIEW">Needs Review</SelectItem>
-                            <SelectItem value="PENDING_AUDIT">Pending Audit</SelectItem>
+                            <SelectItem value="all">{t('All Catalog')}</SelectItem>
+                            <SelectItem value="PENDING_AUDIT">{t('Pending Audit')}</SelectItem>
+                            <SelectItem value="NEEDS_OPTIMIZATION">{t('Needs Optimization')}</SelectItem>
+                            <SelectItem value="PROCESSING">{t('AI Processing')}</SelectItem>
+                            <SelectItem value="READY_TO_PUBLISH">{t('Ready to Publish')}</SelectItem>
+                            <SelectItem value="OPTIMIZED">{t('Optimized')}</SelectItem>
+                            <SelectItem value="ERROR">{t('Error')}</SelectItem>
+                            <SelectItem value="OUT_OF_CREDITS">{t('Upgrade Plan')}</SelectItem>
                         </SelectContent>
                     </Select>
                     <Button variant="outline" size="icon" className="shrink-0">

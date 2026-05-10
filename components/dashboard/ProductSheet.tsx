@@ -264,29 +264,82 @@ export default function ProductSheet() {
                 </div>
                 
                 <SheetFooter className="mt-10 sticky bottom-0 bg-card pt-4 pb-2 border-t border-border -mx-6 px-6">
-                    {isOptimizing ? (
-                        <Button disabled className="w-full bg-muted text-muted-foreground flex items-center gap-2 font-bold h-11">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Processing...
-                        </Button>
-                    ) : (productDetail?.audit_status === 'OPTIMIZED' || productDetail?.audit_status === 'NEEDS_REVIEW') && productDetail?.ai_proposal?.new_body_html ? (
-                        <Button 
-                            className="w-full bg-indigo-600 text-white hover:bg-indigo-700 font-bold h-11 shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all flex items-center justify-center gap-2" 
-                            onClick={handlePublishToShopify}
-                            disabled={isPublishing}
-                        >
-                            {isPublishing ? (
-                                <><Loader2 className="h-4 w-4 animate-spin" /> Publishing...</>
-                            ) : (
-                                <><UploadCloud className="h-4 w-4" /> Publish to Shopify</>
-                            )}
-                        </Button>
-                    ) : (
-                        <Button variant="outline" disabled className="w-full bg-transparent text-muted-foreground border-border flex items-center justify-center gap-2 font-bold h-11">
-                            <UploadCloud className="h-4 w-4" />
-                            Publish to Shopify
-                        </Button>
-                    )}
+                    {(() => {
+                        const status = productDetail?.audit_status;
+                        
+                        if (isOptimizing || status === 'PROCESSING') {
+                            return (
+                                <Button disabled className="w-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center gap-2 font-bold h-11 border border-cyan-500/20">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    ⚙️ AI Working...
+                                </Button>
+                            );
+                        }
+
+                        if (status === 'NEEDS_OPTIMIZATION') {
+                            return (
+                                <Button 
+                                    className="w-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center gap-2 font-bold h-11 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all"
+                                    onClick={handleOptimize}
+                                >
+                                    ⚡ Run AI Optimizer
+                                </Button>
+                            );
+                        }
+
+                        if (status === 'READY_TO_PUBLISH') {
+                            return (
+                                <Button 
+                                    className="w-full bg-indigo-600 text-white hover:bg-indigo-700 font-bold h-11 shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all flex items-center justify-center gap-2" 
+                                    onClick={handlePublishToShopify}
+                                    disabled={isPublishing}
+                                >
+                                    {isPublishing ? (
+                                        <><Loader2 className="h-4 w-4 animate-spin" /> Publishing...</>
+                                    ) : (
+                                        <>🚀 Publish to Shopify</>
+                                    )}
+                                </Button>
+                            );
+                        }
+
+                        if (status === 'ERROR') {
+                            return (
+                                <Button 
+                                    className="w-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center gap-2 font-bold h-11 shadow-[0_0_15px_rgba(243,64,84,0.3)] transition-all"
+                                    onClick={handleOptimize}
+                                >
+                                    ↻ Retry Optimization
+                                </Button>
+                            );
+                        }
+
+                        if (status === 'OUT_OF_CREDITS') {
+                            return (
+                                <Button 
+                                    className="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white flex items-center justify-center gap-2 font-bold h-11 shadow-[0_0_15px_rgba(192,38,211,0.3)] transition-all"
+                                    // onClick could link to billing if needed
+                                >
+                                    🔒 Upgrade Plan
+                                </Button>
+                            );
+                        }
+
+                        if (status === 'OPTIMIZED') {
+                            return (
+                                <Button disabled className="w-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center gap-2 font-bold h-11">
+                                    ✨ Already Optimized
+                                </Button>
+                            );
+                        }
+
+                        // PENDING_AUDIT & Default
+                        return (
+                            <Button variant="outline" disabled className="w-full bg-transparent text-muted-foreground border-border flex items-center justify-center gap-2 font-bold h-11">
+                                Waiting for Scanner...
+                            </Button>
+                        );
+                    })()}
                 </SheetFooter>
             </SheetContent>
         </Sheet>

@@ -18,6 +18,7 @@ import { Brand } from "@/components/ui/brand";
 import { AutoPilotToggle } from "@/components/dashboard/AutoPilotToggle";
 import ProductSheet from "@/components/dashboard/ProductSheet";
 import KPIGrid from "@/components/dashboard/KPIGrid";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { useFoundryStore } from "@/store/useFoundryStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -162,12 +163,7 @@ function ConnectStoreBanner() {
     );
 }
 
-const StatusBadge = ({ status }: { status: string }) => {
-    if (status === 'ERROR') return <Badge variant="outline" className="bg-destructive/10 dark:bg-red-500/10 text-destructive dark:text-red-500 border-destructive/20 dark:border-red-500/20 px-2 py-0.5 font-medium"><AlertTriangle className="h-3 w-3 mr-1" /> Error</Badge>
-    if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 font-medium"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
-    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20 px-2 py-0.5 font-medium"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
-    return <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-500/20 px-2 py-0.5 font-medium"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
-};
+// StatusBadge has been centralized to @/components/ui/status-badge
 
 // --- MAIN PAGE ---
 
@@ -204,6 +200,7 @@ export default function DashboardPage() {
                 supabase.from('shopify_products')
                     .select('id, shopify_id, current_title, audit_status, audit_score, image_url, created_at, inventory_quantity, sales_last_7_days')
                     .eq('user_id', user.id)
+                    .neq('audit_status', 'OPTIMIZED')
                     .order('created_at', { ascending: false })
                     .limit(50),
                 
@@ -388,7 +385,7 @@ export default function DashboardPage() {
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center">Status</TableHead>
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 hidden md:table-cell">Quality Score</TableHead>
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center hidden md:table-cell">Stock</TableHead>
-                            <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center hidden md:table-cell">Ventas (7d)</TableHead>
+                            <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-center hidden md:table-cell">Sales (7d)</TableHead>
                             <TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground h-12 text-right">Inspect</TableHead>
                         </TableRow>
                     </TableHeader>
