@@ -2,11 +2,137 @@ import { NextResponse } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
-// --- HELPER: Extraer ID numérico de Shopify GID ---
-// 'gid://shopify/Product/123456789' -> '123456789'
-const extractNumericId = (gid: string): string => gid.split("/").pop() || gid;
+export const maxDuration = 60
 
-export async function POST(req: Request) {
+const SHOPIFY_API_VERSION = "2026-04"
+const SHOPIFY_FETCH_TIMEOUT_MS = 45_000
+const PENDING_AUDIT_STATUS = "PENDING_AUDIT"
+
+interface ShopifyIntegration {
+  shop_url: string
+  access_token: string
+}
+
+interface ShopifyGraphqlError {
+  message: string
+}
+
+interface ShopifyFeaturedImage {
+  url: string | null
+}
+
+interface ShopifyVariant {
+  price: string | null
+  compareAtPrice: string | null
+  inventoryQuantity: number | null
+  sku: string | null
+}
+
+interface ShopifyVariantConnection {
+  nodes: ShopifyVariant[]
+}
+
+interface ShopifyProduct {
+  id: string
+  title: string
+  descriptionHtml: string | null
+  vendor: string | null
+  totalInventory: number | null
+  featuredImage: ShopifyFeaturedImage | null
+  variants: ShopifyVariantConnection
+}
+
+interface ShopifyOrderLineItem {
+  product: {
+    id: string
+  } | null
+  quantity: number
+}
+
+interface ShopifyOrder {
+  createdAt: string
+  lineItems: {
+    nodes: ShopifyOrderLineItem[]
+  }
+}
+
+interface ShopifySyncData {
+  products: {
+    nodes: ShopifyProduct[]
+  }
+  orders: {
+    nodes: ShopifyOrder[]
+  }
+}
+
+interface ShopifyGraphqlResponse {
+  data?: ShopifySyncData
+  errors?: ShopifyGraphqlError[]
+}
+
+interface ExistingShopifyProduct {
+  shopify_id: string
+  current_body_html: string | null
+  audit_status: string | null
+  audit_score: number | null
+}
+
+interface SalesWindow {
+  d7: number
+  d14: number
+  d30: number
+}
+
+interface ShopifyProductUpsert {
+  user_id: string
+  shopify_id: string
+  current_title: string
+  current_body_html: string | null
+  vendor: string | null
+  image_url: string | null
+  price: number
+  compare_at_price: number | null
+  inventory_quantity: number
+  sales_last_7_days: number
+  audit_status: string
+  audit_score: number
+  updated_at: string
+}
+
+interface ProductMetricUpsert {
+  user_id: string
+  product_id: string
+  measured_at: string
+  conversion_rate: null
+  orders_count_7d: number
+  orders_count_14d: number
+  orders_count_30d: number
+  price: number
+}
+
+const extractNumericId = (gid: string): string => gid.split("/").pop() || gid
+
+const parseMoney = (value: string | null | undefined): number => {
+  if (!value) return 0
+
+  const parsedValue = Number.parseFloat(value)
+  return Number.isFinite(parsedValue) ? parsedValue : 0
+}
+
+const getPublicErrorMessage = (error: unknown): string => {
+  if (error instanceof DOMException && error.name === "TimeoutError") {
+    return "Shopify sync timed out. Please try again."
+  }
+
+  return "Unable to sync Shopify data. Please try again."
+}
+
+const getLogError = (error: unknown): string => {
+  if (error instanceof Error) return error.message
+  return String(error)
+}
+
+export async function POST() {
   try {
     const cookieStore = await cookies()
     const supabase = createServerClient(
@@ -15,32 +141,38 @@ export async function POST(req: Request) {
       { cookies: { getAll() { return cookieStore.getAll() } } }
     )
 
-    // 1. Verificar sesión del usuario
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    // 2. Obtener credenciales de Shopify
-    const { data: integration, error: intError } = await supabase
-      .from('integrations')
-      .select('shop_url, access_token')
-      .eq('user_id', user.id)
-      .eq('provider', 'shopify')
+    const { data: integrationData, error: integrationError } = await supabase
+      .from("integrations")
+      .select("shop_url, access_token")
+      .eq("user_id", user.id)
+      .eq("provider", "shopify")
       .single()
 
-    if (intError || !integration) {
-      return NextResponse.json({ error: "Please connect Shopify in Settings first." }, { status: 400 })
+    const integration = integrationData as ShopifyIntegration | null
+
+    if (integrationError || !integration) {
+      return NextResponse.json(
+        { error: "Please connect Shopify in Settings first." },
+        { status: 400 }
+      )
     }
 
-    // Validación de seguridad (SSRF)
-    const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/;
+    const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/
     if (!shopUrlPattern.test(integration.shop_url)) {
-      return NextResponse.json({ error: "Invalid Shopify URL format detected." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid Shopify URL format detected." },
+        { status: 400 }
+      )
     }
 
-    // 3. Preparar Query de GraphQL (Eficiencia: 1 Sola Petición)
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const orderQuery = `created_at:>=${sevenDaysAgo.toISOString()}`;
+    const now = new Date()
+    const updatedAt = now.toISOString()
+    const measuredAt = updatedAt.split("T")[0]
+    const thirtyDaysAgo = new Date(now)
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
     const graphqlQuery = {
       query: `
@@ -51,6 +183,7 @@ export async function POST(req: Request) {
               title
               descriptionHtml
               vendor
+              totalInventory
               featuredImage {
                 url
               }
@@ -58,22 +191,15 @@ export async function POST(req: Request) {
                 nodes {
                   price
                   compareAtPrice
-                  inventoryItem {
-                    inventoryLevels(first: 1) {
-                      nodes {
-                        quantities(names: ["available"]) {
-                          name
-                          quantity
-                        }
-                      }
-                    }
-                  }
+                  inventoryQuantity
+                  sku
                 }
               }
             }
           }
           orders(first: 250, query: $orderQuery) {
             nodes {
+              createdAt
               lineItems(first: 50) {
                 nodes {
                   product {
@@ -86,82 +212,147 @@ export async function POST(req: Request) {
           }
         }
       `,
-      variables: { orderQuery }
-    };
+      variables: { orderQuery: `created_at:>=${thirtyDaysAgo.toISOString()}` }
+    }
 
-    const shopifyUrl = `https://${integration.shop_url}/admin/api/2026-04/graphql.json`;
-
-    const res = await fetch(shopifyUrl, {
+    const shopifyUrl = `https://${integration.shop_url}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`
+    const shopifyResponse = await fetch(shopifyUrl, {
       method: "POST",
       headers: {
         "X-Shopify-Access-Token": integration.access_token,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(graphqlQuery)
-    });
+      body: JSON.stringify(graphqlQuery),
+      signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS)
+    })
 
-    if (!res.ok) throw new Error(`Shopify API Error: ${res.statusText}`);
-    const { data, errors } = await res.json();
-    if (errors) throw new Error(`GraphQL Error: ${errors[0].message}`);
+    if (!shopifyResponse.ok) {
+      throw new Error(`Shopify API Error: ${shopifyResponse.status} ${shopifyResponse.statusText}`)
+    }
 
-    const products = data.products.nodes;
-    const orders = data.orders.nodes;
+    const shopifyPayload = await shopifyResponse.json() as ShopifyGraphqlResponse
+    if (shopifyPayload.errors?.length) {
+      throw new Error(`GraphQL Error: ${shopifyPayload.errors[0].message}`)
+    }
 
-    // 4. Procesar Ventas (Mapeo de product_id -> cantidad acumulada)
-    const salesMap: Record<string, number> = {};
-    orders.forEach((order: any) => {
-      order.lineItems.nodes.forEach((item: any) => {
-        if (item.product?.id) {
-          const pid = extractNumericId(item.product.id);
-          salesMap[pid] = (salesMap[pid] || 0) + item.quantity;
-        }
-      });
-    });
+    if (!shopifyPayload.data) {
+      throw new Error("Shopify response did not include sync data")
+    }
 
-    // 5. Mapear Productos con Métricas Avanzadas
-    const productsToSync = products.map((p: any) => {
-      const numericId = extractNumericId(p.id);
-      const mainVariant = p.variants.nodes[0];
-      
-      const currentPrice = mainVariant?.price ? parseFloat(mainVariant.price) : 0;
-      const comparePrice = mainVariant?.compareAtPrice ? parseFloat(mainVariant.compareAtPrice) : null;
-      
-      const availableStock = mainVariant?.inventoryItem?.inventoryLevels?.nodes[0]
-        ?.quantities?.find((q: any) => q.name === 'available')?.quantity || 0;
+    const products = shopifyPayload.data.products.nodes
+    const orders = shopifyPayload.data.orders.nodes
+    const productIds = products.map((product) => extractNumericId(product.id))
+
+    const existingProductsById = new Map<string, ExistingShopifyProduct>()
+    if (productIds.length > 0) {
+      const { data: existingProductsData, error: existingProductsError } = await supabase
+        .from("shopify_products")
+        .select("shopify_id, current_body_html, audit_status, audit_score")
+        .eq("user_id", user.id)
+        .in("shopify_id", productIds)
+
+      if (existingProductsError) {
+        throw new Error(`Pre-fetch Error: ${existingProductsError.message}`)
+      }
+
+      const existingProducts = (existingProductsData ?? []) as ExistingShopifyProduct[]
+      existingProducts.forEach((product) => {
+        existingProductsById.set(product.shopify_id, product)
+      })
+    }
+
+    const salesMap: Record<string, SalesWindow> = {}
+    orders.forEach((order) => {
+      const orderDate = new Date(order.createdAt)
+      const diffDays = Math.ceil(
+        Math.abs(now.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24)
+      )
+
+      order.lineItems.nodes.forEach((item) => {
+        if (!item.product?.id) return
+
+        const productId = extractNumericId(item.product.id)
+        salesMap[productId] ??= { d7: 0, d14: 0, d30: 0 }
+        salesMap[productId].d30 += item.quantity
+
+        if (diffDays <= 14) salesMap[productId].d14 += item.quantity
+        if (diffDays <= 7) salesMap[productId].d7 += item.quantity
+      })
+    })
+
+    const productsToSync: ShopifyProductUpsert[] = products.map((product) => {
+      const shopifyId = extractNumericId(product.id)
+      const mainVariant = product.variants.nodes[0]
+      const currentBodyHtml = product.descriptionHtml ?? null
+      const existingProduct = existingProductsById.get(shopifyId)
+      const isDescriptionUnchanged =
+        existingProduct !== undefined &&
+        (existingProduct.current_body_html ?? "").trim() === (currentBodyHtml ?? "").trim()
+      const sales = salesMap[shopifyId] ?? { d7: 0, d14: 0, d30: 0 }
 
       return {
         user_id: user.id,
-        shopify_id: numericId,
-        current_title: p.title,
-        current_body_html: p.descriptionHtml,
-        vendor: p.vendor,
-        image_url: p.featuredImage?.url || null,
-        
-        price: currentPrice,
-        compare_at_price: comparePrice,
-        inventory_quantity: availableStock,
-        sales_last_7_days: salesMap[numericId] || 0, // Por defecto 0
-        
-        audit_status: 'PENDING_AUDIT',
-        updated_at: new Date().toISOString()
-      };
-    });
+        shopify_id: shopifyId,
+        current_title: product.title,
+        current_body_html: currentBodyHtml,
+        vendor: product.vendor,
+        image_url: product.featuredImage?.url ?? null,
+        price: parseMoney(mainVariant?.price),
+        compare_at_price: mainVariant?.compareAtPrice
+          ? parseMoney(mainVariant.compareAtPrice)
+          : null,
+        inventory_quantity: mainVariant?.inventoryQuantity ?? product.totalInventory ?? 0,
+        sales_last_7_days: sales.d7,
+        audit_status: isDescriptionUnchanged
+          ? existingProduct.audit_status ?? PENDING_AUDIT_STATUS
+          : PENDING_AUDIT_STATUS,
+        audit_score: isDescriptionUnchanged ? existingProduct.audit_score ?? 0 : 0,
+        updated_at: updatedAt
+      }
+    })
 
-    // 6. Upsert en Supabase
-    const { error: dbError } = await supabase
-      .from('shopify_products')
-      .upsert(productsToSync, { onConflict: 'user_id, shopify_id' })
+    const metricsToUpsert: ProductMetricUpsert[] = products.map((product) => {
+      const shopifyId = extractNumericId(product.id)
+      const mainVariant = product.variants.nodes[0]
+      const sales = salesMap[shopifyId] ?? { d7: 0, d14: 0, d30: 0 }
 
-    if (dbError) throw dbError;
+      return {
+        user_id: user.id,
+        product_id: shopifyId,
+        measured_at: measuredAt,
+        conversion_rate: null,
+        orders_count_7d: sales.d7,
+        orders_count_14d: sales.d14,
+        orders_count_30d: sales.d30,
+        price: parseMoney(mainVariant?.price)
+      }
+    })
+
+    if (productsToSync.length > 0) {
+      const { error: productsUpsertError } = await supabase
+        .from("shopify_products")
+        .upsert(productsToSync, { onConflict: "user_id,shopify_id" })
+
+      if (productsUpsertError) {
+        throw new Error(`Shopify Products Upsert Error: ${productsUpsertError.message}`)
+      }
+
+      const { error: metricsUpsertError } = await supabase
+        .from("product_metrics")
+        .upsert(metricsToUpsert, { onConflict: "product_id,measured_at" })
+
+      if (metricsUpsertError) {
+        throw new Error(`Product Metrics Upsert Error: ${metricsUpsertError.message}`)
+      }
+    }
 
     return NextResponse.json({
       success: true,
       count: productsToSync.length,
-      message: `Sync successful. Processed ${productsToSync.length} products with 7-day sales metrics.`
-    });
-
-  } catch (error: any) {
-    console.error("Sync Error:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+      message: "Sync successful. State Locking and daily metric throttling applied."
+    })
+  } catch (error: unknown) {
+    console.error("Shopify sync failed:", getLogError(error))
+    return NextResponse.json({ error: getPublicErrorMessage(error) }, { status: 500 })
   }
 }

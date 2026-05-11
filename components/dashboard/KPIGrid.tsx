@@ -79,6 +79,12 @@ export default function KPIGrid({ userId }: KPIGridProps) {
         queryFn: async () => {
             if (!userId) return DEFAULTS
 
+            // Esperar activamente a que la sesión esté lista en el cliente para evitar RLS blocks
+            const { data: sessionData } = await supabase.auth.getSession()
+            if (!sessionData.session) {
+                throw new Error("Session not hydrated yet")
+            }
+
             const { data, error } = await supabase
                 .from('user_kpis')
                 .select('revenue_at_risk, health_score_avg, items_in_queue')
@@ -86,18 +92,26 @@ export default function KPIGrid({ userId }: KPIGridProps) {
                 .single()
 
             if (error) {
+                // Si la fila simplemente no existe aún, retornamos ceros sin fallar ni reintentar
+                if (error.code === 'PGRST116') {
+                    return DEFAULTS;
+                }
                 console.warn("Supabase fetch error (might retry):", error)
                 throw error
             }
 
             return {
-                revenue_at_risk: Number(data.revenue_at_risk) || 0,
-                health_score_avg: Number(data.health_score_avg) || 0,
-                items_in_queue: Number(data.items_in_queue) || 0,
+                revenue_at_risk: Number(data?.revenue_at_risk) || 0,
+                health_score_avg: Number(data?.health_score_avg) || 0,
+                items_in_queue: Number(data?.items_in_queue) || 0,
             }
         },
         enabled: !!userId,
-        retry: 3,
+        retry: (failureCount, error: any) => {
+            if (error?.code === 'PGRST116') return false; // Don't retry if row doesn't exist
+            return failureCount < 5; // Retry up to 5 times for auth hydration
+        },
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000), // Exponential backoff
         staleTime: Infinity, // Dependemos del WebSocket para frescura
     })
 
@@ -165,7 +179,7 @@ export default function KPIGrid({ userId }: KPIGridProps) {
                 value={animatedQueue}
                 icon={Zap}
                 glowColor="#3b82f6"
-                subtitle="Assets analyzed and ready for AI processing"
+                subtitle="Includes pending, processing, ready, and error states"
                 loading={isLoading}
             />
         </div>
