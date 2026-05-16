@@ -7,6 +7,7 @@ import { TrendingDown, Activity, Zap } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import type { LucideIcon } from "lucide-react"
 
 // --- ANIMATED NUMBER HOOK ---
 // Smoothly transitions between old and new numeric values
@@ -58,11 +59,33 @@ interface KPIData {
     items_in_queue: number
 }
 
+interface KPIRealtimeRow {
+    revenue_at_risk: string | number | null
+    health_score_avg: string | number | null
+    items_in_queue: number | null
+}
+
 const DEFAULTS: KPIData = {
     revenue_at_risk: 0,
     health_score_avg: 0,
     items_in_queue: 0,
 }
+
+const KPI_QUERY_KEY = (userId: string) => ['user_kpis', userId] as const
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === "object" && value !== null && !Array.isArray(value)
+
+const toNumber = (value: string | number | null | undefined): number => {
+    const parsed = Number(value ?? 0)
+    return Number.isFinite(parsed) ? parsed : 0
+}
+
+const normalizeKpis = (row?: KPIRealtimeRow | null): KPIData => ({
+    revenue_at_risk: toNumber(row?.revenue_at_risk),
+    health_score_avg: toNumber(row?.health_score_avg),
+    items_in_queue: toNumber(row?.items_in_queue),
+})
 
 // --- MAIN COMPONENT ---
 interface KPIGridProps {
@@ -75,7 +98,7 @@ export default function KPIGrid({ userId }: KPIGridProps) {
     // --- INITIAL FETCH VIA REACT QUERY ---
     // Automáticamente maneja la latencia de sesión (auth) con retries
     const { data: kpis = DEFAULTS, isLoading } = useQuery({
-        queryKey: ['user_kpis', userId],
+        queryKey: KPI_QUERY_KEY(userId),
         queryFn: async () => {
             if (!userId) return DEFAULTS
 
@@ -100,19 +123,17 @@ export default function KPIGrid({ userId }: KPIGridProps) {
                 throw error
             }
 
-            return {
-                revenue_at_risk: Number(data?.revenue_at_risk) || 0,
-                health_score_avg: Number(data?.health_score_avg) || 0,
-                items_in_queue: Number(data?.items_in_queue) || 0,
-            }
+            return normalizeKpis(data)
         },
         enabled: !!userId,
-        retry: (failureCount, error: any) => {
-            if (error?.code === 'PGRST116') return false; // Don't retry if row doesn't exist
+        retry: (failureCount, error) => {
+            if (isRecord(error) && error.code === 'PGRST116') return false; // Don't retry if row doesn't exist
             return failureCount < 5; // Retry up to 5 times for auth hydration
         },
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000), // Exponential backoff
-        staleTime: Infinity, // Dependemos del WebSocket para frescura
+        staleTime: 0,
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true,
     })
 
     // Animated display values
@@ -135,18 +156,22 @@ export default function KPIGrid({ userId }: KPIGridProps) {
                     filter: `user_id=eq.${userId}`,
                 },
                 (payload) => {
-                    const row = payload.new as any
-                    if (row) {
-                        // Actualizamos directamente el caché de React Query
-                        queryClient.setQueryData(['user_kpis', userId], {
-                            revenue_at_risk: Number(row.revenue_at_risk) || 0,
-                            health_score_avg: Number(row.health_score_avg) || 0,
-                            items_in_queue: Number(row.items_in_queue) || 0,
-                        })
+                    if (payload.eventType === 'DELETE') {
+                        queryClient.setQueryData(KPI_QUERY_KEY(userId), DEFAULTS)
+                        return
                     }
+
+                    queryClient.setQueryData(
+                        KPI_QUERY_KEY(userId),
+                        normalizeKpis(payload.new as KPIRealtimeRow)
+                    )
                 }
             )
-            .subscribe()
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    queryClient.invalidateQueries({ queryKey: KPI_QUERY_KEY(userId) })
+                }
+            })
 
         // Cleanup: destroy channel on unmount to prevent memory leaks
         return () => {
@@ -190,7 +215,7 @@ export default function KPIGrid({ userId }: KPIGridProps) {
 const KPICard = ({ title, value, icon: Icon, trend, glowColor, subtitle, loading }: {
     title: string,
     value: string | number,
-    icon: any,
+    icon: LucideIcon,
     trend?: { label: string, type: 'pos' | 'neg' },
     glowColor: string,
     subtitle: string,
