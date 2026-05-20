@@ -132,6 +132,22 @@ const getLogError = (error: unknown): string => {
   return String(error)
 }
 
+/**
+ * Neutralizes Shopify's HTML Pretty-Printing before comparison.
+ * Shopify injects `\n` between tags (e.g. `</li>\n<li>`) which breaks
+ * strict equality checks. This function:
+ *   1. Strips all whitespace sitting exactly between `>` and `<`
+ *   2. Collapses any remaining runs of whitespace into a single space
+ *   3. Trims leading/trailing whitespace
+ */
+const normalizeHtml = (html?: string | null): string => {
+  if (!html) return ""
+  return html
+    .replace(/>\s+</g, "><")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
 export async function POST() {
   try {
     const cookieStore = await cookies()
@@ -287,7 +303,7 @@ export async function POST() {
       const existingProduct = existingProductsById.get(shopifyId)
       const isDescriptionUnchanged =
         existingProduct !== undefined &&
-        (existingProduct.current_body_html ?? "").trim() === (currentBodyHtml ?? "").trim()
+        normalizeHtml(existingProduct.current_body_html) === normalizeHtml(currentBodyHtml)
       const sales = salesMap[shopifyId] ?? { d7: 0, d14: 0, d30: 0 }
 
       return {
