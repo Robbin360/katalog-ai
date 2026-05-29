@@ -1,10 +1,53 @@
 "use client";
 
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n-context";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export const PricingSection = () => {
   const { t } = useI18n();
+  const router = useRouter();
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState<string | null>(null);
+
+  const handleUpgrade = async (priceId: string) => {
+    setIsCheckoutLoading(priceId);
+    try {
+      // Verificamos si hay sesión activa antes de intentar checkout
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        // Si no hay sesión, redirigir al login con returnTo para volver después
+        router.push('/login');
+        return;
+      }
+
+      // Usuario autenticado → crear sesión de Stripe Checkout
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.error || 'Error al procesar el pago');
+        return;
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error('No se pudo iniciar el checkout');
+      }
+    } catch (error) {
+      toast.error('Error de conexión. Intenta de nuevo.');
+    } finally {
+      setIsCheckoutLoading(null);
+    }
+  };
 
   return (
     <section className="py-24 relative z-10" id="pricing">
@@ -22,9 +65,20 @@ export const PricingSection = () => {
               <span className="text-4xl font-bold tracking-tight text-white">$29</span>
               <span className="text-sm font-semibold leading-6 text-slate-400">/mes</span>
             </p>
-            <Link href="/login" className="mt-6 block rounded-md border border-border-dark bg-white/5 py-2 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-white/10">
-              {t('landing.pricing.plans.starter.cta') || 'Comenzar'}
-            </Link>
+            <button
+              onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || '')}
+              disabled={!!isCheckoutLoading}
+              className="mt-6 block w-full rounded-md border border-border-dark bg-white/5 py-2 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {isCheckoutLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  Procesando...
+                </span>
+              ) : (
+                t('landing.pricing.plans.starter.cta') || 'Comenzar'
+              )}
+            </button>
             <ul className="mt-8 space-y-3 text-sm leading-6 text-slate-300" role="list">
               <li className="flex gap-x-3"><span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">check</span> {t('landing.pricing.plans.starter.features.item1') || 'Hasta 1,000 productos'}</li>
               <li className="flex gap-x-3"><span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">check</span> {t('landing.pricing.plans.starter.features.item2') || 'Auditoría Visual básica'}</li>
@@ -41,9 +95,20 @@ export const PricingSection = () => {
               <span className="text-5xl font-bold tracking-tight text-white">$79</span>
               <span className="text-sm font-semibold leading-6 text-slate-400">/mes</span>
             </p>
-            <Link href="/login" className="mt-6 block rounded-md bg-primary py-2.5 px-3 text-center text-sm font-semibold leading-6 text-background-dark shadow-sm hover:bg-emerald-400">
-              {t('landing.pricing.plans.pro.cta') || 'Prueba Gratuita'}
-            </Link>
+            <button
+              onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || '')}
+              disabled={!!isCheckoutLoading}
+              className="mt-6 block w-full rounded-md bg-primary py-2.5 px-3 text-center text-sm font-semibold leading-6 text-background-dark shadow-sm hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {isCheckoutLoading === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  Procesando...
+                </span>
+              ) : (
+                t('landing.pricing.plans.pro.cta') || 'Prueba Gratuita'
+              )}
+            </button>
             <ul className="mt-8 space-y-3 text-sm leading-6 text-slate-300" role="list">
               <li className="flex gap-x-3"><span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">check</span> {t('landing.pricing.plans.pro.features.item1') || 'Hasta 10,000 productos'}</li>
               <li className="flex gap-x-3"><span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">check</span> {t('landing.pricing.plans.pro.features.item2') || 'Escritura IA Ilimitada'}</li>
@@ -60,9 +125,20 @@ export const PricingSection = () => {
               <span className="text-4xl font-bold tracking-tight text-white">$199</span>
               <span className="text-sm font-semibold leading-6 text-slate-400">/mes</span>
             </p>
-            <Link href="/contact" className="mt-6 block rounded-md border border-border-dark bg-white/5 py-2 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-white/10">
-              {t('landing.pricing.plans.enterprise.cta') || 'Contactar Ventas'}
-            </Link>
+            <button
+              onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS || '')}
+              disabled={!!isCheckoutLoading}
+              className="mt-6 block w-full rounded-md border border-border-dark bg-white/5 py-2 px-3 text-center text-sm font-semibold leading-6 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {isCheckoutLoading === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  Procesando...
+                </span>
+              ) : (
+                t('landing.pricing.plans.enterprise.cta') || 'Contactar Ventas'
+              )}
+            </button>
             <ul className="mt-8 space-y-3 text-sm leading-6 text-slate-300" role="list">
               <li className="flex gap-x-3"><span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">check</span> {t('landing.pricing.plans.enterprise.features.item1') || 'Productos ilimitados'}</li>
               <li className="flex gap-x-3"><span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">check</span> {t('landing.pricing.plans.enterprise.features.item2') || 'Modelos de IA personalizados'}</li>

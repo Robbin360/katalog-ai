@@ -45,3 +45,7 @@ _trash_*
 temp-install
 *.log
 *.ps1
+
+# Stripe local binary
+stripe.exe
+

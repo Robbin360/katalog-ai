@@ -101,20 +101,26 @@ export default function AccountPage() {
     const handleCheckout = async (priceId: string) => {
         setLoadingCheckout(true)
         try {
-            const response = await fetch('/api/checkout', {
+            const response = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ priceId })
             })
             const data = await response.json()
+
+            if (!response.ok) {
+                toast.error(data.error || t('account.alerts.payment_error'))
+                return
+            }
+
             if (data.url) {
-                // Abrimos Stripe en nueva pestaña para no destruir el router de Next.js
-                window.open(data.url, '_blank', 'noopener,noreferrer')
+                // Redirigimos al Checkout de Stripe
+                window.location.href = data.url
             } else {
-                alert(t('account.alerts.payment_error'))
+                toast.error(t('account.alerts.payment_error'))
             }
         } catch (error) {
-            alert(t('account.alerts.connection_error'))
+            toast.error(t('account.alerts.connection_error'))
         } finally {
             setLoadingCheckout(false)
         }
