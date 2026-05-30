@@ -52,15 +52,15 @@ export async function POST(req: Request) {
             const subscription = await stripe.subscriptions.retrieve(subscriptionId);
             const priceId = subscription.items.data[0].price.id;
 
-            // Calculamos el saldo a entregar
+            // Calculamos el saldo a entregar (Matriz de Márgenes v2)
             let creditsToAssign = 100; // Starter por defecto
             let planName = 'starter';
 
             if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO) {
-                creditsToAssign = 300;
+                creditsToAssign = 250;
                 planName = 'pro';
             } else if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS) {
-                creditsToAssign = 1000;
+                creditsToAssign = 700;
                 planName = 'business';
             }
 
@@ -70,6 +70,8 @@ export async function POST(req: Request) {
                 .update({
                     stripe_subscription_id: subscriptionId,
                     plan_tier: planName,
+                    subscription_status: 'active',
+                    next_credit_reset_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
                     auto_pilot_enabled: true, // Activamos el AutoPilot como regalo por compra
                     credits_total: creditsToAssign,
                     credits_used: 0, // Reseteamos el uso mensual
@@ -87,13 +89,50 @@ export async function POST(req: Request) {
         }
     }
 
+    // EVENTO: Renovación mensual de pago — resetea créditos usados
+    if (event.type === 'invoice.payment_succeeded') {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = (invoice as any).subscription as string;
+
+        // Solo procesamos renovaciones, no el primer pago (que ya maneja checkout.session.completed)
+        if (invoice.billing_reason === 'subscription_cycle') {
+            const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+            const priceId = subscription.items.data[0].price.id;
+
+            let creditsToAssign = 100;
+            if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO) {
+                creditsToAssign = 250;
+            } else if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS) {
+                creditsToAssign = 700;
+            }
+
+            const { error } = await supabaseAdmin
+                .from('profiles')
+                .update({
+                    credits_used: 0,
+                    credits_total: creditsToAssign,
+                    updated_at: new Date().toISOString(),
+                })
+                .eq('stripe_subscription_id', subscriptionId);
+
+            if (error) {
+                console.error(`❌ Error al resetear créditos en renovación: ${error.message}`);
+            } else {
+                console.log(`🔄 Renovación procesada: suscripción ${subscriptionId} — ${creditsToAssign} créditos reseteados.`);
+            }
+        }
+    }
+
     // EVENTO: Suscripción cancelada
     if (event.type === 'customer.subscription.deleted') {
-        const subscriptionId = session.id;
+        const subscription = event.data.object as Stripe.Subscription;
+        const subscriptionId = subscription.id;
         await supabaseAdmin
             .from('profiles')
             .update({
                 plan_tier: 'free',
+                subscription_status: 'inactive',
+                next_credit_reset_at: null,
                 auto_pilot_enabled: false,
                 credits_total: 0,
                 stripe_subscription_id: null,
