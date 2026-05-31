@@ -57,10 +57,16 @@ export async function POST(req: Request) {
             let creditsToAssign = 100; // Starter por defecto
             let planName = 'starter';
 
-            if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO) {
+            if (
+                priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO ||
+                priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL
+            ) {
                 creditsToAssign = 250;
                 planName = 'pro';
-            } else if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS) {
+            } else if (
+                priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS ||
+                priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL
+            ) {
                 creditsToAssign = 700;
                 planName = 'business';
             }
@@ -69,6 +75,7 @@ export async function POST(req: Request) {
             const { error } = await supabaseAdmin
                 .from('profiles')
                 .update({
+                    stripe_customer_id: typeof session.customer === 'string' ? session.customer : session.customer?.id,
                     stripe_subscription_id: subscriptionId,
                     plan_tier: planName,
                     billing_interval: interval,

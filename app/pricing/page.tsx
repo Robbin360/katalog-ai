@@ -15,12 +15,12 @@ const PricingPage = () => {
     {
       name: t('pricing.plans.starter.name'),
       description: t('pricing.plans.starter.description'),
-      price: billingCycle === "annually" ? 15 : 19,
-      credits: 100,
+      price: 0,
+      credits: 0,
       badge: null,
       cta: t('pricing.plans.starter.cta'),
       features: [
-        `100 ${t('pricing.features.credits')}`,
+        `0 ${t('pricing.features.credits')}`,
         t('pricing.features.audit'),
         t('pricing.features.motor_std'),
         t('pricing.features.support_email'),
@@ -30,7 +30,7 @@ const PricingPage = () => {
     {
       name: t('pricing.plans.pro.name'),
       description: t('pricing.plans.pro.description'),
-      price: billingCycle === "annually" ? 39 : 49,
+      price: billingCycle === "annually" ? 539 : 49,
       credits: 500,
       badge: t('pricing.plans.pro.badge'),
       cta: t('pricing.plans.pro.cta'),
@@ -46,7 +46,7 @@ const PricingPage = () => {
     {
       name: t('pricing.plans.business.name'),
       description: t('pricing.plans.business.description'),
-      price: billingCycle === "annually" ? 119 : 149,
+      price: billingCycle === "annually" ? 1089 : 99,
       credits: 2000,
       badge: t('pricing.plans.business.badge'),
       cta: t('pricing.plans.business.cta'),
@@ -175,11 +175,8 @@ const PricingPage = () => {
               <div className="mb-8 items-baseline flex flex-col">
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-black">${plan.price}</span>
-                  <span className="text-zinc-500 text-sm">/{t('pricing.billing.monthly').toLowerCase()}</span>
+                  <span className="text-zinc-500 text-sm">/{billingCycle === "annually" ? "year" : t('pricing.billing.monthly').toLowerCase()}</span>
                 </div>
-                {billingCycle === "annually" && (
-                  <span className="text-xs text-primary/80 mt-1">{t('pricing.billing.billed_annually')}</span>
-                )}
               </div>
 
               <Link

@@ -291,7 +291,7 @@
         "billing": {
             "monthly": "Monthly",
             "annually": "Annually",
-            "save": "Save 20%",
+            "save": "Save 10%",
             "billed_annually": "Billed annually"
         },
         "plans": {

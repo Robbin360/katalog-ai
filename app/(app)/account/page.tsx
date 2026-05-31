@@ -59,6 +59,7 @@ export default function AccountPage() {
     // Estados de Carga
     const [loadingCheckout, setLoadingCheckout] = useState(false)
     const [loadingPortal, setLoadingPortal] = useState(false)
+    const [isAnnual, setIsAnnual] = useState(false)
 
     // 1. FETCH DATOS GLOBAL
     const { data: accountData, isLoading, isError } = useQuery({
@@ -223,31 +224,54 @@ export default function AccountPage() {
                             )}
                         </div>
 
+                        {/* Toggle de facturación mensual/anual */}
+                        <div className="flex items-center gap-4 bg-muted/40 p-1.5 rounded-lg w-fit border border-border">
+                            <Button
+                                variant={!isAnnual ? "secondary" : "ghost"}
+                                size="sm"
+                                onClick={() => setIsAnnual(false)}
+                                className={cn("h-8 px-4 font-semibold text-xs", !isAnnual && "bg-background shadow-sm")}
+                            >
+                                Monthly
+                            </Button>
+                            <Button
+                                variant={isAnnual ? "secondary" : "ghost"}
+                                size="sm"
+                                onClick={() => setIsAnnual(true)}
+                                className={cn("h-8 px-4 font-semibold text-xs", isAnnual && "bg-background shadow-sm")}
+                            >
+                                Annual <span className="ml-1 px-1.5 py-0.5 bg-emerald-500/15 text-primary rounded-full scale-90 origin-right">Save 10%</span>
+                            </Button>
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <PricingCard
-                                title="Starter" price="$0"
+                                title="Free" price="$0"
+                                priceSuffix={isAnnual ? " /año" : " /mo"}
                                 features={["3 Products/mo", "Basic Support", "Standard AI Model"]}
                                 current={plan === 'starter'}
                                 t={t}
                             />
 
                             <PricingCard
-                                title="Pro" price="$29"
+                                title="Pro" price={isAnnual ? "$539" : "$49"}
+                                priceSuffix={isAnnual ? " /año" : " /mo"}
                                 features={["50 Products/mo", "Priority Queue", "Advanced Brand Voice", "HD Image Processing"]}
                                 current={plan === 'pro'} recommended
                                 actionLabel={t('account.billing.upgrade_pro')}
-                                priceId={process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO}
+                                priceId={isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO}
                                 onCheckout={handleCheckout}
                                 loading={loadingCheckout}
                                 t={t}
                             />
 
                             <PricingCard
-                                title="Business" price="$99"
+                                title="Business" price={isAnnual ? "$1,089" : "$99"}
+                                priceSuffix={isAnnual ? " /año" : " /mo"}
                                 features={["500 Products/mo", "Bulk Export (CSV)", "API Access", "Dedicated Support"]}
                                 current={plan === 'business'}
                                 actionLabel={t('account.billing.upgrade_business')}
-                                priceId={process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS}
+                                priceId={isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS}
                                 onCheckout={handleCheckout}
                                 loading={loadingCheckout}
                                 t={t}
@@ -366,7 +390,7 @@ export default function AccountPage() {
 }
 
 
-function PricingCard({ title, price, features, current, recommended, actionLabel, priceId, onCheckout, loading, t }: any) {
+function PricingCard({ title, price, priceSuffix = " / mo", features, current, recommended, actionLabel, priceId, onCheckout, loading, t }: any) {
     return (
         <Card className={cn(
             "flex flex-col relative transition-all duration-200",
@@ -378,7 +402,7 @@ function PricingCard({ title, price, features, current, recommended, actionLabel
                 <CardTitle className="text-xl text-foreground font-bold">{title}</CardTitle>
                 <div className="mt-2">
                     <span className="text-4xl font-bold text-foreground">{price}</span>
-                    <span className="text-muted-foreground text-sm"> / mo</span>
+                    <span className="text-muted-foreground text-sm">{priceSuffix}</span>
                 </div>
             </CardHeader>
 
