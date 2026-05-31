@@ -542,6 +542,11 @@
         "pricing": {
             "title": "Clear Pricing Plans",
             "subtitle": "Choose the plan that fits your catalog size.",
+            "toggle": {
+                "monthly": "Monthly Billing",
+                "annual": "Annual Billing",
+                "save": "Save 10%"
+            },
             "plans": {
                 "starter": {
                     "name": "Starter",

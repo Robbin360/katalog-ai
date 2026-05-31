@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const theme = cookieStore.get("theme")?.value || "system";
 
   return (
-    <html lang="es" suppressHydrationWarning className={theme === "dark" ? "dark" : ""}>
+    <html lang="en" suppressHydrationWarning className={theme === "dark" ? "dark" : ""}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

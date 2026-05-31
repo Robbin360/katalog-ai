@@ -542,6 +542,11 @@
         "pricing": {
             "title": "Planes de Precios Claros",
             "subtitle": "Elige el plan que mejor se adapte al tamaño de tu catálogo.",
+            "toggle": {
+                "monthly": "Facturación Mensual",
+                "annual": "Facturación Anual",
+                "save": "Ahorra 10%"
+            },
             "plans": {
                 "starter": {
                     "name": "Starter",

@@ -224,7 +224,7 @@ export default function AccountPage() {
                             )}
                         </div>
 
-                        {/* Toggle de facturación mensual/anual */}
+                        {/* Billing toggle monthly/annual */}
                         <div className="flex items-center gap-4 bg-muted/40 p-1.5 rounded-lg w-fit border border-border">
                             <Button
                                 variant={!isAnnual ? "secondary" : "ghost"}
