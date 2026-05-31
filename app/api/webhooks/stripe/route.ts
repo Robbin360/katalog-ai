@@ -51,6 +51,7 @@ export async function POST(req: Request) {
             // Le preguntamos a Stripe qué plan compró exactamente
             const subscription = await stripe.subscriptions.retrieve(subscriptionId);
             const priceId = subscription.items.data[0].price.id;
+            const interval = subscription.items.data[0].plan.interval; // 'month' o 'year'
 
             // Calculamos el saldo a entregar (Matriz de Márgenes v2)
             let creditsToAssign = 100; // Starter por defecto
@@ -70,6 +71,7 @@ export async function POST(req: Request) {
                 .update({
                     stripe_subscription_id: subscriptionId,
                     plan_tier: planName,
+                    billing_interval: interval,
                     subscription_status: 'active',
                     next_credit_reset_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
                     auto_pilot_enabled: true, // Activamos el AutoPilot como regalo por compra
@@ -89,37 +91,51 @@ export async function POST(req: Request) {
         }
     }
 
-    // EVENTO: Renovación mensual de pago — resetea créditos usados
-    if (event.type === 'invoice.payment_succeeded') {
+    // EVENTO: Factura pagada — recarga mensual gestionada por Stripe
+    if (event.type === 'invoice.paid') {
         const invoice = event.data.object as Stripe.Invoice;
         const subscriptionId = (invoice as any).subscription as string;
 
-        // Solo procesamos renovaciones, no el primer pago (que ya maneja checkout.session.completed)
-        if (invoice.billing_reason === 'subscription_cycle') {
-            const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-            const priceId = subscription.items.data[0].price.id;
+        // Solo procesamos facturas recurrentes, no el primer pago (que ya maneja checkout.session.completed)
+        if (invoice.billing_reason !== 'subscription_cycle') {
+            console.log(`⏭️ invoice.paid ignorada: billing_reason=${invoice.billing_reason}.`);
+            return new NextResponse('Success', { status: 200 });
+        }
 
-            let creditsToAssign = 100;
-            if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO) {
-                creditsToAssign = 250;
-            } else if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS) {
-                creditsToAssign = 700;
+        if (!subscriptionId) {
+            console.error('❌ Error: invoice.paid sin subscriptionId.');
+            return new NextResponse('Missing subscriptionId in invoice', { status: 400 });
+        }
+
+        try {
+            const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+            const billingInterval = subscription.items.data[0].plan.interval;
+            const subscriptionStatus = subscription.status;
+
+            if (billingInterval !== 'month') {
+                console.log(`⏭️ invoice.paid ignorada: suscripción ${subscriptionId} es ${billingInterval}. Supabase gestiona los resets anuales.`);
+                return new NextResponse('Success', { status: 200 });
+            }
+
+            if (subscriptionStatus !== 'active') {
+                console.log(`⏭️ invoice.paid ignorada: suscripción ${subscriptionId} está en estado ${subscriptionStatus}.`);
+                return new NextResponse('Success', { status: 200 });
             }
 
             const { error } = await supabaseAdmin
                 .from('profiles')
                 .update({
                     credits_used: 0,
-                    credits_total: creditsToAssign,
                     updated_at: new Date().toISOString(),
                 })
                 .eq('stripe_subscription_id', subscriptionId);
 
-            if (error) {
-                console.error(`❌ Error al resetear créditos en renovación: ${error.message}`);
-            } else {
-                console.log(`🔄 Renovación procesada: suscripción ${subscriptionId} — ${creditsToAssign} créditos reseteados.`);
-            }
+            if (error) throw error;
+
+            console.log(`🔄 Recarga mensual procesada: suscripción ${subscriptionId} — créditos usados reseteados.`);
+        } catch (dbError: any) {
+            console.error(`❌ Error al procesar invoice.paid: ${dbError.message}`);
+            return new NextResponse('Database error', { status: 500 });
         }
     }
 
