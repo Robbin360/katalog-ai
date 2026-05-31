@@ -168,9 +168,7 @@ export function ShopifyCard({ userId }: ShopifyCardProps) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-background dark:bg-zinc-800/50 rounded-xl border border-border dark:border-zinc-700/50 shadow-sm dark:shadow-inner relative flex items-center justify-center">
-                            {/* White background pill to fill the transparent 'S' cut-out of the SVG */}
-                            <div className="absolute w-[10px] h-[14px] bg-white rounded-full mt-2 z-0" />
-                            <img src="https://cdn.simpleicons.org/shopify/95BF47" alt="Shopify Logo" className="w-6 h-6 object-contain select-none relative z-10" />
+                            <img src="/shopify-glyph.svg" alt="Shopify Logo" className="w-6 h-6 object-contain select-none" />
                         </div>
                         <div>
                             <CardTitle className="text-xl text-foreground dark:text-zinc-100 font-bold tracking-tight">Shopify Integration</CardTitle>
