@@ -58,7 +58,7 @@ export const Navbar = () => {
           <Link href="/login">
             <button className="group relative flex h-9 items-center justify-center overflow-hidden rounded-lg bg-primary px-4 text-sm font-medium text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,183,127,0.4)]">
               <span className="relative z-10 flex items-center gap-2">
-                {t('common.connect_store') || 'Conectar Tienda'}
+                {t('common.connect_store') || 'Connect Store'}
                 <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-0.5 notranslate" translate="no" lang="zxx">arrow_forward</span>
               </span>
             </button>

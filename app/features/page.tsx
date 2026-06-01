@@ -283,7 +283,7 @@ export default function FeaturesPage() {
                         <Link className="hover:text-primary transition-colors" href="#">{t('common.terms')}</Link>
                         <Link className="hover:text-primary transition-colors" href="#">{t('common.contact')}</Link>
                     </div>
-                    <p className="text-slate-600 text-sm">© 2024 <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
+                    <p className="text-slate-600 text-sm">© {new Date().getFullYear()} <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
                 </div>
             </footer>
         </div>

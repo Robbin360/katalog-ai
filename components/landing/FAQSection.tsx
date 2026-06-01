@@ -51,17 +51,15 @@ export const FAQSection = () => {
       <footer className="border-t border-border-dark bg-background-dark py-12">
         <div className="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 notranslate" translate="no">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/20 text-primary">
-              <span className="material-symbols-outlined text-sm" translate="no" lang="zxx">auto_awesome</span>
-            </div>
+            <img src="/logo-dark.svg" alt="Katalog AI Logo" className="h-6 w-6 object-contain" />
             <span className="text-sm font-semibold text-white">Katalog AI</span>
           </div>
           <div className="flex gap-8">
-            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.privacy') || 'Privacidad'}</a>
-            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.terms') || 'Términos'}</a>
-            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.support') || 'Soporte'}</a>
+            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.privacy') || 'Privacy'}</a>
+            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.terms') || 'Terms'}</a>
+            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.support') || 'Support'}</a>
           </div>
-          <p className="text-sm text-slate-600">{t('footer.copyright') || '© 2024 Katalog AI. Todos los derechos reservados.'}</p>
+          <p className="text-sm text-slate-600">© {new Date().getFullYear()} {t('footer.copyright') || 'Katalog AI. All rights reserved.'}</p>
         </div>
       </footer>
     </>

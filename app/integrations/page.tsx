@@ -325,7 +325,7 @@ export default function IntegrationsPage() {
                         <Link className="hover:text-primary transition-colors" href="/pricing">{t('integrations.nav.pricing')}</Link>
                         <Link className="hover:text-primary transition-colors" href="/faq">{t('integrations.nav.faq')}</Link>
                     </div>
-                    <p className="text-slate-600 text-sm">© 2024 <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
+                    <p className="text-slate-600 text-sm">© {new Date().getFullYear()} <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
                 </div>
             </footer>
         </div >
