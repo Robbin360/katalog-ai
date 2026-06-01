@@ -441,7 +441,7 @@
             "badge": "v2.0 Neural Engine Active",
             "title": "Your Shopify Catalog,\nOptimized by AI.",
             "subtitle": "Katalog AI audits your store, fixes low-quality listings, and unlocks hidden revenue using advanced neural processing. Stop guessing and start scaling.",
-            "cta": "Connect Store"
+            "cta": "connect store"
         },
         "mockup": {
             "sidebar": {
@@ -630,7 +630,7 @@
         "copyright": "Katalog AI. All rights reserved."
     },
     "common": {
-        "connect_store": "Connect Store",
+        "connect_store": "connect store",
         "privacy": "Privacy Policy",
         "terms": "Terms of Service",
         "contact": "Contact Support",

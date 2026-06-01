@@ -441,7 +441,7 @@
             "badge": "Motor Neural v2.0 Activo",
             "title": "Tu catálogo de Shopify,\noptimizado por IA.",
             "subtitle": "Katalog AI audita tu tienda, corrige listings de baja calidad y desbloquea ingresos ocultos mediante procesamiento neuronal avanzado. Deja de adivinar y empieza a escalar.",
-            "cta": "Conectar Tienda"
+            "cta": "conectar tienda"
         },
         "mockup": {
             "sidebar": {
@@ -630,7 +630,7 @@
         "copyright": "Katalog AI. Todos los derechos reservados."
     },
     "common": {
-        "connect_store": "Conectar Tienda",
+        "connect_store": "conectar tienda",
         "privacy": "Política de Privacidad",
         "terms": "Términos de Servicio",
         "contact": "Contactar Soporte",

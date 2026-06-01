@@ -23,7 +23,9 @@ export const Hero = () => {
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link href="/login" className="w-full sm:w-auto">
             <button className="group flex h-14 w-full min-w-[200px] items-center justify-center rounded-lg bg-primary px-8 text-lg font-bold text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,183,127,0.3)] hover:scale-105 sm:w-auto">
-              {t('landing.hero.cta') || 'Connect Store'}
+              <span className="capitalize">
+                {t('landing.hero.cta') || 'connect store'}
+              </span>
             </button>
           </Link>
         </div>

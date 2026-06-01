@@ -22,14 +22,6 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 export function I18nProvider({ children }: { children: ReactNode }) {
     const [locale, setLocale] = useState<Locale>('en');
 
-    // Intentar recuperar el idioma del almacenamiento local al cargar
-    useEffect(() => {
-        const savedLocale = localStorage.getItem('app-locale') as Locale;
-        if (savedLocale && (savedLocale === 'en' || savedLocale === 'es')) {
-            setLocale(savedLocale);
-        }
-    }, []);
-
     // Actualizar el atributo lang del documento HTML
     useEffect(() => {
         document.documentElement.lang = locale;
@@ -37,7 +29,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
     const updateLocale = (newLocale: Locale) => {
         setLocale(newLocale);
-        localStorage.setItem('app-locale', newLocale);
     };
 
     const t = (key: string, variables?: Record<string, any>) => {
