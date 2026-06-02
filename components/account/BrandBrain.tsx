@@ -58,8 +58,8 @@ function buildPreview(rules: BrandRules, t: any): string {
   const toneKey = `account.brain.tones.${rules.tone_voice.toLowerCase()}.label`
   const audienceKey = `account.brain.audiences.${rules.target_audience.toLowerCase()}.label`
   
-  const toneLabel = t(toneKey) === toneKey ? rules.tone_voice : t(toneKey)
-  const audienceLabel = t(audienceKey) === audienceKey ? rules.target_audience : t(audienceKey)
+  const toneLabel = t(toneKey) ?? rules.tone_voice
+  const audienceLabel = t(audienceKey) ?? rules.target_audience
 
   if (rules.tone_voice.toLowerCase() === "general") {
     return t('account.brain.preview.write', { lang: rules.language }) + 

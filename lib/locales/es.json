@@ -542,6 +542,8 @@
         "pricing": {
             "title": "Planes de Precios Claros",
             "subtitle": "Elige el plan que mejor se adapte al tamaño de tu catálogo.",
+            "coming_soon": "Coming soon",
+            "capacity_label": "Tu Capacidad",
             "toggle": {
                 "monthly": "Facturación Mensual",
                 "annual": "Facturación Anual",
@@ -549,36 +551,44 @@
             },
             "plans": {
                 "starter": {
-                    "name": "Starter",
-                    "desc": "Ideal para tiendas pequeñas que comienzan a optimizar.",
-                    "cta": "Comenzar",
+                    "name": "FREE",
+                    "desc": "Descubre tu revenue en riesgo. Sin tarjeta.",
+                    "capacity": "5 Créditos",
+                    "renewal": "Regalo único de IA.",
+                    "cta": "Auditar mi tienda gratis",
                     "features": {
-                        "item1": "Hasta 1,000 productos",
-                        "item2": "Auditoría Visual básica",
-                        "item3": "Sincronización semanal"
+                        "item1": "Auditoría SEO (Hasta 500 SKUs)",
+                        "item2": "Radar de Ingresos en Riesgo",
+                        "item3": "Sincronización manual"
                     }
                 },
                 "pro": {
-                    "badge": "Más Popular",
-                    "name": "Pro",
-                    "desc": "Para marcas en crecimiento que buscan automatización total.",
-                    "cta": "Prueba Gratuita",
+                    "badge": "Recomendado",
+                    "name": "PRO",
+                    "desc": "Tu empleado de marketing 24/7.",
+                    "capacity": "250 Créditos",
+                    "renewal": "Se renuevan cada mes.",
+                    "cta": "Activar Auto-Pilot →",
+                    "includedFrom": "↳ Todo lo de Free, además de:",
                     "features": {
-                        "item1": "Hasta 10,000 productos",
-                        "item2": "Escritura IA Ilimitada",
-                        "item3": "Revenue at Risk Dashboard",
-                        "item4": "Auto-sync diario"
+                        "item1": "Auto-Pilot 24/7",
+                        "item2": "",
+                        "item3": "Reglas de Marca personalizadas",
+                        "item4": "Fast-Track Sync (Stock sin costo)"
                     }
                 },
                 "enterprise": {
-                    "name": "Enterprise",
-                    "desc": "Soluciones personalizadas para volúmenes masivos.",
-                    "cta": "Contactar Ventas",
+                    "name": "BUSINESS",
+                    "desc": "Tu agencia autónoma que aprende de noche.",
+                    "capacity": "700 Créditos",
+                    "renewal": "Límite mensual ampliado.",
+                    "cta": "Activar Business →",
+                    "includedFrom": "↳ Todo lo de Pro, además de:",
                     "features": {
-                        "item1": "Productos ilimitados",
-                        "item2": "Modelos de IA personalizados",
-                        "item3": "Manager de éxito dedicado",
-                        "item4": "Acceso vía API"
+                        "item1": "(Aprendizaje nocturno de ventas)",
+                        "item2": "Inyector de Conocimiento",
+                        "item3": "Múltiples Reglas de Marca",
+                        "item4": "Cola de procesamiento prioritaria"
                     }
                 }
             }

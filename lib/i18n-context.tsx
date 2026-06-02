@@ -51,7 +51,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
             if (fallbackValue !== undefined && fallbackValue !== null) {
                 value = fallbackValue;
             } else {
-                return key; // Devuelve la clave como último recurso
+                return undefined;
             }
         }
 
