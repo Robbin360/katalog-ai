@@ -164,5 +164,60 @@ export async function POST(req: Request) {
         console.log(`⚠️ Suscripción ${subscriptionId} cancelada. Usuario degradado a Free.`);
     }
 
+    // EVENTO: Estado de suscripción actualizado (past_due, reactivación, cancelación)
+    if (event.type === 'customer.subscription.updated') {
+        const subscription = event.data.object as Stripe.Subscription;
+        const subscriptionId = subscription.id;
+        const status = subscription.status;
+
+        try {
+            if (status === 'past_due') {
+                const { error } = await supabaseAdmin
+                    .from('profiles')
+                    .update({
+                        subscription_status: 'past_due',
+                        auto_pilot_enabled: false,
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq('stripe_subscription_id', subscriptionId);
+
+                if (error) throw error;
+                console.log(`⚠️ Suscripción ${subscriptionId} PAST_DUE. Auto-Pilot desactivado. Créditos intactos.`);
+            } else if (status === 'active') {
+                const { error } = await supabaseAdmin
+                    .from('profiles')
+                    .update({
+                        subscription_status: 'active',
+                        auto_pilot_enabled: true,
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq('stripe_subscription_id', subscriptionId);
+
+                if (error) throw error;
+                console.log(`✅ Suscripción ${subscriptionId} reactivada. Auto-Pilot restaurado.`);
+            } else if (status === 'canceled' || status === 'unpaid') {
+                const { error } = await supabaseAdmin
+                    .from('profiles')
+                    .update({
+                        subscription_status: 'inactive',
+                        plan_tier: 'free',
+                        credits_total: 0,
+                        auto_pilot_enabled: false,
+                        stripe_subscription_id: null,
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq('stripe_subscription_id', subscriptionId);
+
+                if (error) throw error;
+                console.log(`🔴 Suscripción ${subscriptionId} ${status}. Degradado a Free.`);
+            } else {
+                console.log(`⏭️ customer.subscription.updated ignorada: estado ${status} no requiere acción.`);
+            }
+        } catch (dbError: any) {
+            console.error(`❌ Error processing customer.subscription.updated: ${dbError.message}`);
+            return new NextResponse('Database error', { status: 500 });
+        }
+    }
+
     return new NextResponse('Success', { status: 200 });
 }
