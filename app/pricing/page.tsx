@@ -65,36 +65,38 @@ const PricingPage = () => {
   const comparisonData = {
     categories: [
       {
-        name: t('pricing.comparison_table.categories.limits'),
+        name: "LIMITS & CREDITS",
         features: [
-          { name: t('pricing.comparison_table.features.audit'), values: [t('pricing.comparison.unlimited'), t('pricing.comparison.unlimited'), t('pricing.comparison.unlimited')] },
-          { name: t('pricing.comparison_table.features.credits'), values: [`100 / ${t('pricing.billing.monthly').toLowerCase()}`, `500 / ${t('pricing.billing.monthly').toLowerCase()}`, `2,000 / ${t('pricing.billing.monthly').toLowerCase()}`] },
-          { name: t('pricing.comparison_table.features.extra_cost'), values: ["$0.20", "$0.10", "$0.05"] },
+          { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited"] },
+          { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "700 / month"] },
+          { name: "Extra Credit Cost", values: ["N/A", "$0.07", "$0.07"] },
         ],
       },
       {
-        name: t('pricing.comparison_table.categories.intelligence'),
+        name: "AI INTELLIGENCE",
         features: [
-          { name: t('pricing.comparison_table.features.motor'), values: [t('pricing.comparison_table.values.std'), t('pricing.comparison_table.values.pro'), t('pricing.comparison_table.values.ultra')] },
-          { name: t('pricing.comparison_table.features.brains'), values: [`1 ${t('pricing.features.brand_brain')}`, `2 ${t('pricing.features.brand_brain')}s`, t('pricing.comparison_table.values.stores_all')] },
-          { name: t('pricing.comparison_table.features.hallucination'), values: [true, true, true] },
+          { name: "AI Engine", values: ["Basic (Audit only)", "Advanced (Pro + 120B Judge)", "Advanced (Pro + 120B Judge)"] },
+          { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
+          { name: "Knowledge Injector (PDFs)", values: [false, false, true] },
+          { name: "Sleeper Agent (Nightly Learning)", values: [false, false, true] },
+          { name: "Brand Voice Rules", values: ["None", "1 Global Set", "Multiple Sets"] },
         ],
       },
       {
-        name: t('pricing.comparison_table.categories.workflow'),
+        name: "WORKFLOW & AUTOMATION",
         features: [
-          { name: t('pricing.comparison_table.features.autonomy'), values: [t('pricing.comparison.manual'), t('autopilot.label'), t('autopilot.label') + t('pricing.comparison_table.values.metrics')] },
-          { name: t('pricing.comparison_table.features.publishing'), values: [t('pricing.comparison_table.values.manual'), t('pricing.comparison_table.values.api'), t('pricing.comparison_table.values.background')] },
-          { name: t('pricing.comparison_table.features.sync'), values: [t('pricing.comparison.manual'), t('pricing.features.sync_auto_1h'), t('pricing.features.sync_realtime')] },
-          { name: t('pricing.comparison_table.features.stores'), values: ["1 Store", "2 Stores", t('pricing.comparison_table.values.stores_all')] },
+          { name: "Automation Level", values: ["Manual", "24/7 Auto-Pilot", "24/7 Auto-Pilot"] },
+          { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background"] },
+          { name: "Fast-Track Bypass ($0 Cost)", values: [false, true, true] },
+          { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify"] },
+          { name: "Connected Stores", values: ["1 Store", "1 Store", "Up to 2 Stores"] },
         ],
       },
       {
-        name: t('pricing.comparison_table.categories.support'),
+        name: "SUPPORT & INFRASTRUCTURE",
         features: [
-          { name: t('pricing.comparison_table.features.priority'), values: [t('pricing.comparison.priority_std'), t('pricing.comparison.priority_high'), t('pricing.comparison.priority_max')] },
-          { name: t('pricing.comparison_table.features.support_level'), values: [t('pricing.features.support_email'), t('pricing.comparison_table.values.priority_vip'), t('pricing.features.support_vip')] },
-          { name: t('pricing.comparison_table.features.analytics'), values: [t('pricing.comparison.under_dev'), t('pricing.comparison.under_dev'), t('pricing.comparison.under_dev')] },
+          { name: "Queue Priority", values: ["Standard", "High", "Maximum"] },
+          { name: "Support", values: ["Basic Email", "Priority Email (<48h)", "VIP Support (<12h)"] },
         ],
       },
     ],
@@ -216,9 +218,9 @@ const PricingPage = () => {
               <thead>
                 <tr className="border-b border-white/5">
                   <th className="p-8 text-sm font-bold text-zinc-500 uppercase tracking-widest">{t('pricing.comparison.functionality')}</th>
-                  <th className="p-8 text-zinc-300 font-bold text-center">Starter</th>
-                  <th className="p-8 text-primary font-bold text-center">Pro</th>
-                  <th className="p-8 text-zinc-300 font-bold text-center">Negocios</th>
+                  <th className="p-8 text-zinc-300 font-bold text-center">FREE</th>
+                  <th className="p-8 text-primary font-bold text-center">PRO</th>
+                  <th className="p-8 text-zinc-300 font-bold text-center">BUSINESS</th>
                 </tr>
               </thead>
               <tbody>

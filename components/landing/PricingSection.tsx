@@ -296,13 +296,13 @@ export const PricingSection = () => {
                     onClick={() => (plan.id === "free" ? router.push("/signup") : handleUpgrade(priceId || ""))}
                     disabled={plan.id !== "free" && (!priceId || !!isCheckoutLoading)}
                     className={cn(
-                      "inline-flex h-11 w-full items-center justify-center rounded-md px-4 text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50",
+                      "inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50",
                       isPro
                         ? "bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.22)] hover:bg-emerald-400"
                         : "border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07]"
                     )}
                   >
-                    {isLoading ? <Loader2 className="size-4 animate-spin" /> : planCta}
+                    {isLoading ? <Loader2 className="size-4 animate-spin" /> : <span className="notranslate">{planCta}</span>}
                   </button>
                 </div>
               </div>

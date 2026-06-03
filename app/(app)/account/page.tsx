@@ -496,7 +496,7 @@ function PricingCard({
             <div className="mt-8">
                 <Button
                     className={cn(
-                        "h-11 w-full font-bold",
+                        "h-11 w-full rounded-full font-bold",
                         recommended
                             ? "bg-primary text-primary-foreground shadow-[0_0_24px_rgba(16,183,127,0.18)] hover:bg-primary/90"
                             : "border border-zinc-700 bg-transparent text-foreground hover:border-zinc-500 hover:bg-secondary/70"
@@ -505,7 +505,7 @@ function PricingCard({
                     disabled={current || loading || (title !== "FREE" && !priceId)}
                     onClick={() => priceId && onCheckout(priceId)}
                 >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (current ? t('account.billing.current_plan') : actionLabel)}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="notranslate">{current ? t('account.billing.current_plan') : actionLabel}</span>}
                 </Button>
             </div>
         </Card>
