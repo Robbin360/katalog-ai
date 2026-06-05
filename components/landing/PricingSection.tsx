@@ -22,6 +22,8 @@ type PricingPlan = {
   ctaKey: string;
   highlightKey?: string;
   description: string;
+  monthlyPrice?: string;
+  annualPrice?: string;
   capacity: string;
   renewal: string;
   cta: string;
@@ -121,7 +123,7 @@ const plans: PricingPlan[] = [
     ],
     comingSoon: [false, true, false, false],
   },
-] as any[]; // Use any[] or let TypeScript infer because of price properties on some plans only
+];
 
 export const PricingSection = () => {
   const { t } = useI18n();
