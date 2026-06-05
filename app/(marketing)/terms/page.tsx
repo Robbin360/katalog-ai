@@ -2,6 +2,7 @@
 
 import { useI18n } from "@/lib/i18n-context";
 import { Navbar } from "@/components/landing/Navbar";
+import { Footer } from "@/components/landing/Footer";
 import Link from "next/link";
 
 export default function TermsPage() {
@@ -67,14 +68,7 @@ export default function TermsPage() {
         </div>
       </main>
 
-      {/* Simple Footer Copy */}
-      <footer className="relative z-10 py-12 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-white/20">
-            © {new Date().getFullYear()} <span className="notranslate">Katalog AI</span>. SECURE INFRASTRUCTURE.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Brand } from '@/components/ui/brand';
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
+import { Footer } from '@/components/landing/Footer';
 
 export default function FeaturesPage() {
     const { t } = useI18n();
@@ -272,20 +273,7 @@ export default function FeaturesPage() {
                 </section>
             </main>
 
-            <footer className="bg-background-dark border-t border-white/5 py-12 px-6">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary text-2xl">account_tree</span>
-                        <Brand className="font-bold tracking-tight text-lg text-primary" />
-                    </div>
-                    <div className="flex gap-8 text-sm text-slate-500 font-medium">
-                        <Link className="hover:text-primary transition-colors" href="/privacy">{t('common.privacy')}</Link>
-                        <Link className="hover:text-primary transition-colors" href="/terms">{t('common.terms')}</Link>
-                        <Link className="hover:text-primary transition-colors" href="#">{t('common.contact')}</Link>
-                    </div>
-                    <p className="text-slate-600 text-sm">© {new Date().getFullYear()} <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }
