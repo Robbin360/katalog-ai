@@ -279,8 +279,8 @@ export default function FeaturesPage() {
                         <Brand className="font-bold tracking-tight text-lg text-primary" />
                     </div>
                     <div className="flex gap-8 text-sm text-slate-500 font-medium">
-                        <Link className="hover:text-primary transition-colors" href="#">{t('common.privacy')}</Link>
-                        <Link className="hover:text-primary transition-colors" href="#">{t('common.terms')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="/privacy">{t('common.privacy')}</Link>
+                        <Link className="hover:text-primary transition-colors" href="/terms">{t('common.terms')}</Link>
                         <Link className="hover:text-primary transition-colors" href="#">{t('common.contact')}</Link>
                     </div>
                     <p className="text-slate-600 text-sm">© {new Date().getFullYear()} <Brand className="text-slate-500" /> {t('landing.footer.saas_desc')}.</p>

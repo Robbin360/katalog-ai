@@ -55,8 +55,8 @@ export const FAQSection = () => {
             <span className="text-sm font-semibold text-white">Katalog AI</span>
           </div>
           <div className="flex gap-8">
-            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.privacy') || 'Privacy'}</a>
-            <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.terms') || 'Terms'}</a>
+            <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/privacy">{t('footer.privacy') || 'Privacy'}</Link>
+            <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/terms">{t('footer.terms') || 'Terms'}</Link>
             <a className="text-sm text-slate-500 hover:text-white transition-colors" href="#">{t('footer.support') || 'Support'}</a>
           </div>
           <p className="text-sm text-slate-600">© {new Date().getFullYear()} {t('footer.copyright') || 'Katalog AI. All rights reserved.'}</p>
