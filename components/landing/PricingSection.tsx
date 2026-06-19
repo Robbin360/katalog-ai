@@ -5,8 +5,8 @@ import { useI18n } from "@/lib/i18n-context";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PricingCard } from "@/components/pricing-card";
 
 type PlanFeature = {
   brand: string | null;
@@ -209,105 +209,33 @@ export const PricingSection = () => {
 
         <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3">
           {plans.map((plan) => {
-            const isPro = plan.id === "pro";
             const priceId = isAnnual ? plan.priceIdAnnual : plan.priceIdMonthly;
-            const isLoading = isCheckoutLoading === priceId;
-
-            const planName = plan.name;
-            const planDesc = translate(plan.descKey, plan.description);
-            const planCapacity = translate(plan.capacityKey, plan.capacity);
-            const planRenewal = translate(plan.renewalKey, plan.renewal);
-            const planCta = translate(plan.ctaKey, plan.cta);
-            const highlight = plan.highlightKey ? translate(plan.highlightKey, plan.highlight || "") : undefined;
             const features = plan.features.map((f, i) => ({
               brand: f.brand,
               text: t(plan.featuresKeys[i]) || f.text,
+              comingSoon: plan.comingSoon?.[i],
             }));
 
             return (
-              <div
+              <PricingCard
                 key={plan.id}
-                className={cn(
-                  "relative flex h-full min-h-[620px] flex-col rounded-3xl border bg-zinc-950/70 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md transition-transform hover:-translate-y-1 sm:p-8",
-                  isPro
-                    ? "border-primary shadow-[0_0_0_1px_rgba(16,183,127,0.35),0_28px_90px_rgba(16,183,127,0.14)] lg:-mt-4"
-                    : "border-zinc-800"
-                )}
-              >
-                {isPro && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
-                    {t("landing.pricing.plans.pro.badge") || plan.badge}
-                  </div>
-                )}
-
-                {/* Cabecera */}
-                <div>
-                  <h3 className="notranslate text-sm font-bold tracking-[0.22em] text-zinc-300">{planName}</h3>
-                  <div className="mt-6 flex items-end gap-2">
-                    <span className="text-5xl font-black tracking-tight text-white sm:text-6xl">
-                      {isAnnual ? (plan.annualPrice || "$0") : (plan.monthlyPrice || "$0")}
-                    </span>
-                    <span className="pb-2 text-sm font-semibold text-zinc-500">
-                      {isAnnual && plan.id !== "free" ? "/año" : "/mes"}
-                    </span>
-                  </div>
-                  <p className="mt-5 min-h-[48px] text-sm leading-5 text-muted-foreground">{planDesc}</p>
-                </div>
-
-                {/* Caja Gris */}
-                <div className="mt-8 rounded-2xl border border-white/10 bg-zinc-900/50 p-5">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-zinc-500">{t("landing.pricing.capacity_label") || "TU CAPACIDAD"}</p>
-                  <p className="mt-3 whitespace-nowrap text-xl font-bold leading-tight text-white">{planCapacity}</p>
-                  <p className="mt-2 min-h-8 text-xs font-medium leading-4 text-muted-foreground">{planRenewal}</p>
-                </div>
-
-                {/* Contenedor de viñetas que se expande */}
-                <div className="flex-1 mt-6">
-                  {/* Highlight sin check */}
-                  {highlight && (
-                    <p className="text-sm italic text-zinc-400 mb-4 pb-2 border-b border-zinc-800">{highlight}</p>
-                  )}
-                  <ul className="space-y-3 text-sm leading-6 text-zinc-300" role="list">
-                    {features.map((feature, index) => (
-                      <li key={`${feature.brand || feature.text}-${index}`} className="flex gap-3">
-                        <Check className="mt-1 size-4 shrink-0 text-primary" />
-                        <span>
-                          {feature.brand ? (
-                            <>
-                              <span className="notranslate">{feature.brand}</span>
-                              {feature.text && <span> {feature.text}</span>}
-                            </>
-                          ) : (
-                            <span>{feature.text}</span>
-                          )}
-                          {plan.comingSoon?.[index] && (
-                            <span className="ml-2 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
-                              {t("landing.pricing.coming_soon") || "Coming soon"}
-                            </span>
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Botón */}
-                <div className="mt-8">
-                  <button
-                    type="button"
-                    onClick={() => (plan.id === "free" ? router.push("/signup") : handleUpgrade(priceId || ""))}
-                    disabled={plan.id !== "free" && (!priceId || !!isCheckoutLoading)}
-                    className={cn(
-                      "inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50",
-                      isPro
-                        ? "bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.22)] hover:bg-emerald-400"
-                        : "border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07]"
-                    )}
-                  >
-                    {isLoading ? <Loader2 className="size-4 animate-spin" /> : <span className="notranslate">{planCta}</span>}
-                  </button>
-                </div>
-              </div>
+                id={plan.id}
+                title={plan.name}
+                description={translate(plan.descKey, plan.description)}
+                price={isAnnual ? (plan.annualPrice || "$0") : (plan.monthlyPrice || "$0")}
+                priceSuffix={isAnnual ? "/año" : "/mes"}
+                capacity={translate(plan.capacityKey, plan.capacity)}
+                renewal={translate(plan.renewalKey, plan.renewal)}
+                highlight={plan.highlightKey ? translate(plan.highlightKey, plan.highlight || "") : undefined}
+                features={features}
+                recommended={plan.id === "pro"}
+                badge={t("landing.pricing.plans.pro.badge") || plan.badge}
+                actionLabel={translate(plan.ctaKey, plan.cta)}
+                actionHref={plan.id === "free" ? "/signup" : undefined}
+                onActionClick={plan.id !== "free" ? () => handleUpgrade(priceId || "") : undefined}
+                disabled={plan.id !== "free" && !priceId}
+                isLoading={isCheckoutLoading === priceId}
+              />
             );
           })}
         </div>

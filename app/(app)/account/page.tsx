@@ -11,12 +11,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Brand } from "@/components/ui/brand"
 import { BrandBrainTab } from "@/components/account/BrandBrain"
+import { PricingCard } from "@/components/pricing-card"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import {
     User, BrainCircuit, Store, CreditCard, ArrowLeft,
-    Save, Loader2, Check, ExternalLink, LogOut, Calendar, Sun, Moon, Laptop, Eye, EyeOff
+    Save, Loader2, ExternalLink, LogOut, Calendar, Sun, Moon, Laptop, Eye, EyeOff
 } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -246,10 +247,10 @@ export default function AccountPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <PricingCard
+                                id="free"
                                 title="FREE"
                                 description={t('landing.pricing.plans.starter.desc') || "Discover your revenue at risk. No credit card."}
                                 price="$0"
-                                priceSuffix={isAnnual ? " /yr" : " /mo"}
                                 capacity={t('landing.pricing.plans.starter.capacity') || "5 Credits"}
                                 renewal={t('landing.pricing.plans.starter.renewal') || "One-time AI gift."}
                                 features={[
@@ -259,13 +260,15 @@ export default function AccountPage() {
                                 ]}
                                 current={plan === 'starter'}
                                 actionLabel={t('landing.pricing.plans.starter.cta') || "Audit my store for free"}
+                                actionHref={plan !== 'starter' ? undefined : "/signup"}
                             />
 
                             <PricingCard
+                                id="pro"
                                 title="PRO"
                                 description={t('landing.pricing.plans.pro.desc') || "Your 24/7 marketing employee."}
                                 price={isAnnual ? "$529" : "$49"}
-                                priceSuffix={isAnnual ? " /yr" : " /mo"}
+                                priceSuffix={isAnnual ? "/año" : "/mes"}
                                 capacity={t('landing.pricing.plans.pro.capacity') || "250 Credits"}
                                 renewal={t('landing.pricing.plans.pro.renewal') || "Renews every month."}
                                 highlight={t('landing.pricing.plans.pro.includedFrom') || "↳ Everything in Free, plus:"}
@@ -275,19 +278,22 @@ export default function AccountPage() {
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Custom Brand Rules" },
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item4') || "Fast-Track Sync (Stock at no cost)" },
                                 ]}
-                                current={plan === 'pro'} recommended
+                                current={plan === 'pro'}
+                                recommended={true}
                                 badge={t('landing.pricing.plans.pro.badge') || "Recommended"}
                                 actionLabel={t('landing.pricing.plans.pro.cta') || "Activate Auto-Pilot →"}
-                                priceId={isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO}
-                                onCheckout={handleUpgrade}
-                                loading={loadingCheckout}
+                                onActionClick={() => handleUpgrade(
+                                    isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL! : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO!
+                                )}
+                                isLoading={loadingCheckout}
                             />
 
                             <PricingCard
+                                id="business"
                                 title="BUSINESS"
                                 description={t('landing.pricing.plans.enterprise.desc') || "Your autonomous agency that learns overnight."}
                                 price={isAnnual ? "$1,609" : "$149"}
-                                priceSuffix={isAnnual ? " /yr" : " /mo"}
+                                priceSuffix={isAnnual ? "/año" : "/mes"}
                                 capacity={t('landing.pricing.plans.enterprise.capacity') || "700 Credits"}
                                 renewal={t('landing.pricing.plans.enterprise.renewal') || "Extended monthly limit."}
                                 highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}
@@ -299,9 +305,10 @@ export default function AccountPage() {
                                 ]}
                                 current={plan === 'business'}
                                 actionLabel={t('landing.pricing.plans.enterprise.cta') || "Activate Business →"}
-                                priceId={isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS}
-                                onCheckout={handleUpgrade}
-                                loading={loadingCheckout}
+                                onActionClick={() => handleUpgrade(
+                                    isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL! : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS!
+                                )}
+                                isLoading={loadingCheckout}
                             />
                         </div>
                     </div>
@@ -416,98 +423,3 @@ export default function AccountPage() {
     )
 }
 
-
-function PricingCard({
-    title,
-    description,
-    price,
-    priceSuffix = "/mo",
-    capacity,
-    renewal,
-    highlight,
-    features,
-    current,
-    recommended,
-    badge,
-    actionLabel,
-    priceId,
-    onCheckout,
-    loading
-}: any) {
-    const { t } = useI18n();
-
-    return (
-        <Card className={cn(
-            "relative flex min-h-[620px] flex-col rounded-3xl bg-zinc-950/70 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] transition-all duration-200 sm:p-7",
-            recommended ? "border-primary shadow-[0_0_0_1px_rgba(16,183,127,0.35),0_28px_90px_rgba(16,183,127,0.12)]" : "border-zinc-800"
-        )}>
-            {recommended && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-primary-foreground shadow-lg">{badge || "Recommended"}</div>}
-
-            {/* Header */}
-            <div>
-                <CardTitle className="notranslate text-sm font-bold tracking-[0.22em] text-zinc-300">{title}</CardTitle>
-                <div className="mt-6 flex items-end gap-2">
-                    <span className="text-5xl font-black tracking-tight text-foreground">{price}</span>
-                    <span className="pb-2 text-sm font-semibold text-muted-foreground">{priceSuffix}</span>
-                </div>
-                <p className="mt-5 min-h-[48px] text-sm leading-5 text-muted-foreground">{description}</p>
-            </div>
-
-            {/* Capacity Box */}
-            <div className="mt-8 rounded-2xl border border-white/10 bg-secondary/30 p-5">
-                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-muted-foreground">{t('landing.pricing.capacity_label')}</p>
-                <p className="mt-3 text-lg font-semibold leading-tight text-foreground">{capacity}</p>
-                <p className="mt-2 text-xs font-medium text-muted-foreground">{renewal}</p>
-            </div>
-
-            {/* Features */}
-            <div className="flex-1 mt-6">
-                {highlight && (
-                    <p className="text-sm italic text-zinc-400 mb-4 pb-2 border-b border-zinc-800">{highlight}</p>
-                )}
-                <ul className="space-y-3">
-                    {features.map((f: { brand: string | null; text: string; comingSoon?: boolean }, i: number) => (
-                        <li
-                            key={`${f.brand || f.text}-${i}`}
-                            className="flex items-start gap-3 text-sm text-muted-foreground"
-                        >
-                            <Check className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
-                            <span>
-                                {f.brand ? (
-                                    <>
-                                        <span className="notranslate">{f.brand}</span>
-                                        {f.text && <span> {f.text}</span>}
-                                    </>
-                                ) : (
-                                    <span>{f.text}</span>
-                                )}
-                                {f.comingSoon && (
-                                    <span className="ml-2 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
-                                        {t('landing.pricing.coming_soon') || "Coming soon"}
-                                    </span>
-                                )}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* Button */}
-            <div className="mt-8">
-                <Button
-                    className={cn(
-                        "h-11 w-full rounded-full font-bold",
-                        recommended
-                            ? "bg-primary text-primary-foreground shadow-[0_0_24px_rgba(16,183,127,0.18)] hover:bg-primary/90"
-                            : "border border-zinc-700 bg-transparent text-foreground hover:border-zinc-500 hover:bg-secondary/70"
-                    )}
-                    variant={recommended ? "default" : "outline"}
-                    disabled={current || loading || (title !== "FREE" && !priceId)}
-                    onClick={() => priceId && onCheckout(priceId)}
-                >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="notranslate">{current ? t('account.billing.current_plan') : actionLabel}</span>}
-                </Button>
-            </div>
-        </Card>
-    )
-}

@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, HelpCircle, Minus } from "lucide-react";
+import { Check, HelpCircle, Minus } from "lucide-react";
 import { Brand } from "@/components/ui/brand";
 import { Navbar } from "@/components/landing/Navbar";
 import { useI18n } from "@/lib/i18n-context";
+import { PricingCard } from "@/components/pricing-card";
 
 const PricingPage = () => {
   const { t, Trans } = useI18n();
@@ -13,51 +14,93 @@ const PricingPage = () => {
 
   const plans = [
     {
-      name: t('pricing.plans.starter.name'),
-      description: t('pricing.plans.starter.description'),
-      price: 0,
-      credits: 0,
-      badge: null,
-      cta: t('pricing.plans.starter.cta'),
+      id: "free" as const,
+      name: "FREE",
+      descKey: "landing.pricing.plans.starter.desc",
+      capacityKey: "landing.pricing.plans.starter.capacity",
+      renewalKey: "landing.pricing.plans.starter.renewal",
+      ctaKey: "landing.pricing.plans.starter.cta",
+      description: "Discover your revenue at risk. No credit card.",
+      monthlyPrice: "$0",
+      capacity: "5 Credits",
+      renewal: "One-time AI gift.",
+      cta: "Audit my store for free",
       features: [
-        `0 ${t('pricing.features.credits')}`,
-        t('pricing.features.audit'),
-        t('pricing.features.motor_std'),
-        t('pricing.features.support_email'),
+        { brand: null, text: "SEO Audit (Up to 500 SKUs)" },
+        { brand: null, text: "Revenue at Risk Radar" },
+        { brand: null, text: "Manual sync" },
       ],
+      featuresKeys: [
+        "landing.pricing.plans.starter.features.item1",
+        "landing.pricing.plans.starter.features.item2",
+        "landing.pricing.plans.starter.features.item3",
+      ],
+      comingSoon: [false, false, false],
       popular: false,
     },
     {
-      name: t('pricing.plans.pro.name'),
-      description: t('pricing.plans.pro.description'),
-      price: billingCycle === "annually" ? 539 : 49,
-      credits: 500,
-      badge: t('pricing.plans.pro.badge'),
-      cta: t('pricing.plans.pro.cta'),
+      id: "pro" as const,
+      name: "PRO",
+      descKey: "landing.pricing.plans.pro.desc",
+      capacityKey: "landing.pricing.plans.pro.capacity",
+      renewalKey: "landing.pricing.plans.pro.renewal",
+      ctaKey: "landing.pricing.plans.pro.cta",
+      highlightKey: "landing.pricing.plans.pro.includedFrom",
+      description: "Your 24/7 marketing employee.",
+      monthlyPrice: "$49",
+      annualPrice: "$529",
+      capacity: "250 Credits",
+      renewal: "Renews every month.",
+      cta: "Activate Auto-Pilot →",
+      badge: "Recommended",
+      highlight: "↳ Everything in Free, plus:",
+      priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
+      priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL,
       features: [
-        `500 ${t('pricing.features.credits')}`,
-        t('pricing.features.autopilot'),
-        t('pricing.features.brand_brain'),
-        t('pricing.features.sync_auto_1h'),
-        t('pricing.features.publish_api'),
+        { brand: null, text: "24/7 Auto-Pilot" },
+        { brand: "RAG Engine", text: "" },
+        { brand: null, text: "Custom Brand Rules" },
+        { brand: null, text: "Fast-Track Sync (Stock at no cost)" },
       ],
+      featuresKeys: [
+        "landing.pricing.plans.pro.features.item1",
+        "landing.pricing.plans.pro.features.item2",
+        "landing.pricing.plans.pro.features.item3",
+        "landing.pricing.plans.pro.features.item4",
+      ],
+      comingSoon: [false, false, false, false],
       popular: true,
     },
     {
-      name: t('pricing.plans.business.name'),
-      description: t('pricing.plans.business.description'),
-      price: billingCycle === "annually" ? 1089 : 99,
-      credits: 2000,
-      badge: t('pricing.plans.business.badge'),
-      cta: t('pricing.plans.business.cta'),
+      id: "business" as const,
+      name: "BUSINESS",
+      descKey: "landing.pricing.plans.enterprise.desc",
+      capacityKey: "landing.pricing.plans.enterprise.capacity",
+      renewalKey: "landing.pricing.plans.enterprise.renewal",
+      ctaKey: "landing.pricing.plans.enterprise.cta",
+      highlightKey: "landing.pricing.plans.enterprise.includedFrom",
+      description: "Your autonomous agency that learns overnight.",
+      monthlyPrice: "$149",
+      annualPrice: "$1,609",
+      capacity: "700 Credits",
+      renewal: "Extended monthly limit.",
+      cta: "Activate Business →",
+      highlight: "↳ Everything in Pro, plus:",
+      priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
+      priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
       features: [
-        `2,000 ${t('pricing.features.credits')}`,
-        t('pricing.features.analytics_adv'),
-        t('pricing.features.intel_notif'),
-        t('pricing.features.support_vip'),
-        t('pricing.features.priority'),
-        t('pricing.features.motor_vip'),
+        { brand: "Sleeper Agent", text: "(Sales learning)" },
+        { brand: null, text: "Knowledge Injector" },
+        { brand: null, text: "Multiple Brand Rules" },
+        { brand: null, text: "Priority processing queue" },
       ],
+      featuresKeys: [
+        "landing.pricing.plans.enterprise.features.item1",
+        "landing.pricing.plans.enterprise.features.item2",
+        "landing.pricing.plans.enterprise.features.item3",
+        "landing.pricing.plans.enterprise.features.item4",
+      ],
+      comingSoon: [false, true, false, false],
       popular: false,
     },
   ];
@@ -154,56 +197,32 @@ const PricingPage = () => {
 
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`group flex flex-col p-8 rounded-[2rem] border transition-all duration-500 hover:scale-[1.02] ${plan.popular
-                ? "bg-zinc-900/60 border-primary/50 shadow-[0_0_40px_-5px_rgba(16,183,127,0.15)] ring-1 ring-primary/20"
-                : "bg-zinc-900/40 border-white/5 hover:border-white/20"
-                }`}
-            >
-              {plan.badge && (
-                <div className={`self-start px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 border ${plan.popular ? "bg-primary text-black border-primary" : "bg-zinc-800 text-zinc-400 border-zinc-700"
-                  }`}>
-                  {plan.badge}
-                </div>
-              )}
+          {plans.map((plan) => {
+            const isAnnual = billingCycle === "annually";
+            const features = plan.features.map((f, i) => ({
+              ...f,
+              comingSoon: plan.comingSoon?.[i],
+            }));
 
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">{plan.name}</h3>
-                <p className="text-zinc-500 text-sm mt-2 leading-relaxed">{plan.description}</p>
-              </div>
-
-              <div className="mb-8 items-baseline flex flex-col">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black">${plan.price}</span>
-                  <span className="text-zinc-500 text-sm">/{billingCycle === "annually" ? "year" : t('pricing.billing.monthly').toLowerCase()}</span>
-                </div>
-              </div>
-
-              <Link
-                href="/signup"
-                className={`w-full py-4 px-6 rounded-2xl font-bold text-center transition-all duration-300 flex items-center justify-center gap-2 mb-8 ${plan.popular
-                  ? "bg-primary text-black hover:bg-white hover:shadow-xl"
-                  : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
-                  }`}
-              >
-                {plan.cta}
-                <ArrowRight size={18} />
-              </Link>
-
-              <div className="space-y-4 flex-grow">
-                {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-start gap-3">
-                    <div className="mt-1 bg-primary/10 rounded-full p-0.5">
-                      <Check size={14} className="text-primary" />
-                    </div>
-                    <span className="text-zinc-400 text-sm leading-tight text-left">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+            return (
+              <PricingCard
+                key={plan.id}
+                id={plan.id}
+                title={plan.name}
+                description={t(plan.descKey) || plan.description}
+                price={isAnnual ? (plan.annualPrice || plan.monthlyPrice || "$0") : (plan.monthlyPrice || "$0")}
+                priceSuffix={isAnnual ? "/año" : "/mes"}
+                capacity={t(plan.capacityKey) || plan.capacity}
+                renewal={t(plan.renewalKey) || plan.renewal}
+                highlight={plan.highlightKey ? t(plan.highlightKey) || plan.highlight : undefined}
+                features={features}
+                recommended={plan.popular}
+                badge={plan.badge}
+                actionLabel={t(plan.ctaKey) || plan.cta}
+                actionHref="/signup"
+              />
+            );
+          })}
         </div>
 
         {/* Detailed Comparison Table */}
