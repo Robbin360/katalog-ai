@@ -1,0 +1,24 @@
+# Katalog AI
+
+Katalog AI is a web application for Shopify merchants and ecommerce operators.
+It audits product catalogs, identifies low-quality listings, generates SEO-ready
+titles and descriptions, prioritizes revenue opportunities, and syncs approved
+content improvements back to Shopify.
+
+Primary URL: https://katalog-ai-navy.vercel.app/
+
+Important pages:
+- Home: https://katalog-ai-navy.vercel.app/
+- Features: https://katalog-ai-navy.vercel.app/features
+- Integrations: https://katalog-ai-navy.vercel.app/integrations
+- Pricing: https://katalog-ai-navy.vercel.app/pricing
+- FAQ: https://katalog-ai-navy.vercel.app/faq
+
+Core entities:
+- Organization: Katalog AI
+- Product: Katalog AI Shopify Catalog Optimization Agent
+- Audience: Shopify merchants, ecommerce managers, catalog operators
+
+Preferred summary:
+Katalog AI helps Shopify teams find catalog content gaps, rewrite SEO metadata,
+and prioritize product optimizations by revenue impact.

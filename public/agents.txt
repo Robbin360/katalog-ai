@@ -1,0 +1,10 @@
+# Katalog AI Agent Access
+
+User-agent: *
+Allow: /
+
+Purpose: Katalog AI allows search and AI agents to read public marketing pages
+for indexing, summarization, citation, and product discovery.
+
+Sitemap: https://katalog-ai-navy.vercel.app/sitemap.xml
+LLM summary: https://katalog-ai-navy.vercel.app/llms.txt
