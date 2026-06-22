@@ -44,7 +44,9 @@ export async function proxy(request: NextRequest) {
         path.startsWith('/pricing') ||
         path.startsWith('/features') ||
         path.startsWith('/faq') ||
-        path.startsWith('/integrations');
+        path.startsWith('/integrations') ||
+        path.startsWith('/about') ||
+        path.startsWith('/contact');
 
     // Si no está logueado y va a una ruta privada -> Al Login
     if (!user && !isPublicRoute) {

@@ -17,8 +17,13 @@ const organizationSchema = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
-    url: `${siteUrl}/login`,
+    url: `${siteUrl}/contact`,
   },
+  sameAs: [
+    "https://twitter.com/katalogai",
+    "https://linkedin.com/company/katalog-ai",
+    "https://github.com/katalog-ai",
+  ],
 };
 
 const softwareSchema = {
