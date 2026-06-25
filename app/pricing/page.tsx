@@ -10,7 +10,7 @@ import { PricingCard } from "@/components/pricing-card";
 
 const PricingPage = () => {
   const { t, Trans } = useI18n();
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("annually");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("monthly");
 
   const plans = [
     {
@@ -112,17 +112,19 @@ const PricingPage = () => {
         features: [
           { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited"] },
           { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "700 / month"] },
-          { name: "Extra Credit Cost", values: ["N/A", "$0.07", "$0.07"] },
+          { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25"] },
+          { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
         ],
       },
       {
-        name: "AI INTELLIGENCE",
+        name: "AGENT WORKFORCE",
         features: [
-          { name: "AI Engine", values: ["Basic (Audit only)", "Advanced (Pro + 120B Judge)", "Advanced (Pro + 120B Judge)"] },
+          { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents"] },
           { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
-          { name: "Knowledge Injector (PDFs)", values: [false, false, true] },
+          { name: "Knowledge Injector (PDFs)", values: [false, false, "Coming soon"] },
           { name: "Sleeper Agent (Nightly Learning)", values: [false, false, true] },
           { name: "Brand Voice Rules", values: ["None", "1 Global Set", "Multiple Sets"] },
+          { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product"] },
         ],
       },
       {
@@ -267,7 +269,7 @@ const PricingPage = () => {
                                 <Minus size={20} className="text-zinc-800 mx-auto" />
                               )
                             ) : (
-                              <span className={`text-sm ${value.includes("Próximamente") || value.includes("desarrollo")
+                              <span className={`text-sm ${value.includes("Próximamente") || value.includes("desarrollo") || value.includes("Coming soon") || value.includes("soon")
                                 ? "text-zinc-600 italic"
                                 : value === "Tiempo Real" || value.includes("Prioridad")
                                   ? "text-primary font-medium"

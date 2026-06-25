@@ -57,10 +57,23 @@ export default function ProductSheet() {
     const handleOptimize = async () => {
         if (!selectedProductId) return;
         setIsOptimizing(true);
+
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData.session?.access_token;
+
+        if (!accessToken) {
+            toast.error('Sesión expirada. Por favor recarga la página e inicia sesión de nuevo.');
+            setIsOptimizing(false);
+            return;
+        }
+
         try {
             const response = await fetch(`${BACKEND_URL}/api/optimize`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
                 body: JSON.stringify({ product_id: selectedProductId }),
             });
 
