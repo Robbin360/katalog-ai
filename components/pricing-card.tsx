@@ -13,7 +13,7 @@ export interface PlanFeature {
 }
 
 interface PricingCardProps {
-  id: "free" | "pro" | "business";
+  id: "free" | "pro" | "pro-max" | "business";
   title: string;
   description: string;
   price: string | number;
@@ -55,7 +55,7 @@ export function PricingCard({
 }: PricingCardProps) {
   const { t } = useI18n();
 
-  const isPro = id === "pro";
+  const isPro = id === "pro" || id === "pro-max";
 
   const buttonContent = isLoading ? (
     <Loader2 className="size-4 animate-spin" />

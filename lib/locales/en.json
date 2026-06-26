@@ -311,6 +311,19 @@
                 "description": "Maximum power for large catalogs and multi-store operations.",
                 "badge": "Enterprise",
                 "cta": "Contact Sales"
+            },
+            "proMax": {
+                "name": "PRO MAX",
+                "description": "For power users",
+                "capacity": "250 Credits",
+                "renewal": "Renews every month.",
+                "cta": "Activate PRO MAX →",
+                "features": {
+                    "item1": "24/7 Auto-Pilot",
+                    "item2": "",
+                    "item3": "Custom Brand Rules",
+                    "item4": "Fast-Track Sync (Stock at no cost)"
+                }
             }
         },
         "features": {

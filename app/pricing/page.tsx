@@ -72,6 +72,35 @@ const PricingPage = () => {
       popular: true,
     },
     {
+      id: "pro-max" as const,
+      name: "PRO MAX",
+      descKey: "landing.pricing.plans.proMax.desc",
+      capacityKey: "landing.pricing.plans.proMax.capacity",
+      renewalKey: "landing.pricing.plans.proMax.renewal",
+      ctaKey: "landing.pricing.plans.proMax.cta",
+      description: "For power users",
+      monthlyPrice: "$137",
+      annualPrice: "$1,477",
+      capacity: "250 Credits",
+      renewal: "Renews every month.",
+      cta: "Activate PRO MAX →",
+      highlight: "↳ Everything in Free, plus:",
+      features: [
+        { brand: null, text: "24/7 Auto-Pilot" },
+        { brand: "RAG Engine", text: "" },
+        { brand: null, text: "Custom Brand Rules" },
+        { brand: null, text: "Fast-Track Sync (Stock at no cost)" },
+      ],
+      featuresKeys: [
+        "landing.pricing.plans.proMax.features.item1",
+        "landing.pricing.plans.proMax.features.item2",
+        "landing.pricing.plans.proMax.features.item3",
+        "landing.pricing.plans.proMax.features.item4",
+      ],
+      comingSoon: [false, false, false, false],
+      popular: false,
+    },
+    {
       id: "business" as const,
       name: "BUSINESS",
       descKey: "landing.pricing.plans.enterprise.desc",
@@ -110,38 +139,38 @@ const PricingPage = () => {
       {
         name: "LIMITS & CREDITS",
         features: [
-          { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited"] },
-          { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "700 / month"] },
-          { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25"] },
-          { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
+          { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited", "Unlimited"] },
+          { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "250 / month", "700 / month"] },
+          { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25", "$0.25"] },
+          { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
         ],
       },
       {
         name: "AGENT WORKFORCE",
         features: [
-          { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents"] },
-          { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
-          { name: "Knowledge Injector (PDFs)", values: [false, false, "Coming soon"] },
-          { name: "Sleeper Agent (Nightly Learning)", values: [false, false, true] },
-          { name: "Brand Voice Rules", values: ["None", "1 Global Set", "Multiple Sets"] },
-          { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product"] },
+          { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents", "4 Agents"] },
+          { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
+          { name: "Knowledge Injector (PDFs)", values: [false, false, false, "Coming soon"] },
+          { name: "Sleeper Agent (Nightly Learning)", values: [false, false, false, true] },
+          { name: "Brand Voice Rules", values: ["None", "1 Global Set", "1 Global Set", "Multiple Sets"] },
+          { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product", "Never touches a winning product"] },
         ],
       },
       {
         name: "WORKFLOW & AUTOMATION",
         features: [
-          { name: "Automation Level", values: ["Manual", "24/7 Auto-Pilot", "24/7 Auto-Pilot"] },
-          { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background"] },
-          { name: "Fast-Track Bypass ($0 Cost)", values: [false, true, true] },
-          { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify"] },
-          { name: "Connected Stores", values: ["1 Store", "1 Store", "Up to 2 Stores"] },
+          { name: "Automation Level", values: ["Manual", "24/7 Auto-Pilot", "24/7 Auto-Pilot", "24/7 Auto-Pilot"] },
+          { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background", "Automated Background"] },
+          { name: "Fast-Track Bypass ($0 Cost)", values: [false, true, true, true] },
+          { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify", "Direct to Shopify"] },
+          { name: "Connected Stores", values: ["1 Store", "1 Store", "1 Store", "Up to 2 Stores"] },
         ],
       },
       {
         name: "SUPPORT & INFRASTRUCTURE",
         features: [
-          { name: "Queue Priority", values: ["Standard", "High", "Maximum"] },
-          { name: "Support", values: ["Basic Email", "Priority Email (<48h)", "VIP Support (<12h)"] },
+          { name: "Queue Priority", values: ["Standard", "High", "High", "Maximum"] },
+          { name: "Support", values: ["Basic Email", "Priority Email (<48h)", "Priority Email (<48h)", "VIP Support (<12h)"] },
         ],
       },
     ],
@@ -198,7 +227,7 @@ const PricingPage = () => {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-24">
           {plans.map((plan) => {
             const isAnnual = billingCycle === "annually";
             const features = plan.features.map((f, i) => ({
@@ -241,6 +270,7 @@ const PricingPage = () => {
                   <th className="p-8 text-sm font-bold text-zinc-500 uppercase tracking-widest">{t('pricing.comparison.functionality')}</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">FREE</th>
                   <th className="p-8 text-primary font-bold text-center">PRO</th>
+                  <th className="p-8 text-zinc-300 font-bold text-center">PRO MAX</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">BUSINESS</th>
                 </tr>
               </thead>
@@ -248,7 +278,7 @@ const PricingPage = () => {
                 {comparisonData.categories.map((category) => (
                   <React.Fragment key={category.name}>
                     <tr className="bg-white/2">
-                      <td colSpan={4} className="px-8 py-4 text-xs font-black text-primary/80 uppercase tracking-[0.2em]">
+                      <td colSpan={5} className="px-8 py-4 text-xs font-black text-primary/80 uppercase tracking-[0.2em]">
                         {category.name}
                       </td>
                     </tr>
@@ -286,6 +316,193 @@ const PricingPage = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Credit Packs */}
+        <div className="py-20">
+          <div className="max-w-7xl mx-auto bg-zinc-900/30 rounded-[3rem] p-12">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Need more firepower?</h2>
+              <p className="text-zinc-500">Add credits to any Pro or Business plan. No plan change required.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Pack 100 */}
+              <div className="rounded-2xl border border-white/10 bg-zinc-900/50 p-8 flex flex-col items-center text-center">
+                <p className="text-5xl font-black text-white mb-2">$28</p>
+                <p className="text-sm text-zinc-500 mb-1">$0.28/credit</p>
+                <p className="text-lg font-semibold text-zinc-300 mb-6">+100 credits</p>
+                <p className="text-xs text-zinc-600 mb-8">one-time purchase</p>
+                <Link
+                  href="/contact"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07] transition-all"
+                >
+                  Buy pack
+                </Link>
+              </div>
+
+              {/* Pack 500 */}
+              <div className="rounded-2xl border border-white/10 bg-zinc-900/50 p-8 flex flex-col items-center text-center">
+                <p className="text-5xl font-black text-white mb-2">$130</p>
+                <p className="text-sm text-zinc-500 mb-1">$0.26/credit</p>
+                <p className="text-lg font-semibold text-zinc-300 mb-6">+500 credits</p>
+                <p className="text-xs text-zinc-600 mb-8">one-time purchase</p>
+                <Link
+                  href="/contact"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07] transition-all"
+                >
+                  Buy pack
+                </Link>
+              </div>
+
+              {/* Pack 2000 */}
+              <div className="rounded-2xl border border-primary/20 bg-zinc-900/50 p-8 flex flex-col items-center text-center relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 text-[10px] font-semibold text-primary">
+                  Best value
+                </div>
+                <p className="text-5xl font-black text-white mb-2">$480</p>
+                <p className="text-sm text-zinc-500 mb-1">$0.24/credit</p>
+                <p className="text-lg font-semibold text-zinc-300 mb-6">+2,000 credits</p>
+                <p className="text-xs text-zinc-600 mb-8">one-time purchase</p>
+                <Link
+                  href="/contact"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07] transition-all"
+                >
+                  Buy pack
+                </Link>
+              </div>
+            </div>
+
+            <p className="text-center text-sm text-zinc-600 mt-12">
+              Credits never expire. Use them anytime. Packs are a one-time purchase, not a subscription.
+            </p>
+          </div>
+        </div>
+
+        {/* Auto-Scale */}
+        <div className="py-20 max-w-4xl mx-auto">
+          <div className="bg-zinc-900/20 border border-white/5 rounded-3xl p-8 md:p-12 backdrop-blur">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
+                <span className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
+                <span className="text-[10px] font-black tracking-widest uppercase text-primary">Auto-Scale</span>
+              </div>
+
+              <h2 className="text-3xl font-bold mb-4">Never run out of credits</h2>
+              <p className="text-zinc-400 max-w-xl mx-auto text-lg">
+                Your AI agent keeps working. You never think about credits again.
+              </p>
+            </div>
+
+            <div className="max-w-2xl mx-auto space-y-6 mb-10">
+              <p className="text-zinc-400 leading-relaxed">
+                When you reach 80% of your credits, we automatically recharge 50 credits at $0.25 each. No notifications. No interruptions. No decisions.
+              </p>
+              <p className="text-zinc-400 leading-relaxed">
+                You set a monthly spending cap. We respect it.
+              </p>
+            </div>
+
+            {/* Dashboard Mockup */}
+            <div className="max-w-xl mx-auto bg-zinc-950 border border-white/10 rounded-xl p-6 font-mono text-sm space-y-4 mb-10">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-primary"></span>
+                <span className="text-primary font-semibold">Auto-Scale:</span>
+                <span className="text-white">Active</span>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Credits included:</span>
+                  <span className="text-white">700/month</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Used this month:</span>
+                  <span className="text-white">643 (92%)</span>
+                </div>
+                <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full" style={{ width: "92%" }}></div>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Auto-recharges:</span>
+                  <span className="text-white">1 pack (50 credits)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">Extra spent:</span>
+                  <span className="text-white">$12.50</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Monthly cap:</span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-white">$200</span>
+                    <span className="bg-white/5 px-2 py-0.5 rounded text-xs text-zinc-300 cursor-pointer hover:bg-white/10 transition-colors">Edit</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-zinc-500 mb-2">Included in Pro and Business plans.</p>
+              <p className="text-zinc-600 text-sm">Activate in your dashboard after signing up.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Enterprise */}
+        <div className="py-20 max-w-4xl mx-auto">
+          <div className="bg-zinc-900/20 border border-white/5 rounded-3xl p-8 md:p-12 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
+              <span className="text-[10px] font-black tracking-widest uppercase text-primary">Enterprise</span>
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-6">
+              KATALOG <span className="text-primary">ENTERPRISE</span>
+            </h2>
+
+            <p className="text-zinc-400 text-lg max-w-2xl mx-auto leading-relaxed mb-12">
+              For stores with 10,000+ SKUs, agencies managing multiple brands, or merchants who need a strategic partnership — not just software.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
+                <p className="text-2xl font-black text-white mb-1">∞ Credits</p>
+                <p className="text-sm text-zinc-500">Unlimited AI optimizations</p>
+              </div>
+              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
+                <p className="text-2xl font-black text-white mb-1">∞ Stores</p>
+                <p className="text-sm text-zinc-500">Connect every brand you run</p>
+              </div>
+              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
+                <p className="text-2xl font-black text-white mb-1">Dedicated</p>
+                <p className="text-sm text-zinc-500">Account Manager</p>
+              </div>
+              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
+                <p className="text-2xl font-black text-white mb-1">99.9% SLA</p>
+                <p className="text-sm text-zinc-500">Guaranteed uptime</p>
+              </div>
+              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
+                <p className="text-2xl font-black text-white mb-1">Custom AI</p>
+                <p className="text-sm text-zinc-500">Trained on your historical data</p>
+              </div>
+              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
+                <p className="text-2xl font-black text-white mb-1">Annual</p>
+                <p className="text-sm text-zinc-500">Billing with flexible terms</p>
+              </div>
+            </div>
+
+            <p className="text-2xl font-bold text-white mb-2">From $499/month</p>
+            <p className="text-sm text-zinc-500 mb-8">Pricing tailored to your catalog size.</p>
+
+            <Link
+              href="/contact"
+              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-bold bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.22)] hover:bg-emerald-400 transition-all"
+            >
+              Talk to sales →
+            </Link>
           </div>
         </div>
 

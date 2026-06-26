@@ -263,6 +263,19 @@
                 "description": "Máximo rendimiento para catálogos grandes y operaciones multi-tienda.",
                 "badge": "Empresarial",
                 "cta": "Contactar Ventas"
+            },
+            "proMax": {
+                "name": "PRO MAX",
+                "description": "Para usuarios avanzados",
+                "capacity": "250 Créditos",
+                "renewal": "Se renueva cada mes.",
+                "cta": "Activar PRO MAX →",
+                "features": {
+                    "item1": "Auto-Pilot 24/7",
+                    "item2": "",
+                    "item3": "Reglas de Marca Personalizadas",
+                    "item4": "Sincronización Fast-Track (sin costo)"
+                }
             }
         },
         "features": {
