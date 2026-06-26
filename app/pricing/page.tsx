@@ -321,7 +321,7 @@ const PricingPage = () => {
 
         {/* Credit Packs */}
         <div className="py-20">
-          <div className="max-w-7xl mx-auto bg-zinc-900/30 rounded-[3rem] p-12">
+          <div className="max-w-7xl mx-auto bg-zinc-900/30 rounded-[3rem] p-12" style={{ overflow: 'visible' }}>
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4">Need more firepower?</h2>
               <p className="text-zinc-500">Add credits to any Pro or Business plan. No plan change required.</p>
@@ -357,8 +357,8 @@ const PricingPage = () => {
               </div>
 
               {/* Pack 2000 */}
-              <div className="rounded-2xl border border-primary/20 bg-zinc-900/50 p-8 flex flex-col items-center text-center relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 text-[10px] font-semibold text-primary">
+              <div className="rounded-2xl border border-primary/20 bg-zinc-900/50 pt-10 pb-8 px-8 flex flex-col items-center text-center relative" style={{ overflow: 'visible' }}>
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 text-[10px] font-semibold text-primary whitespace-nowrap">
                   Best value
                 </div>
                 <p className="text-5xl font-black text-white mb-2">$480</p>
