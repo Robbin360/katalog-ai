@@ -244,7 +244,9 @@
             "monthly": "Mensual",
             "annually": "Anual",
             "save": "Ahorra 10%",
-            "billed_annually": "Facturado anualmente"
+            "billed_annually": "Facturado anualmente",
+            "suffix_month": "/mes",
+            "suffix_year": "/año"
         },
         "plans": {
             "starter": {
@@ -265,11 +267,11 @@
                 "cta": "Contactar Ventas"
             },
             "proMax": {
-                "name": "PRO MAX",
+                "name": "PRO PLUS",
                 "description": "Para usuarios avanzados",
                 "capacity": "250 Créditos",
                 "renewal": "Se renueva cada mes.",
-                "cta": "Activar PRO MAX →",
+                "cta": "Activar PRO PLUS →",
                 "features": {
                     "item1": "Auto-Pilot 24/7",
                     "item2": "",
@@ -345,7 +347,51 @@
             "faq_btn": "Ver FAQ",
             "support_btn": "Contactar Soporte"
         },
-        "footer": "Todos los planes incluyen 14 días de prueba gratis. Cancelá en cualquier momento."
+        "footer": "Todos los planes incluyen 14 días de prueba gratis. Cancelá en cualquier momento.",
+        "creditPacks": {
+            "title": "¿Necesitás más potencia?",
+            "subtitle": "Agregá créditos a cualquier plan Pro o Business. Sin cambiar de plan.",
+            "best_value": "Mejor valor",
+            "buy": "Comprar pack",
+            "disclaimer": "Los créditos nunca expiran. Usalos cuando quieras. Los packs son compra única, no una suscripción.",
+            "pack_suffix": "/crédito",
+            "once": "compra única"
+        },
+        "autoScale": {
+            "badge": "ESCALA AUTOMÁTICA",
+            "title": "Nunca te quedes sin créditos",
+            "subtitle": "Tu agente de IA sigue trabajando. No tendrás que preocuparte más por los créditos.",
+            "desc1": "Cuando alcances el 80% de tus créditos, recargaremos automáticamente 50 créditos a $0.25 cada uno. Sin notificaciones. Sin interrupciones. Sin decisiones.",
+            "desc2": "Usted establece un límite de gasto mensual. Lo respetamos.",
+            "mockup": {
+                "status": "Escalado automático:",
+                "active": "Activo",
+                "included": "Créditos incluidos:",
+                "month": "/mes",
+                "used": "Usado este mes:",
+                "recharges": "Recargas automáticas:",
+                "pack": "1 pack (50 créditos)",
+                "extra": "Gasto extra:",
+                "cap": "Límite mensual:",
+                "edit": "Editar"
+            },
+            "footer1": "Incluido en los planes Pro y Business.",
+            "footer2": "Actívelo en su panel de control después de registrarse."
+        },
+        "enterprise": {
+            "badge": "Enterprise",
+            "title": "KATALOG ENTERPRISE",
+            "subtitle": "Para tiendas con 10,000+ SKUs, agencias que manejan múltiples marcas, o comerciantes que necesitan una alianza estratégica — no solo software.",
+            "credits": { "title": "∞ Créditos", "desc": "Optimizaciones IA ilimitadas" },
+            "stores": { "title": "∞ Tiendas", "desc": "Conectá cada marca que manejes" },
+            "manager": { "title": "Dedicado", "desc": "Gerente de Cuenta" },
+            "sla": { "title": "99.9% SLA", "desc": "Disparidad garantizada" },
+            "custom": { "title": "IA Custom", "desc": "Entrenada con tus datos históricos" },
+            "annual": { "title": "Anual", "desc": "Facturación con términos flexibles" },
+            "price": "Desde $499/mes",
+            "price_desc": "Precios adaptados al tamaño de tu catálogo.",
+            "cta": "Hablar con Ventas →"
+        }
     },
     "integrations": {
         "hero": {
@@ -602,6 +648,19 @@
                         "item2": "Inyector de Conocimiento",
                         "item3": "Múltiples Reglas de Marca",
                         "item4": "Cola de procesamiento prioritaria"
+                    }
+                },
+                "proMax": {
+                    "name": "PRO PLUS",
+                    "desc": "Para usuarios avanzados.",
+                    "capacity": "250 Créditos",
+                    "renewal": "Se renueva cada mes.",
+                    "cta": "Activar PRO PLUS →",
+                    "features": {
+                        "item1": "Auto-Pilot 24/7",
+                        "item2": "",
+                        "item3": "Reglas de Marca Personalizadas",
+                        "item4": "Sincronización Fast-Track (sin costo)"
                     }
                 }
             }

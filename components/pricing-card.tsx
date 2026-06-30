@@ -30,6 +30,7 @@ interface PricingCardProps {
   onActionClick?: () => void;// Used in interactive pages (e.g., Stripe payment)
   disabled?: boolean;
   isLoading?: boolean;       // Show spinner on loading checkout
+  disableShift?: boolean;    // When true, suppresses the lg:-mt-4 lift on recommended cards (pricing page grid)
   className?: string;
 }
 
@@ -51,11 +52,16 @@ export function PricingCard({
   onActionClick,
   disabled = false,
   isLoading = false,
+  disableShift = false,
   className,
 }: PricingCardProps) {
   const { t } = useI18n();
 
+  const isFree = id === "free";
   const isPro = id === "pro" || id === "pro-max";
+
+  // Slice features to max 3 visible bullets for the Free plan
+  const visibleFeatures = isFree ? features.slice(0, 3) : features;
 
   const buttonContent = isLoading ? (
     <Loader2 className="size-4 animate-spin" />
@@ -66,23 +72,35 @@ export function PricingCard({
   return (
     <div
       className={cn(
-        "relative flex h-full min-h-[620px] flex-col rounded-3xl border bg-zinc-950/70 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md transition-transform hover:-translate-y-1 sm:p-8",
+        "relative flex h-full flex-col rounded-3xl border bg-zinc-950/70 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md transition-transform hover:-translate-y-1",
+        isFree
+          ? "min-h-[500px] p-5 sm:p-6"
+          : "min-h-[620px] p-6 sm:p-8",
         recommended
-          ? "border-primary shadow-[0_0_0_1px_rgba(16,183,127,0.35),0_28px_90px_rgba(16,183,127,0.14)] lg:-mt-4"
+          ? cn(
+              "border-primary shadow-[0_0_0_1px_rgba(16,183,127,0.35),0_28px_90px_rgba(16,183,127,0.14)]",
+              !disableShift && "lg:-mt-4"
+            )
           : "border-zinc-800",
         className
       )}
     >
-      {recommended && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
-          {badge || "Recommended"}
+      {/* Badge spacer — h-7 (28px) reserved for ALL paid plans so prices align vertically.
+          Pro and Business render the badge text inside; Pro Plus renders an empty slot. */}
+      {!isFree && (
+        <div className="h-7">
+          {recommended && (
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
+              {badge || "Recommended"}
+            </div>
+          )}
         </div>
       )}
 
       {/* Cabecera */}
       <div>
         <h3 className="notranslate text-sm font-bold tracking-[0.22em] text-zinc-300 uppercase">{title}</h3>
-        <div className="mt-6 flex items-end gap-2">
+        <div className={cn("flex items-end gap-2", isFree ? "mt-4" : "mt-6")}>
           <span className="text-5xl font-black tracking-tight text-white sm:text-6xl">
             {price}
           </span>
@@ -96,7 +114,7 @@ export function PricingCard({
       </div>
 
       {/* Caja de Capacidad */}
-      <div className="mt-8 rounded-2xl border border-white/10 bg-zinc-900/50 p-5">
+      <div className={cn("rounded-2xl border border-white/10 bg-zinc-900/50", isFree ? "mt-5 p-4" : "mt-8 p-5")}>
         <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-zinc-500">
           {t("landing.pricing.capacity_label") || "TU CAPACIDAD"}
         </p>
@@ -109,8 +127,8 @@ export function PricingCard({
         {highlight && (
           <p className="text-sm italic text-zinc-400 mb-4 pb-2 border-b border-zinc-800">{highlight}</p>
         )}
-        <ul className="space-y-3 text-sm leading-6 text-zinc-300" role="list">
-          {features.map((feature, index) => (
+        <ul className={cn("text-sm leading-6 text-zinc-300", isFree ? "space-y-2" : "space-y-3")} role="list">
+          {visibleFeatures.map((feature, index) => (
             <li key={`${feature.brand || feature.text}-${index}`} className="flex gap-3">
               <Check className="mt-1 size-4 shrink-0 text-primary" />
               <span>
@@ -134,7 +152,7 @@ export function PricingCard({
       </div>
 
       {/* Botón */}
-      <div className="mt-8">
+      <div className={isFree ? "mt-6" : "mt-8"}>
         {actionHref ? (
           <Link
             href={actionHref}

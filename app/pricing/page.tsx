@@ -73,17 +73,17 @@ const PricingPage = () => {
     },
     {
       id: "pro-max" as const,
-      name: "PRO MAX",
+      name: "PRO PLUS",
       descKey: "landing.pricing.plans.proMax.desc",
       capacityKey: "landing.pricing.plans.proMax.capacity",
       renewalKey: "landing.pricing.plans.proMax.renewal",
       ctaKey: "landing.pricing.plans.proMax.cta",
-      description: "For power users",
+      description: "For power users.",
       monthlyPrice: "$137",
       annualPrice: "$1,477",
       capacity: "250 Credits",
       renewal: "Renews every month.",
-      cta: "Activate PRO MAX →",
+      cta: "Activate PRO PLUS →",
       highlight: "↳ Everything in Free, plus:",
       features: [
         { brand: null, text: "24/7 Auto-Pilot" },
@@ -161,7 +161,7 @@ const PricingPage = () => {
         features: [
           { name: "Automation Level", values: ["Manual", "24/7 Auto-Pilot", "24/7 Auto-Pilot", "24/7 Auto-Pilot"] },
           { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background", "Automated Background"] },
-          { name: "Fast-Track Bypass ($0 Cost)", values: [false, true, true, true] },
+          { name: "Auto-Pilot Batch Size", values: ["N/A", "3 products/cycle", "5 products/cycle", "10 products/cycle"] },
           { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify", "Direct to Shopify"] },
           { name: "Connected Stores", values: ["1 Store", "1 Store", "1 Store", "Up to 2 Stores"] },
         ],
@@ -226,8 +226,8 @@ const PricingPage = () => {
           </div>
         </div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-24">
+        {/* Pricing Cards Grid — 3:4:4:4 proportional columns. Free is narrower; paid plans are equal width. */}
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_4fr_4fr_4fr] gap-4 items-start pt-4 mb-24">
           {plans.map((plan) => {
             const isAnnual = billingCycle === "annually";
             const features = plan.features.map((f, i) => ({
@@ -242,7 +242,7 @@ const PricingPage = () => {
                 title={plan.name}
                 description={t(plan.descKey) || plan.description}
                 price={isAnnual ? (plan.annualPrice || plan.monthlyPrice || "$0") : (plan.monthlyPrice || "$0")}
-                priceSuffix={isAnnual ? "/año" : "/mes"}
+                priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
                 capacity={t(plan.capacityKey) || plan.capacity}
                 renewal={t(plan.renewalKey) || plan.renewal}
                 highlight={plan.highlightKey ? t(plan.highlightKey) || plan.highlight : undefined}
@@ -251,6 +251,7 @@ const PricingPage = () => {
                 badge={plan.badge}
                 actionLabel={t(plan.ctaKey) || plan.cta}
                 actionHref="/signup"
+                disableShift={true}
               />
             );
           })}
@@ -265,12 +266,21 @@ const PricingPage = () => {
 
           <div className="overflow-x-auto rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl">
             <table className="w-full text-left border-collapse">
+              <colgroup>
+                {/* Feature label column: 20% | Free: 15.2% | Pro, Pro Plus, Business: 21.6% each */}
+                {/* Total: 20 + 15.2 + 21.6 + 21.6 + 21.6 = 100% */}
+                <col style={{ width: "20%" }} />
+                <col style={{ width: "15.2%" }} />
+                <col style={{ width: "21.6%" }} />
+                <col style={{ width: "21.6%" }} />
+                <col style={{ width: "21.6%" }} />
+              </colgroup>
               <thead>
                 <tr className="border-b border-white/5">
                   <th className="p-8 text-sm font-bold text-zinc-500 uppercase tracking-widest">{t('pricing.comparison.functionality')}</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">FREE</th>
                   <th className="p-8 text-primary font-bold text-center">PRO</th>
-                  <th className="p-8 text-zinc-300 font-bold text-center">PRO MAX</th>
+                  <th className="p-8 text-zinc-300 font-bold text-center">PRO PLUS</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">BUSINESS</th>
                 </tr>
               </thead>
@@ -323,59 +333,59 @@ const PricingPage = () => {
         <div className="py-20">
           <div className="max-w-7xl mx-auto bg-zinc-900/30 rounded-[3rem] p-12" style={{ overflow: 'visible' }}>
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Need more firepower?</h2>
-              <p className="text-zinc-500">Add credits to any Pro or Business plan. No plan change required.</p>
+              <h2 className="text-3xl font-bold mb-4">{t('pricing.creditPacks.title')}</h2>
+              <p className="text-zinc-500">{t('pricing.creditPacks.subtitle')}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Pack 100 */}
               <div className="rounded-2xl border border-white/10 bg-zinc-900/50 p-8 flex flex-col items-center text-center">
                 <p className="text-5xl font-black text-white mb-2">$28</p>
-                <p className="text-sm text-zinc-500 mb-1">$0.28/credit</p>
+                <p className="text-sm text-zinc-500 mb-1">$0.28{t('pricing.creditPacks.pack_suffix')}</p>
                 <p className="text-lg font-semibold text-zinc-300 mb-6">+100 credits</p>
-                <p className="text-xs text-zinc-600 mb-8">one-time purchase</p>
+                <p className="text-xs text-zinc-600 mb-8">{t('pricing.creditPacks.once')}</p>
                 <Link
                   href="/contact"
                   className="inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07] transition-all"
                 >
-                  Buy pack
+                  {t('pricing.creditPacks.buy')}
                 </Link>
               </div>
 
               {/* Pack 500 */}
               <div className="rounded-2xl border border-white/10 bg-zinc-900/50 p-8 flex flex-col items-center text-center">
                 <p className="text-5xl font-black text-white mb-2">$130</p>
-                <p className="text-sm text-zinc-500 mb-1">$0.26/credit</p>
+                <p className="text-sm text-zinc-500 mb-1">$0.26{t('pricing.creditPacks.pack_suffix')}</p>
                 <p className="text-lg font-semibold text-zinc-300 mb-6">+500 credits</p>
-                <p className="text-xs text-zinc-600 mb-8">one-time purchase</p>
+                <p className="text-xs text-zinc-600 mb-8">{t('pricing.creditPacks.once')}</p>
                 <Link
                   href="/contact"
                   className="inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07] transition-all"
                 >
-                  Buy pack
+                  {t('pricing.creditPacks.buy')}
                 </Link>
               </div>
 
               {/* Pack 2000 */}
               <div className="rounded-2xl border border-primary/20 bg-zinc-900/50 pt-10 pb-8 px-8 flex flex-col items-center text-center relative" style={{ overflow: 'visible' }}>
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 text-[10px] font-semibold text-primary whitespace-nowrap">
-                  Best value
+                  {t('pricing.creditPacks.best_value')}
                 </div>
                 <p className="text-5xl font-black text-white mb-2">$480</p>
-                <p className="text-sm text-zinc-500 mb-1">$0.24/credit</p>
+                <p className="text-sm text-zinc-500 mb-1">$0.24{t('pricing.creditPacks.pack_suffix')}</p>
                 <p className="text-lg font-semibold text-zinc-300 mb-6">+2,000 credits</p>
-                <p className="text-xs text-zinc-600 mb-8">one-time purchase</p>
+                <p className="text-xs text-zinc-600 mb-8">{t('pricing.creditPacks.once')}</p>
                 <Link
                   href="/contact"
                   className="inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07] transition-all"
                 >
-                  Buy pack
+                  {t('pricing.creditPacks.buy')}
                 </Link>
               </div>
             </div>
 
             <p className="text-center text-sm text-zinc-600 mt-12">
-              Credits never expire. Use them anytime. Packs are a one-time purchase, not a subscription.
+              {t('pricing.creditPacks.disclaimer')}
             </p>
           </div>
         </div>
@@ -386,21 +396,21 @@ const PricingPage = () => {
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
                 <span className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
-                <span className="text-[10px] font-black tracking-widest uppercase text-primary">Auto-Scale</span>
+                <span className="text-[10px] font-black tracking-widest uppercase text-primary">{t('pricing.autoScale.badge')}</span>
               </div>
 
-              <h2 className="text-3xl font-bold mb-4">Never run out of credits</h2>
+              <h2 className="text-3xl font-bold mb-4">{t('pricing.autoScale.title')}</h2>
               <p className="text-zinc-400 max-w-xl mx-auto text-lg">
-                Your AI agent keeps working. You never think about credits again.
+                {t('pricing.autoScale.subtitle')}
               </p>
             </div>
 
             <div className="max-w-2xl mx-auto space-y-6 mb-10">
               <p className="text-zinc-400 leading-relaxed">
-                When you reach 80% of your credits, we automatically recharge 50 credits at $0.25 each. No notifications. No interruptions. No decisions.
+                {t('pricing.autoScale.desc1')}
               </p>
               <p className="text-zinc-400 leading-relaxed">
-                You set a monthly spending cap. We respect it.
+                {t('pricing.autoScale.desc2')}
               </p>
             </div>
 
@@ -408,17 +418,17 @@ const PricingPage = () => {
             <div className="max-w-xl mx-auto bg-zinc-950 border border-white/10 rounded-xl p-6 font-mono text-sm space-y-4 mb-10">
               <div className="flex items-center gap-2">
                 <span className="size-2 rounded-full bg-primary"></span>
-                <span className="text-primary font-semibold">Auto-Scale:</span>
-                <span className="text-white">Active</span>
+                <span className="text-primary font-semibold">{t('pricing.autoScale.mockup.status')}</span>
+                <span className="text-white">{t('pricing.autoScale.mockup.active')}</span>
               </div>
 
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Credits included:</span>
-                  <span className="text-white">700/month</span>
+                  <span className="text-zinc-400">{t('pricing.autoScale.mockup.included')}</span>
+                  <span className="text-white">700{t('pricing.autoScale.mockup.month')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Used this month:</span>
+                  <span className="text-zinc-400">{t('pricing.autoScale.mockup.used')}</span>
                   <span className="text-white">643 (92%)</span>
                 </div>
                 <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
@@ -428,26 +438,26 @@ const PricingPage = () => {
 
               <div className="space-y-2 pt-2">
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Auto-recharges:</span>
-                  <span className="text-white">1 pack (50 credits)</span>
+                  <span className="text-zinc-400">{t('pricing.autoScale.mockup.recharges')}</span>
+                  <span className="text-white">{t('pricing.autoScale.mockup.pack')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Extra spent:</span>
+                  <span className="text-zinc-400">{t('pricing.autoScale.mockup.extra')}</span>
                   <span className="text-white">$12.50</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-zinc-400">Monthly cap:</span>
+                  <span className="text-zinc-400">{t('pricing.autoScale.mockup.cap')}</span>
                   <span className="flex items-center gap-2">
                     <span className="text-white">$200</span>
-                    <span className="bg-white/5 px-2 py-0.5 rounded text-xs text-zinc-300 cursor-pointer hover:bg-white/10 transition-colors">Edit</span>
+                    <span className="bg-white/5 px-2 py-0.5 rounded text-xs text-zinc-300 cursor-pointer hover:bg-white/10 transition-colors">{t('pricing.autoScale.mockup.edit')}</span>
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="text-center">
-              <p className="text-zinc-500 mb-2">Included in Pro and Business plans.</p>
-              <p className="text-zinc-600 text-sm">Activate in your dashboard after signing up.</p>
+              <p className="text-zinc-500 mb-2">{t('pricing.autoScale.footer1')}</p>
+              <p className="text-zinc-600 text-sm">{t('pricing.autoScale.footer2')}</p>
             </div>
           </div>
         </div>
@@ -456,52 +466,52 @@ const PricingPage = () => {
         <div className="py-20 max-w-4xl mx-auto">
           <div className="bg-zinc-900/20 border border-white/5 rounded-3xl p-8 md:p-12 text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
-              <span className="text-[10px] font-black tracking-widest uppercase text-primary">Enterprise</span>
+              <span className="text-[10px] font-black tracking-widest uppercase text-primary">{t('pricing.enterprise.badge')}</span>
             </div>
 
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-6">
-              KATALOG <span className="text-primary">ENTERPRISE</span>
+              {t('pricing.enterprise.title')}
             </h2>
 
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto leading-relaxed mb-12">
-              For stores with 10,000+ SKUs, agencies managing multiple brands, or merchants who need a strategic partnership — not just software.
+              {t('pricing.enterprise.subtitle')}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">∞ Credits</p>
-                <p className="text-sm text-zinc-500">Unlimited AI optimizations</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.credits.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.credits.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">∞ Stores</p>
-                <p className="text-sm text-zinc-500">Connect every brand you run</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.stores.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.stores.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">Dedicated</p>
-                <p className="text-sm text-zinc-500">Account Manager</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.manager.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.manager.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">99.9% SLA</p>
-                <p className="text-sm text-zinc-500">Guaranteed uptime</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.sla.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.sla.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">Custom AI</p>
-                <p className="text-sm text-zinc-500">Trained on your historical data</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.custom.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.custom.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">Annual</p>
-                <p className="text-sm text-zinc-500">Billing with flexible terms</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.annual.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.annual.desc')}</p>
               </div>
             </div>
 
-            <p className="text-2xl font-bold text-white mb-2">From $499/month</p>
-            <p className="text-sm text-zinc-500 mb-8">Pricing tailored to your catalog size.</p>
+            <p className="text-2xl font-bold text-white mb-2">{t('pricing.enterprise.price')}</p>
+            <p className="text-sm text-zinc-500 mb-8">{t('pricing.enterprise.price_desc')}</p>
 
             <Link
               href="/contact"
               className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-bold bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.22)] hover:bg-emerald-400 transition-all"
             >
-              Talk to sales →
+              {t('pricing.enterprise.cta')}
             </Link>
           </div>
         </div>

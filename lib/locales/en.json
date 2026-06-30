@@ -292,7 +292,9 @@
             "monthly": "Monthly",
             "annually": "Annually",
             "save": "Save 10%",
-            "billed_annually": "Billed annually"
+            "billed_annually": "Billed annually",
+            "suffix_month": "/mo",
+            "suffix_year": "/yr"
         },
         "plans": {
             "starter": {
@@ -313,11 +315,11 @@
                 "cta": "Contact Sales"
             },
             "proMax": {
-                "name": "PRO MAX",
+                "name": "PRO PLUS",
                 "description": "For power users",
                 "capacity": "250 Credits",
                 "renewal": "Renews every month.",
-                "cta": "Activate PRO MAX →",
+                "cta": "Activate PRO PLUS →",
                 "features": {
                     "item1": "24/7 Auto-Pilot",
                     "item2": "",
@@ -393,7 +395,51 @@
             "faq_btn": "View FAQ",
             "support_btn": "Contact Support"
         },
-        "footer": "All plans include a 14-day free trial. Cancel anytime."
+        "footer": "All plans include a 14-day free trial. Cancel anytime.",
+        "creditPacks": {
+            "title": "Need more firepower?",
+            "subtitle": "Add credits to any Pro or Business plan. No plan change required.",
+            "best_value": "Best value",
+            "buy": "Buy pack",
+            "disclaimer": "Credits never expire. Use them anytime. Packs are a one-time purchase, not a subscription.",
+            "pack_suffix": "/credit",
+            "once": "one-time purchase"
+        },
+        "autoScale": {
+            "badge": "Auto-Scale",
+            "title": "Never run out of credits",
+            "subtitle": "Your AI agent keeps working. You never think about credits again.",
+            "desc1": "When you reach 80% of your credits, we automatically recharge 50 credits at $0.25 each. No notifications. No interruptions. No decisions.",
+            "desc2": "You set a monthly spending cap. We respect it.",
+            "mockup": {
+                "status": "Auto-Scale:",
+                "active": "Active",
+                "included": "Credits included:",
+                "month": "/mo",
+                "used": "Used this month:",
+                "recharges": "Auto-recharges:",
+                "pack": "1 pack (50 credits)",
+                "extra": "Extra spent:",
+                "cap": "Monthly cap:",
+                "edit": "Edit"
+            },
+            "footer1": "Included in Pro and Business plans.",
+            "footer2": "Activate in your dashboard after signing up."
+        },
+        "enterprise": {
+            "badge": "Enterprise",
+            "title": "KATALOG ENTERPRISE",
+            "subtitle": "For stores with 10,000+ SKUs, agencies managing multiple brands, or merchants who need a strategic partnership — not just software.",
+            "credits": { "title": "∞ Credits", "desc": "Unlimited AI optimizations" },
+            "stores": { "title": "∞ Stores", "desc": "Connect every brand you run" },
+            "manager": { "title": "Dedicated", "desc": "Account Manager" },
+            "sla": { "title": "99.9% SLA", "desc": "Guaranteed uptime" },
+            "custom": { "title": "Custom AI", "desc": "Trained on your historical data" },
+            "annual": { "title": "Annual", "desc": "Billing with flexible terms" },
+            "price": "From $499/month",
+            "price_desc": "Pricing tailored to your catalog size.",
+            "cta": "Talk to sales →"
+        }
     },
     "integrations": {
         "hero": {
@@ -602,6 +648,19 @@
                         "item2": "Knowledge Injector",
                         "item3": "Multiple Brand Rules",
                         "item4": "Priority processing queue"
+                    }
+                },
+                "proMax": {
+                    "name": "PRO PLUS",
+                    "desc": "For power users.",
+                    "capacity": "250 Credits",
+                    "renewal": "Renews every month.",
+                    "cta": "Activate PRO PLUS →",
+                    "features": {
+                        "item1": "24/7 Auto-Pilot",
+                        "item2": "",
+                        "item3": "Custom Brand Rules",
+                        "item4": "Fast-Track Sync (Stock at no cost)"
                     }
                 }
             }
