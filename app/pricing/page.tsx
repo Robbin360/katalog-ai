@@ -119,7 +119,6 @@ const PricingPage = () => {
       priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
       features: [
         { brand: "Sleeper Agent", text: "(Sales learning)" },
-        { brand: null, text: "Knowledge Injector" },
         { brand: null, text: "Multiple Brand Rules" },
         { brand: null, text: "Priority processing queue" },
       ],
@@ -127,9 +126,8 @@ const PricingPage = () => {
         "landing.pricing.plans.enterprise.features.item1",
         "landing.pricing.plans.enterprise.features.item2",
         "landing.pricing.plans.enterprise.features.item3",
-        "landing.pricing.plans.enterprise.features.item4",
       ],
-      comingSoon: [false, true, false, false],
+      comingSoon: [false, false, false],
       popular: false,
     },
   ];
@@ -150,7 +148,6 @@ const PricingPage = () => {
         features: [
           { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents", "4 Agents"] },
           { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
-          { name: "Knowledge Injector (PDFs)", values: [false, false, false, "Coming soon"] },
           { name: "Sleeper Agent (Nightly Learning)", values: [false, false, false, true] },
           { name: "Brand Voice Rules", values: ["None", "1 Global Set", "1 Global Set", "Multiple Sets"] },
           { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product", "Never touches a winning product"] },
@@ -163,7 +160,8 @@ const PricingPage = () => {
           { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background", "Automated Background"] },
           { name: "Auto-Pilot Batch Size", values: ["N/A", "3 products/cycle", "5 products/cycle", "10 products/cycle"] },
           { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify", "Direct to Shopify"] },
-          { name: "Connected Stores", values: ["1 Store", "1 Store", "1 Store", "Up to 2 Stores"] },
+          { name: "CSV Export", values: ["—", "—", "CSV", "CSV + API"] },
+          { name: "Connected Stores", values: ["1 Store", "1 Store", "1 Store", "Up to 3 Stores"] },
         ],
       },
       {
@@ -425,7 +423,7 @@ const PricingPage = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">{t('pricing.autoScale.mockup.included')}</span>
-                  <span className="text-white">700{t('pricing.autoScale.mockup.month')}</span>
+                  <span className="text-white">700 {t('pricing.autoScale.mockup.month')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">{t('pricing.autoScale.mockup.used')}</span>

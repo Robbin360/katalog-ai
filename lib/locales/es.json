@@ -358,13 +358,13 @@
             "once": "compra única"
         },
         "autoScale": {
-            "badge": "ESCALA AUTOMÁTICA",
+            "badge": "Escala Automática",
             "title": "Nunca te quedes sin créditos",
             "subtitle": "Tu agente de IA sigue trabajando. No tendrás que preocuparte más por los créditos.",
             "desc1": "Cuando alcances el 80% de tus créditos, recargaremos automáticamente 50 créditos a $0.25 cada uno. Sin notificaciones. Sin interrupciones. Sin decisiones.",
             "desc2": "Usted establece un límite de gasto mensual. Lo respetamos.",
             "mockup": {
-                "status": "Escalado automático:",
+                "status": "Escala Automática:",
                 "active": "Activo",
                 "included": "Créditos incluidos:",
                 "month": "/mes",
@@ -645,9 +645,8 @@
                     "includedFrom": "↳ Todo lo de Pro, además de:",
                     "features": {
                         "item1": "(Aprendizaje nocturno de ventas)",
-                        "item2": "Inyector de Conocimiento",
-                        "item3": "Múltiples Reglas de Marca",
-                        "item4": "Cola de procesamiento prioritaria"
+                        "item2": "Múltiples Reglas de Marca",
+                        "item3": "Cola de procesamiento prioritaria"
                     }
                 },
                 "proMax": {

@@ -299,9 +299,8 @@ export default function AccountPage() {
                                 highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}
                                 features={[
                                     { brand: "Sleeper Agent", text: t('landing.pricing.plans.enterprise.features.item1') || "(Sales learning)" },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "Knowledge Injector", comingSoon: true },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item3') || "Multiple Brand Rules" },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item4') || "Priority processing queue" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "Multiple Brand Rules" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item3') || "Priority processing queue" },
                                 ]}
                                 current={plan === 'business'}
                                 actionLabel={t('landing.pricing.plans.enterprise.cta') || "Activate Business →"}

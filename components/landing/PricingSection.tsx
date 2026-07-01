@@ -111,7 +111,6 @@ const plans: PricingPlan[] = [
     priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
     features: [
       { brand: "Sleeper Agent", text: "(Sales learning)" },
-      { brand: null, text: "Knowledge Injector" },
       { brand: null, text: "Multiple Brand Rules" },
       { brand: null, text: "Priority processing queue" },
     ],
@@ -119,9 +118,8 @@ const plans: PricingPlan[] = [
       "landing.pricing.plans.enterprise.features.item1",
       "landing.pricing.plans.enterprise.features.item2",
       "landing.pricing.plans.enterprise.features.item3",
-      "landing.pricing.plans.enterprise.features.item4",
     ],
-    comingSoon: [false, true, false, false],
+    comingSoon: [false, false, false],
   },
 ];
 

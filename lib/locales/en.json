@@ -645,9 +645,8 @@
                     "includedFrom": "↳ Everything in Pro, plus:",
                     "features": {
                         "item1": "(Sales learning)",
-                        "item2": "Knowledge Injector",
-                        "item3": "Multiple Brand Rules",
-                        "item4": "Priority processing queue"
+                        "item2": "Multiple Brand Rules",
+                        "item3": "Priority processing queue"
                     }
                 },
                 "proMax": {
