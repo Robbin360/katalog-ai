@@ -89,9 +89,9 @@ export function PricingCard({
           Pro and Business render the badge text inside; Pro Plus renders an empty slot. */}
       {!isFree && (
         <div className="h-7">
-          {recommended && (
+          {badge && (
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
-              {badge || "Recommended"}
+              {badge}
             </div>
           )}
         </div>
