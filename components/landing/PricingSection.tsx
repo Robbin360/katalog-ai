@@ -14,7 +14,7 @@ type PlanFeature = {
 };
 
 type PricingPlan = {
-  id: "free" | "pro" | "business";
+  id: "free" | "pro" | "pro-max" | "business";
   name: string;
   descKey: string;
   capacityKey: string;
@@ -90,6 +90,35 @@ const plans: PricingPlan[] = [
       "landing.pricing.plans.pro.features.item3",
     ],
     comingSoon: [false, false, false],
+  },
+  {
+    id: "pro-max",
+    name: "PRO PLUS",
+    descKey: "landing.pricing.plans.proMax.desc",
+    capacityKey: "landing.pricing.plans.proMax.capacity",
+    renewalKey: "landing.pricing.plans.proMax.renewal",
+    ctaKey: "landing.pricing.plans.proMax.cta",
+    description: "For power users.",
+    monthlyPrice: "$139",
+    annualPrice: "$1,499",
+    capacity: "250 Credits",
+    renewal: "Renews every month.",
+    cta: "Activate PRO PLUS →",
+    highlight: "↳ Everything in Pro, plus:",
+    highlightKey: "landing.pricing.plans.proMax.includedFrom",
+    features: [
+      { brand: null, text: "24/7 Auto-Pilot" },
+      { brand: "RAG Engine", text: "" },
+      { brand: null, text: "Custom Brand Rules" },
+      { brand: null, text: "CSV Export" },
+    ],
+    featuresKeys: [
+      "landing.pricing.plans.proMax.features.item1",
+      "landing.pricing.plans.proMax.features.item2",
+      "landing.pricing.plans.proMax.features.item3",
+      "landing.pricing.plans.proMax.features.item4",
+    ],
+    comingSoon: [false, false, false, false],
   },
   {
     id: "business",
@@ -208,7 +237,7 @@ export const PricingSection = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-4">
           {plans.map((plan) => {
             const priceId = isAnnual ? plan.priceIdAnnual : plan.priceIdMonthly;
             const features = plan.features.map((f, i) => ({

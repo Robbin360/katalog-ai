@@ -320,12 +320,11 @@
                 "capacity": "250 Credits",
                 "renewal": "Renews every month.",
                 "cta": "Activate PRO PLUS →",
-                "features": {
-                    "item1": "24/7 Auto-Pilot",
-                    "item2": "",
-                    "item3": "Custom Brand Rules",
-                    "item4": "Fast-Track Sync (Stock at no cost)"
-                }
+      "features": {
+        "item1": "24/7 Auto-Pilot",
+        "item2": "",
+        "item3": "Custom Brand Rules"
+      }
             }
         },
         "features": {
@@ -632,8 +631,7 @@
                     "features": {
                         "item1": "24/7 Auto-Pilot",
                         "item2": "",
-                        "item3": "Custom Brand Rules",
-                        "item4": "Fast-Track Sync (Stock at no cost)"
+                        "item3": "Custom Brand Rules"
                     }
                 },
                 "enterprise": {
@@ -657,6 +655,7 @@
                     "capacity": "250 Credits",
                     "renewal": "Renews every month.",
                     "cta": "Activate PRO PLUS →",
+                    "includedFrom": "↳ Everything in Pro, plus:",
                     "features": {
                         "item1": "24/7 Auto-Pilot",
                         "item2": "",

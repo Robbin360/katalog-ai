@@ -275,8 +275,7 @@
                 "features": {
                     "item1": "Auto-Pilot 24/7",
                     "item2": "",
-                    "item3": "Reglas de Marca Personalizadas",
-                    "item4": "Sincronización Fast-Track (sin costo)"
+                    "item3": "Reglas de Marca Personalizadas"
                 }
             }
         },
@@ -629,12 +628,11 @@
                     "renewal": "Se renuevan cada mes.",
                     "cta": "Activar Auto-Pilot →",
                     "includedFrom": "↳ Todo lo de Free, además de:",
-                    "features": {
-                        "item1": "Auto-Pilot 24/7",
-                        "item2": "",
-                        "item3": "Reglas de Marca personalizadas",
-                        "item4": "Fast-Track Sync (Stock sin costo)"
-                    }
+      "features": {
+      "item1": "Auto-Pilot 24/7",
+      "item2": "",
+      "item3": "Reglas de Marca personalizadas"
+    }
                 },
                 "enterprise": {
                     "name": "BUSINESS",
