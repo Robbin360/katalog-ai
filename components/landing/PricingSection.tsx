@@ -28,6 +28,7 @@ type PricingPlan = {
   renewal: string;
   cta: string;
   badge?: string;
+  badgeKey?: string;
   highlight?: string;
   priceIdMonthly?: string;
   priceIdAnnual?: string;
@@ -82,15 +83,13 @@ const plans: PricingPlan[] = [
       { brand: null, text: "24/7 Auto-Pilot" },
       { brand: "RAG Engine", text: "" },
       { brand: null, text: "Custom Brand Rules" },
-      { brand: null, text: "Fast-Track Sync (Stock at no cost)" },
     ],
     featuresKeys: [
       "landing.pricing.plans.pro.features.item1",
       "landing.pricing.plans.pro.features.item2",
       "landing.pricing.plans.pro.features.item3",
-      "landing.pricing.plans.pro.features.item4",
     ],
-    comingSoon: [false, false, false, false],
+    comingSoon: [false, false, false],
   },
   {
     id: "business",
@@ -106,6 +105,8 @@ const plans: PricingPlan[] = [
     capacity: "700 Credits",
     renewal: "Extended monthly limit.",
     cta: "Activate Business →",
+    badge: "BEST VALUE",
+    badgeKey: "landing.pricing.plans.enterprise.badge",
     highlight: "↳ Everything in Pro, plus:",
     priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
     priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
@@ -113,13 +114,15 @@ const plans: PricingPlan[] = [
       { brand: "Sleeper Agent", text: "(Sales learning)" },
       { brand: null, text: "Multiple Brand Rules" },
       { brand: null, text: "Priority processing queue" },
+      { brand: null, text: "10 products/cycle (Auto-Pilot)" },
     ],
     featuresKeys: [
       "landing.pricing.plans.enterprise.features.item1",
       "landing.pricing.plans.enterprise.features.item2",
       "landing.pricing.plans.enterprise.features.item3",
+      "landing.pricing.plans.enterprise.features.item4",
     ],
-    comingSoon: [false, false, false],
+    comingSoon: [false, false, false, false],
   },
 ];
 
@@ -227,7 +230,7 @@ export const PricingSection = () => {
                 highlight={plan.highlightKey ? translate(plan.highlightKey, plan.highlight || "") : undefined}
                 features={features}
                 recommended={plan.id === "pro"}
-                badge={t("landing.pricing.plans.pro.badge") || plan.badge}
+                badge={plan.badgeKey ? t(plan.badgeKey) : plan.badge}
                 actionLabel={translate(plan.ctaKey, plan.cta)}
                 actionHref={plan.id === "free" ? "/signup" : undefined}
                 onActionClick={plan.id !== "free" ? () => handleUpgrade(priceId || "") : undefined}

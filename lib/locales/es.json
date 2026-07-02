@@ -647,7 +647,8 @@
                     "features": {
                         "item1": "(Aprendizaje nocturno de ventas)",
                         "item2": "Múltiples Reglas de Marca",
-                        "item3": "Cola de procesamiento prioritaria"
+                        "item3": "Cola de procesamiento prioritaria",
+                        "item4": "10 productos/ciclo (Auto-Pilot)"
                     }
                 },
                 "proMax": {
@@ -661,7 +662,7 @@
                         "item1": "Auto-Pilot 24/7",
                         "item2": "",
                         "item3": "Reglas de Marca Personalizadas",
-                        "item4": "Sincronización Fast-Track (sin costo)"
+                        "item4": "Exportación CSV"
                     }
                 }
             }

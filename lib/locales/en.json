@@ -647,7 +647,8 @@
                     "features": {
                         "item1": "(Sales learning)",
                         "item2": "Multiple Brand Rules",
-                        "item3": "Priority processing queue"
+                        "item3": "Priority processing queue",
+                        "item4": "10 products/cycle (Auto-Pilot)"
                     }
                 },
                 "proMax": {
@@ -660,7 +661,7 @@
                         "item1": "24/7 Auto-Pilot",
                         "item2": "",
                         "item3": "Custom Brand Rules",
-                        "item4": "Fast-Track Sync (Stock at no cost)"
+                        "item4": "CSV Export"
                     }
                 }
             }

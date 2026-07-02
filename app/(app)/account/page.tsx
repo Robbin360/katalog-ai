@@ -276,7 +276,6 @@ export default function AccountPage() {
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item1') || "24/7 Auto-Pilot" },
                                     { brand: "RAG Engine", text: t('landing.pricing.plans.pro.features.item2') || "" },
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Custom Brand Rules" },
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item4') || "Fast-Track Sync (Stock at no cost)" },
                                 ]}
                                 current={plan === 'pro'}
                                 recommended={true}
@@ -301,6 +300,7 @@ export default function AccountPage() {
                                     { brand: "Sleeper Agent", text: t('landing.pricing.plans.enterprise.features.item1') || "(Sales learning)" },
                                     { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "Multiple Brand Rules" },
                                     { brand: null, text: t('landing.pricing.plans.enterprise.features.item3') || "Priority processing queue" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item4') || "10 products/cycle (Auto-Pilot)" },
                                 ]}
                                 current={plan === 'business'}
                                 actionLabel={t('landing.pricing.plans.enterprise.cta') || "Activate Business →"}
