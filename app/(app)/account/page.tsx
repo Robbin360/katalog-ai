@@ -296,6 +296,7 @@ export default function AccountPage() {
                                 capacity={t('landing.pricing.plans.enterprise.capacity') || "700 Credits"}
                                 renewal={t('landing.pricing.plans.enterprise.renewal') || "Extended monthly limit."}
                                 highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}
+                                badge={t('landing.pricing.plans.enterprise.badge') || "BEST VALUE"}
                                 features={[
                                     { brand: "Sleeper Agent", text: t('landing.pricing.plans.enterprise.features.item1') || "(Sales learning)" },
                                     { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "Multiple Brand Rules" },
