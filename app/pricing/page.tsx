@@ -83,6 +83,7 @@ const PricingPage = () => {
       renewal: "Renews every month.",
       cta: "Activate PRO PLUS →",
       highlight: "↳ Everything in Pro, plus:",
+      highlightKey: "landing.pricing.plans.proMax.includedFrom",
       features: [
         { brand: null, text: "24/7 Auto-Pilot" },
         { brand: "RAG Engine", text: "" },
@@ -113,6 +114,7 @@ const PricingPage = () => {
       renewal: "Extended monthly limit.",
       cta: "Activate Business →",
       badge: "BEST VALUE",
+      badgeKey: "landing.pricing.plans.enterprise.badge",
       highlight: "↳ Everything in Pro, plus:",
       priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
       priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
@@ -247,7 +249,7 @@ const PricingPage = () => {
                 highlight={plan.highlightKey ? t(plan.highlightKey) || plan.highlight : undefined}
                 features={features}
                 recommended={plan.popular}
-                badge={plan.badge}
+                badge={plan.badgeKey ? t(plan.badgeKey) : plan.badge}
                 actionLabel={t(plan.ctaKey) || plan.cta}
                 actionHref="/signup"
                 disableShift={true}

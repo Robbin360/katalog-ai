@@ -638,6 +638,7 @@
                 },
                 "enterprise": {
                     "name": "BUSINESS",
+                    "badge": "BEST VALUE",
                     "desc": "Your autonomous agency that learns overnight.",
                     "capacity": "700 Credits",
                     "renewal": "Extended monthly limit.",

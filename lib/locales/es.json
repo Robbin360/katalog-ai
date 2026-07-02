@@ -638,6 +638,7 @@
                 },
                 "enterprise": {
                     "name": "BUSINESS",
+                    "badge": "MEJOR VALOR",
                     "desc": "Tu agencia autónoma que aprende de noche.",
                     "capacity": "700 Créditos",
                     "renewal": "Límite mensual ampliado.",
@@ -655,6 +656,7 @@
                     "capacity": "250 Créditos",
                     "renewal": "Se renueva cada mes.",
                     "cta": "Activar PRO PLUS →",
+                    "includedFrom": "↳ Todo lo que incluye Pro, además de:",
                     "features": {
                         "item1": "Auto-Pilot 24/7",
                         "item2": "",
