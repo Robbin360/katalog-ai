@@ -76,6 +76,7 @@ const plans: PricingPlan[] = [
     renewal: "Renews every month.",
     cta: "Activate Auto-Pilot →",
     badge: "Recommended",
+    badgeKey: "landing.pricing.plans.pro.badge",
     highlight: "↳ Everything in Free, plus:",
     priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
     priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL,

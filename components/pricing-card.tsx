@@ -90,7 +90,7 @@ export function PricingCard({
       {!isFree && (
         <div className="h-7">
           {badge && (
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
+            <div translate="no" className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
               {badge}
             </div>
           )}
@@ -99,7 +99,7 @@ export function PricingCard({
 
       {/* Cabecera */}
       <div>
-        <h3 className="notranslate text-sm font-bold tracking-[0.22em] text-zinc-300 uppercase">{title}</h3>
+        <h3 translate="no" className="notranslate text-sm font-bold tracking-[0.22em] text-zinc-300 uppercase">{title}</h3>
         <div className={cn("flex items-end gap-2", isFree ? "mt-4" : "mt-6")}>
           <span className="text-5xl font-black tracking-tight text-white sm:text-6xl">
             {price}
@@ -134,7 +134,7 @@ export function PricingCard({
               <span>
                 {feature.brand ? (
                   <>
-                    <span className="notranslate font-semibold text-white">{feature.brand}</span>
+                    <span translate="no" className="notranslate font-semibold text-white">{feature.brand}</span>
                     {feature.text && <span> {feature.text}</span>}
                   </>
                 ) : (

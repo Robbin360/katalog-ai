@@ -164,7 +164,7 @@ const PricingPage = () => {
           { name: "Auto-Pilot Batch Size", values: ["N/A", "3 products/cycle", "5 products/cycle", "10 products/cycle"] },
           { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify", "Direct to Shopify"] },
           { name: "CSV Export", values: ["—", "—", "CSV", "CSV + API"] },
-          { name: "Connected Stores", values: ["1 Store", "1 Store", "1 Store", "Up to 3 Stores"] },
+          { name: "Connected Stores", values: ["1 Shopify Store", "1 Shopify Store", "1 Shopify Store", "Up to 3 Shopify Stores"] },
         ],
       },
       {
@@ -396,7 +396,7 @@ const PricingPage = () => {
           <div className="bg-zinc-900/20 border border-white/5 rounded-3xl p-8 md:p-12 backdrop-blur">
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                <span className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
+                <span translate="no" className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
                 <span className="text-[10px] font-black tracking-widest uppercase text-primary">{t('pricing.autoScale.badge')}</span>
               </div>
 
