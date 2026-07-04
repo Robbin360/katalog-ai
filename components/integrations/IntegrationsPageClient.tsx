@@ -109,7 +109,7 @@ export function IntegrationsPageClient() {
                             <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-primary">{t('integrations.hero.badge')}</span>
                         </div>
                         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 mb-6 group">
-                            {t('integrations.hero.title_pre')} <Brand className="text-primary italic group-hover:scale-110 transition-transform" /> <br />{t('integrations.hero.title_post')}
+                            {t('integrations.hero.title_pre')} <Brand className="text-primary group-hover:scale-110 transition-transform" /> <br />{t('integrations.hero.title_post')}
                         </h1>
                         
                         {/* Primer párrafo expandido (30-80 palabras) */}

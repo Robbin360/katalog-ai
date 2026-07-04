@@ -66,7 +66,7 @@ export default function FeaturesPage() {
                                 <span className="text-[10px] font-bold tracking-widest uppercase text-primary">{t('features.hero.badge')}</span>
                             </div>
                             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 mb-6">
-                                {t('features.hero.title_pre')} <Brand className="text-primary italic" /> <br />{t('features.hero.title_post')}
+                                {t('features.hero.title_pre')} <Brand className="text-primary" /> <br />{t('features.hero.title_post')}
                             </h1>
                             <p className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
                                 {t('features.hero.subtitle')}

@@ -36,7 +36,7 @@ export default function ContactPage() {
       <main className="max-w-4xl mx-auto px-6 py-24">
         <div className="mb-16 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 mb-6">
-            Contact <Brand className="text-primary italic" />
+            Contact <Brand className="text-primary" />
           </h1>
           <p className="text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
             Have questions? We're here to help. Reach out to our team for support, partnerships, or general inquiries.

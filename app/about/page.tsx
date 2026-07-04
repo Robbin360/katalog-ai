@@ -37,7 +37,7 @@ export default function AboutPage() {
       <main className="max-w-4xl mx-auto px-6 py-24">
         <div className="mb-16 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 mb-6">
-            About <Brand className="text-primary italic" />
+            About <Brand className="text-primary" />
           </h1>
           <p className="text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
             We're building the future of e-commerce catalog management through AI-powered optimization and automation.
