@@ -14,17 +14,11 @@ const organizationSchema = {
   url: siteUrl,
   logo: `${siteUrl}/logo-dark.svg`,
   description: "AI-powered Shopify catalog optimization platform",
-  foundingDate: "2026-01-01",
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
     url: `${siteUrl}/contact`,
   },
-  sameAs: [
-    "https://twitter.com/katalogai",
-    "https://linkedin.com/company/katalog-ai",
-    "https://github.com/katalog-ai",
-  ],
 };
 
 const softwareSchema = {
@@ -96,9 +90,6 @@ export const metadata: Metadata = {
   },
   keywords: [
     "Shopify integration",
-    "BigCommerce integration",
-    "WooCommerce integration",
-    "Magento integration",
     "e-commerce platform integration",
     "Katalog AI integrations",
     "catalog sync",
@@ -152,7 +143,19 @@ export default function IntegrationsPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([organizationSchema, softwareSchema, webPageSchema]),
+          __html: JSON.stringify(organizationSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(softwareSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageSchema),
         }}
       />
       <IntegrationsPageClient />
