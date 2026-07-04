@@ -115,7 +115,7 @@ const PricingPage = () => {
       cta: "Activate Business →",
       badge: "BEST VALUE",
       badgeKey: "landing.pricing.plans.enterprise.badge",
-      highlight: "↳ Everything in Pro, plus:",
+      highlight: "↳ Everything in Pro Plus, plus:",
       priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
       priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
       features: [

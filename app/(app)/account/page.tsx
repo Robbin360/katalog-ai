@@ -295,7 +295,7 @@ export default function AccountPage() {
                                 priceSuffix={isAnnual ? "/año" : "/mes"}
                                 capacity={t('landing.pricing.plans.enterprise.capacity') || "700 Credits"}
                                 renewal={t('landing.pricing.plans.enterprise.renewal') || "Extended monthly limit."}
-                                highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}
+                                highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro Plus, plus:"}
                                 badge={t('landing.pricing.plans.enterprise.badge') || "BEST VALUE"}
                                 features={[
                                     { brand: "Sleeper Agent", text: t('landing.pricing.plans.enterprise.features.item1') || "(Sales learning)" },
