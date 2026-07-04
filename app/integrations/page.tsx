@@ -107,7 +107,7 @@ export const metadata: Metadata = {
         url: `${siteUrl}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Katalog AI integrations with Shopify, BigCommerce, WooCommerce, and Magento",
+        alt: "Katalog AI — Shopify-native catalog optimization. BigCommerce, WooCommerce, and Magento on roadmap.",
       },
     ],
   },
@@ -116,8 +116,6 @@ export const metadata: Metadata = {
     title,
     description,
     images: [`${siteUrl}/opengraph-image`],
-    creator: "@katalogai",
-    site: "@katalogai",
   },
   robots: {
     index: true,

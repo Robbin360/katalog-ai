@@ -54,8 +54,7 @@ export default function AboutPage() {
             </p>
             <p className="text-slate-300 leading-relaxed">
               By combining advanced natural language processing, computer vision, and machine learning algorithms, Katalog AI analyzes your product catalog to identify optimization opportunities, 
-              generate compelling product descriptions, enhance SEO metadata, and prioritize revenue-generating improvements. We integrate seamlessly with Shopify, BigCommerce, WooCommerce, 
-              and Magento to provide a unified optimization experience across all major e-commerce platforms.
+              generate compelling product descriptions, enhance SEO metadata, and prioritize revenue-generating improvements. Katalog AI integrates natively with Shopify today. BigCommerce, WooCommerce, and Magento are on our post-PMF roadmap.
             </p>
           </section>
 

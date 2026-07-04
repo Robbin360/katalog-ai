@@ -114,8 +114,7 @@ export function IntegrationsPageClient() {
                         
                         {/* Primer párrafo expandido (30-80 palabras) */}
                         <p className="text-slate-300 text-xl md:text-2xl leading-relaxed max-w-2xl font-medium">
-                            Katalog AI connects seamlessly with leading e-commerce platforms including Shopify, BigCommerce, WooCommerce, and Magento. 
-                            Our integration system enables real-time catalog sync, automated product optimization, and bidirectional data flow between your store and our AI engine.
+                            Katalog AI is built natively for Shopify. Connect your store in seconds and our AI engine syncs your catalog in real time — reading products, optimizing content, and publishing improvements back to Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap.
                         </p>
                         
                         <p className="text-slate-400 text-lg md:text-xl leading-relaxed mt-4">
@@ -263,7 +262,7 @@ export function IntegrationsPageClient() {
                             <div>
                                 <h3 className="text-xl font-bold text-slate-500">BigCommerce</h3>
                                 <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                                    Full-featured API integration for BigCommerce stores. Catalog synchronization, product optimization, and automated publishing workflows designed specifically for BigCommerce merchants seeking to scale their operations efficiently.
+                                    On roadmap. Full-featured API integration for BigCommerce stores. Join the waitlist to get early access (coming soon).
                                 </p>
                             </div>
                         </div>
@@ -280,7 +279,7 @@ export function IntegrationsPageClient() {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-500">WooCommerce</h3>
-                                        <p className="text-[10px] text-slate-600 mt-1">WordPress-native integration for WooCommerce stores with REST API support.</p>
+                                        <p className="text-[10px] text-slate-600 mt-1">On roadmap. WordPress-native integration for WooCommerce stores with REST API support. Join the waitlist to get early access (coming soon).</p>
                                     </div>
                                 </div>
                             </div>
@@ -294,7 +293,7 @@ export function IntegrationsPageClient() {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-500">Magento / Adobe</h3>
-                                        <p className="text-[10px] text-slate-600 mt-1">Enterprise-grade integration for Adobe Commerce and Magento Open Source platforms.</p>
+                                        <p className="text-[10px] text-slate-600 mt-1">On roadmap. Enterprise-grade integration for Adobe Commerce and Magento Open Source platforms. Join the waitlist to get early access (coming soon).</p>
                                     </div>
                                 </div>
                             </div>
