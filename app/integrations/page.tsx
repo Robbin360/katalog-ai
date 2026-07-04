@@ -4,7 +4,7 @@ import { IntegrationsPageClient } from "@/components/integrations/IntegrationsPa
 const siteUrl = "https://katalog-ai-navy.vercel.app";
 const pageUrl = `${siteUrl}/integrations`;
 const title = "Integrations | Katalog AI";
-const description = "Connect Katalog AI with Shopify, BigCommerce, WooCommerce, and Magento. Seamless e-commerce integration for automated catalog optimization and real-time sync.";
+const description = "Katalog AI integrates natively with Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap. Real-time catalog sync and automated product optimization for Shopify merchants.";
 
 // Schema JSON-LD para IA-Readability
 const organizationSchema = {
@@ -51,9 +51,6 @@ const softwareSchema = {
   },
   featureList: [
     "Shopify integration",
-    "BigCommerce integration",
-    "WooCommerce integration",
-    "Magento integration",
     "Real-time catalog sync",
     "API-based data exchange",
   ],
