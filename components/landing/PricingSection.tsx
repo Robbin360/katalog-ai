@@ -254,7 +254,7 @@ export const PricingSection = () => {
                 title={plan.name}
                 description={translate(plan.descKey, plan.description)}
                 price={isAnnual ? (plan.annualPrice || "$0") : (plan.monthlyPrice || "$0")}
-                priceSuffix={isAnnual ? "/año" : "/mes"}
+                priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
                 capacity={translate(plan.capacityKey, plan.capacity)}
                 renewal={translate(plan.renewalKey, plan.renewal)}
                 highlight={plan.highlightKey ? translate(plan.highlightKey, plan.highlight || "") : undefined}

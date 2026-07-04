@@ -268,7 +268,7 @@ export default function AccountPage() {
                                 title="PRO"
                                 description={t('landing.pricing.plans.pro.desc') || "Your 24/7 marketing employee."}
                                 price={isAnnual ? "$529" : "$49"}
-                                priceSuffix={isAnnual ? "/año" : "/mes"}
+                                priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
                                 capacity={t('landing.pricing.plans.pro.capacity') || "250 Credits"}
                                 renewal={t('landing.pricing.plans.pro.renewal') || "Renews every month."}
                                 highlight={t('landing.pricing.plans.pro.includedFrom') || "↳ Everything in Free, plus:"}
@@ -292,7 +292,7 @@ export default function AccountPage() {
                                 title="BUSINESS"
                                 description={t('landing.pricing.plans.enterprise.desc') || "Your autonomous agency that learns overnight."}
                                 price={isAnnual ? "$1,609" : "$149"}
-                                priceSuffix={isAnnual ? "/año" : "/mes"}
+                                priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
                                 capacity={t('landing.pricing.plans.enterprise.capacity') || "700 Credits"}
                                 renewal={t('landing.pricing.plans.enterprise.renewal') || "Extended monthly limit."}
                                 highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro Plus, plus:"}
