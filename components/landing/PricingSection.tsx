@@ -99,7 +99,7 @@ const plans: PricingPlan[] = [
     capacityKey: "landing.pricing.plans.proMax.capacity",
     renewalKey: "landing.pricing.plans.proMax.renewal",
     ctaKey: "landing.pricing.plans.proMax.cta",
-    description: "For power users.",
+    description: "For individual merchants looking to grow their business.",
     monthlyPrice: "$139",
     annualPrice: "$1,499",
     capacity: "250 Credits",

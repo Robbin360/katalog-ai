@@ -268,7 +268,7 @@
             },
             "proMax": {
                 "name": "PRO PLUS",
-                "description": "Para usuarios avanzados",
+                "description": "Para comerciantes individuales que buscan expandir su negocio",
                 "capacity": "250 Créditos",
                 "renewal": "Se renueva cada mes.",
                 "cta": "Activar PRO PLUS →",
@@ -651,7 +651,7 @@
                 },
                 "proMax": {
                     "name": "PRO PLUS",
-                    "desc": "Para usuarios avanzados.",
+                    "desc": "Para comerciantes individuales que buscan expandir su negocio.",
                     "capacity": "250 Créditos",
                     "renewal": "Se renueva cada mes.",
                     "cta": "Activar PRO PLUS →",

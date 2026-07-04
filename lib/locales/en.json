@@ -316,7 +316,7 @@
             },
             "proMax": {
                 "name": "PRO PLUS",
-                "description": "For power users",
+                "description": "For individual merchants looking to grow their business",
                 "capacity": "250 Credits",
                 "renewal": "Renews every month.",
                 "cta": "Activate PRO PLUS →",
@@ -651,7 +651,7 @@
                 },
                 "proMax": {
                     "name": "PRO PLUS",
-                    "desc": "For power users.",
+                    "desc": "For individual merchants looking to grow their business.",
                     "capacity": "250 Credits",
                     "renewal": "Renews every month.",
                     "cta": "Activate PRO PLUS →",
