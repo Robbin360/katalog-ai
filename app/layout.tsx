@@ -32,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               "@type": "Organization",
               "name": "Katalog AI",
               "url": "https://katalog-ai-navy.vercel.app",
+              "logo": "https://katalog-ai-navy.vercel.app/logo-dark.svg",
               "description": "AI-powered Shopify catalog optimization platform",
               "contactPoint": {
                 "@type": "ContactPoint",
