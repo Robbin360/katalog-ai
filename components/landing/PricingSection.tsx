@@ -262,10 +262,10 @@ export const PricingSection = () => {
                 recommended={plan.id === "pro"}
                 badge={plan.badgeKey ? t(plan.badgeKey) : plan.badge}
                 actionLabel={translate(plan.ctaKey, plan.cta)}
-                actionHref={plan.id === "free" ? "/signup" : undefined}
-                onActionClick={plan.id !== "free" ? () => handleUpgrade(priceId || "") : undefined}
-                disabled={plan.id !== "free" && !priceId}
-                isLoading={isCheckoutLoading === priceId}
+                actionHref="/signup"
+                onActionClick={undefined}
+                disabled={false}
+                isLoading={false}
               />
             );
           })}

@@ -2,6 +2,22 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { Brand } from "@/components/ui/brand";
+import { FAQAccordion } from "@/components/landing/FAQSection";
+
+const CONTACT_FAQS = [
+  {
+    question: "What is your typical response time?",
+    answer: "We aim to respond to all inquiries within 24 hours during business days (Monday-Friday, 9am-6pm PST). Technical support requests from paid customers receive priority handling."
+  },
+  {
+    question: "Do you offer phone support?",
+    answer: "Phone support is available for Enterprise plan customers. Contact your account manager for direct phone access. All other customers can reach us via email for comprehensive written support."
+  },
+  {
+    question: "Can I schedule a demo?",
+    answer: "Yes! Email us at hello@katalog-ai.com with \"Demo Request\" in the subject line. Include your company name, e-commerce platform, and approximate catalog size. We'll schedule a personalized walkthrough."
+  }
+];
 
 const siteUrl = "https://katalog-ai-navy.vercel.app";
 const title = "Contact Us | Katalog AI";
@@ -123,29 +139,7 @@ export default function ContactPage() {
         {/* FAQ Section */}
         <div className="glass-card rounded-3xl p-8 mb-16">
           <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-bold text-white mb-2">What is your typical response time?</h3>
-              <p className="text-slate-400">
-                We aim to respond to all inquiries within 24 hours during business days (Monday-Friday, 9am-6pm PST). 
-                Technical support requests from paid customers receive priority handling.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white mb-2">Do you offer phone support?</h3>
-              <p className="text-slate-400">
-                Phone support is available for Enterprise plan customers. Contact your account manager for direct phone access. 
-                All other customers can reach us via email for comprehensive written support.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white mb-2">Can I schedule a demo?</h3>
-              <p className="text-slate-400">
-                Yes! Email us at hello@katalog-ai.com with "Demo Request" in the subject line. Include your company name, 
-                e-commerce platform, and approximate catalog size. We'll schedule a personalized walkthrough.
-              </p>
-            </div>
-          </div>
+          <FAQAccordion items={CONTACT_FAQS} />
         </div>
 
         {/* Office Information */}

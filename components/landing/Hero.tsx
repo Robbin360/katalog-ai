@@ -21,12 +21,11 @@ export const Hero = () => {
           {t('landing.hero.subtitle') || 'Katalog AI audita tu tienda, corrige listings de baja calidad y desbloquea ingresos ocultos mediante procesamiento neuronal avanzado. Deja de adivinar y empieza a escalar.'}
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/login" className="w-full sm:w-auto">
-            <button className="group flex h-14 w-full min-w-[200px] items-center justify-center rounded-lg bg-primary px-8 text-lg font-bold text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,183,127,0.3)] hover:scale-105 sm:w-auto">
-              <span className="capitalize">
-                {t('landing.hero.cta') || 'connect store'}
-              </span>
-            </button>
+          <Link
+            href="/signup"
+            className="group flex h-14 w-full min-w-[200px] items-center justify-center rounded-lg bg-primary px-8 text-lg font-bold text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,183,127,0.3)] hover:scale-105 sm:w-auto capitalize text-center"
+          >
+            {t('landing.hero.cta') || 'connect store'}
           </Link>
         </div>
 
@@ -51,32 +50,32 @@ export const Hero = () => {
                 <div className="absolute left-4 top-10 text-4xl font-black text-white/5 select-none pointer-events-none notranslate" translate="no">
                   PANEL
                 </div>
-
-                <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('landing.mockup.sidebar.main') || 'Main'}</div>
-                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-white bg-primary/10 border border-primary/10 rounded-lg notranslate" translate="no">
+                 <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('landing.mockup.sidebar.main') || 'Main'}</div>
+                <div aria-hidden="true" className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-white bg-primary/10 border border-primary/10 rounded-lg notranslate" translate="no">
                   <span className="material-symbols-outlined text-primary" translate="no" lang="zxx">dashboard</span>
                   {t('landing.mockup.sidebar.dashboard') || 'Dashboard'}
-                </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors notranslate" translate="no">
+                </div>
+                <div aria-hidden="true" className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 rounded-lg notranslate" translate="no">
                   <span className="material-symbols-outlined" translate="no" lang="zxx">inventory_2</span>
                   {t('landing.mockup.sidebar.inventory') || 'Inventory'}
-                </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors notranslate" translate="no">
+                </div>
+                <div aria-hidden="true" className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 rounded-lg notranslate" translate="no">
                   <span className="material-symbols-outlined" translate="no" lang="zxx">psychology</span>
                   {t('landing.mockup.sidebar.brain') || 'Brand Brain'}
-                </button>
+                </div>
                 <div className="mt-6 px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('landing.mockup.sidebar.analysis') || 'Analysis'}</div>
-                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors notranslate" translate="no">
+                <div aria-hidden="true" className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 rounded-lg notranslate" translate="no">
                   <span className="material-symbols-outlined" translate="no" lang="zxx">query_stats</span>
                   {t('landing.mockup.sidebar.audits') || 'Audits'}
-                </button>
-                <button 
-                  className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors notranslate"
+                </div>
+                <div 
+                  aria-hidden="true"
+                  className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 rounded-lg notranslate"
                   translate="no"
                 >
                   <span className="material-symbols-outlined" translate="no" lang="zxx">settings</span>
                   {t('landing.mockup.sidebar.settings') || 'Settings'}
-                </button>
+                </div>
               </div>
               <div className="p-4 border-t border-white/5">
                 <div className="flex items-center gap-3 px-2">
@@ -107,9 +106,9 @@ export const Hero = () => {
                     </span>
                     <span className="text-xs font-medium text-emerald-400">{t('landing.mockup.header.engine_status') || 'Neural Engine Active'}</span>
                   </div>
-                  <button className="h-8 w-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white notranslate" translate="no">
+                  <div aria-hidden="true" className="h-8 w-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 notranslate" translate="no">
                     <span className="material-symbols-outlined text-sm" translate="no" lang="zxx">notifications</span>
-                  </button>
+                  </div>
                 </div>
               </div>
 
@@ -182,7 +181,7 @@ export const Hero = () => {
                 <div className="dashboard-glass rounded-xl overflow-hidden flex-1">
                   <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-white">{t('landing.mockup.table.title') || 'High Priority Issues'}</h3>
-                    <button className="text-xs text-primary hover:text-emerald-400 font-medium">{t('landing.mockup.table.view_all') || 'View All'}</button>
+                    <span aria-hidden="true" className="text-xs text-primary font-medium">{t('landing.mockup.table.view_all') || 'View All'}</span>
                   </div>
                   <table className="w-full text-left text-sm">
                     <thead>
@@ -215,7 +214,7 @@ export const Hero = () => {
                         </td>
                         <td className="px-6 py-4 text-right text-slate-400">$120.00</td>
                         <td className="px-6 py-4 text-right">
-                          <button className="text-primary hover:text-emerald-300 text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.fix') || 'Fix Now'}</button>
+                          <span aria-hidden="true" className="text-primary text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.fix') || 'Fix Now'}</span>
                         </td>
                       </tr>
                       <tr className="group hover:bg-white/[0.02] transition-colors">
@@ -238,7 +237,7 @@ export const Hero = () => {
                         </td>
                         <td className="px-6 py-4 text-right text-slate-400">$85.50</td>
                         <td className="px-6 py-4 text-right">
-                          <button className="text-primary hover:text-emerald-300 text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.review') || 'Review'}</button>
+                          <span aria-hidden="true" className="text-primary text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.review') || 'Review'}</span>
                         </td>
                       </tr>
                     </tbody>
