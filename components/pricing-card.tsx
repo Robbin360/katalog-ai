@@ -76,7 +76,9 @@ export function PricingCard({
         isFree
           ? "min-h-[500px] p-5 sm:p-6"
           : "min-h-[620px] p-6 sm:p-8",
-        recommended
+        id === "business"
+          ? "border-amber-400 shadow-[0_0_0_1px_rgba(251,191,36,0.3),0_28px_90px_rgba(251,191,36,0.14)]"
+          : recommended
           ? cn(
               "border-primary shadow-[0_0_0_1px_rgba(16,183,127,0.35),0_28px_90px_rgba(16,183,127,0.14)]",
               !disableShift && "lg:-mt-4"
@@ -90,7 +92,15 @@ export function PricingCard({
       {!isFree && (
         <div className="h-7">
           {badge && (
-            <div translate="no" className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[11px] font-bold uppercase leading-5 text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]">
+            <div
+              translate="no"
+              className={cn(
+                "absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-[13px] md:text-[11px] font-bold uppercase leading-5 shadow-lg",
+                id === "business"
+                  ? "bg-amber-400 text-black shadow-[0_0_24px_rgba(251,191,36,0.35)]"
+                  : "bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]"
+              )}
+            >
               {badge}
             </div>
           )}
