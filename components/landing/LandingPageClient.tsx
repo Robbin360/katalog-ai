@@ -5,7 +5,6 @@ import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { FAQSection } from "@/components/landing/FAQSection";
-import { StatsBar } from "@/components/landing/StatsBar";
 
 export function LandingPageClient() {
   return (
@@ -17,7 +16,6 @@ export function LandingPageClient() {
 
       <main className="relative z-10 pt-16">
         <Hero />
-        <StatsBar />
         <Features />
         <PricingSection />
         <FAQSection />

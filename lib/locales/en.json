@@ -490,13 +490,7 @@
         }
     },
     "landing": {
-        "stats": {
-            "processed": "Assets Processed",
-            "lift": "Avg. Revenue Increase",
-            "stores": "Optimized Stores"
-        },
         "hero": {
-            "badge": "v2.0 Neural Engine Active",
             "title": "Your Shopify Catalog,\nOptimized by AI.",
             "subtitle": "Katalog AI audits your Shopify catalog, detects weak product titles, descriptions, tags, and metadata, then recommends the highest-impact fixes first. Your team can rewrite listings with AI, protect brand voice, and sync approved improvements back to Shopify without guessing.",
             "cta": "connect store"
@@ -515,8 +509,7 @@
             "header": {
                 "title": "Opportunity Radar",
                 "subtitle": "Real-time optimization insights",
-                "stats_label": "QUERY STATISTICS",
-                "engine_status": "Neural Engine Active"
+                "stats_label": "QUERY STATISTICS"
             },
             "kpis": {
                 "revenue": {
@@ -686,7 +679,7 @@
         },
         "final_cta": {
             "title": "Ready to fix your catalog?",
-            "subtitle": "Join hundreds of Shopify merchants optimizing their revenue with honesty and precision.",
+            "subtitle": "Be among the first Shopify merchants to optimize their catalog with AI.",
             "cta": "Free Trial"
         }
     },

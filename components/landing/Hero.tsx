@@ -10,10 +10,6 @@ export const Hero = () => {
     <section className="relative z-10 px-4 pt-20 pb-16 sm:px-6 lg:px-8 lg:pt-32 lg:pb-24 overflow-hidden">
 
       <div className="mx-auto max-w-4xl text-center">
-        <div className="mb-6 inline-flex items-center rounded-full border border-border-dark bg-surface-dark px-3 py-1 text-xs font-medium text-primary shadow-[0_0_10px_rgba(16,183,127,0.1)]">
-          <span className="flex h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-          {t('landing.hero.badge') || 'v2.0 Neural Engine Activo'}
-        </div>
         <h1 className="bg-gradient-to-b from-white to-slate-400 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent sm:text-6xl lg:text-7xl leading-tight">
           {t('landing.hero.title') || 'Tu catálogo de Shopify,\noptimizado por IA.'}
         </h1>
@@ -99,13 +95,6 @@ export const Hero = () => {
                   <p className="text-sm text-slate-400">{t('landing.mockup.header.subtitle') || 'Real-time optimization insights'}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-xs font-medium text-emerald-400">{t('landing.mockup.header.engine_status') || 'Neural Engine Active'}</span>
-                  </div>
                   <div aria-hidden="true" className="h-8 w-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 notranslate" translate="no">
                     <span className="material-symbols-outlined text-sm" translate="no" lang="zxx">notifications</span>
                   </div>

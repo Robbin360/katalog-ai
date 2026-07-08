@@ -119,7 +119,7 @@ export const FAQSection = () => {
         <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-surface-dark border border-border-dark px-6 py-16 text-center shadow-2xl sm:px-16 lg:py-20">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary/20 blur-[100px] rounded-full pointer-events-none"></div>
           <h2 className="relative z-10 text-3xl font-bold tracking-tight text-white sm:text-4xl">{t('landing.final_cta.title') || '¿Listo para reparar tu catálogo?'}</h2>
-          <p className="relative z-10 mx-auto mt-6 max-w-xl text-lg text-slate-300">{t('landing.final_cta.subtitle') || 'Únete a cientos de comerciantes de Shopify que ya optimizan sus ingresos con honestidad y precisión.'}</p>
+          <p className="relative z-10 mx-auto mt-6 max-w-xl text-lg text-slate-300">{t('landing.final_cta.subtitle') || 'Sé de los primeros comerciantes de Shopify en optimizar su catálogo con IA.'}</p>
           <div className="relative z-10 mt-10 flex justify-center">
             <Link
               href="/signup"

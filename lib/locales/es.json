@@ -490,13 +490,7 @@
         }
     },
     "landing": {
-        "stats": {
-            "processed": "Activos Procesados",
-            "lift": "Aumento de Ingresos Prom.",
-            "stores": "Tiendas Optimizadas"
-        },
         "hero": {
-            "badge": "Motor Neural v2.0 Activo",
             "title": "Tu catálogo de Shopify,\noptimizado por IA.",
             "subtitle": "Katalog AI audita tu catálogo de Shopify, detecta títulos, descripciones, etiquetas y metadatos débiles, y prioriza primero las mejoras con mayor impacto. Tu equipo puede reescribir listings con IA, proteger la voz de marca y sincronizar cambios aprobados sin adivinar.",
             "cta": "conectar tienda"
@@ -515,8 +509,7 @@
             "header": {
                 "title": "Radar de Oportunidades",
                 "subtitle": "Información de optimización en tiempo real",
-                "stats_label": "ESTADÍSTICAS DE CONSULTA",
-                "engine_status": "Motor Neural Activo"
+                "stats_label": "ESTADÍSTICAS DE CONSULTA"
             },
             "kpis": {
                 "revenue": {
@@ -686,7 +679,7 @@
         },
         "final_cta": {
             "title": "¿Listo para reparar tu catálogo?",
-            "subtitle": "Únete a cientos de comerciantes de Shopify que ya optimizan sus ingresos con honestidad y precisión.",
+            "subtitle": "Sé de los primeros comerciantes de Shopify en optimizar su catálogo con IA.",
             "cta": "Prueba Gratuita"
         }
     },
