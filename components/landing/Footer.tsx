@@ -18,7 +18,7 @@ export const Footer = () => {
               <span className="text-sm font-semibold text-white">Katalog AI</span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed">
-              AI-powered catalog optimization for Shopify and e-commerce platforms.
+              AI-powered catalog optimization for Shopify.
             </p>
           </div>
 

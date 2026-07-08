@@ -85,18 +85,12 @@ const PricingPage = () => {
       highlight: "↳ Everything in Pro, plus:",
       highlightKey: "landing.pricing.plans.proMax.includedFrom",
       features: [
-        { brand: null, text: "24/7 Auto-Pilot" },
-        { brand: "RAG Engine", text: "" },
-        { brand: null, text: "Custom Brand Rules" },
         { brand: null, text: "CSV Export" },
       ],
       featuresKeys: [
-        "landing.pricing.plans.proMax.features.item1",
-        "landing.pricing.plans.proMax.features.item2",
-        "landing.pricing.plans.proMax.features.item3",
         "landing.pricing.plans.proMax.features.item4",
       ],
-      comingSoon: [false, false, false, false],
+      comingSoon: [false],
       popular: false,
     },
     {

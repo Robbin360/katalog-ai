@@ -58,7 +58,6 @@ export function PricingCard({
   const { t } = useI18n();
 
   const isFree = id === "free";
-  const isPro = id === "pro" || id === "pro-max";
 
   // Slice features to max 3 visible bullets for the Free plan
   const visibleFeatures = isFree ? features.slice(0, 3) : features;
@@ -69,21 +68,26 @@ export function PricingCard({
     <span className="notranslate">{current ? t('account.billing.current_plan') || "Plan actual" : actionLabel}</span>
   );
 
+  const buttonClasses = id === "business"
+    ? "bg-emerald-500 hover:bg-emerald-400 text-white font-semibold shadow-[0_0_24px_rgba(16,183,127,0.22)]"
+    : id === "pro"
+    ? "border border-emerald-400/40 text-emerald-300 hover:bg-emerald-400/10"
+    : id === "pro-max"
+    ? "border border-zinc-700 bg-white/[0.03] text-white/50 hover:bg-white/[0.05]"
+    : "border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07]";
+
   return (
     <div
       className={cn(
-        "relative flex h-full flex-col rounded-3xl border bg-zinc-950/70 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md transition-transform hover:-translate-y-1",
+        "relative flex h-full flex-col rounded-3xl border bg-zinc-950/70 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md transition-transform",
         isFree
           ? "min-h-[500px] p-5 sm:p-6"
           : "min-h-[620px] p-6 sm:p-8",
         id === "business"
-          ? "border-amber-400 shadow-[0_0_0_1px_rgba(251,191,36,0.3),0_28px_90px_rgba(251,191,36,0.14)]"
-          : recommended
-          ? cn(
-              "border-primary shadow-[0_0_0_1px_rgba(16,183,127,0.35),0_28px_90px_rgba(16,183,127,0.14)]",
-              !disableShift && "lg:-mt-4"
-            )
-          : "border-zinc-800",
+          ? "border-emerald-400/30 ring-1 ring-emerald-400/40 shadow-[0_0_50px_-12px_rgba(16,183,127,0.55)] lg:-mt-4 hover:-translate-y-1"
+          : id === "pro-max"
+          ? "border-zinc-800 opacity-70 hover:translate-y-0"
+          : "border-zinc-800 hover:-translate-y-1",
         className
       )}
     >
@@ -95,10 +99,10 @@ export function PricingCard({
             <div
               translate="no"
               className={cn(
-                "absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-[13px] md:text-[11px] font-bold uppercase leading-5 shadow-lg",
+                "absolute -top-3 left-1/2 -translate-x-1/2",
                 id === "business"
-                  ? "bg-amber-400 text-black shadow-[0_0_24px_rgba(251,191,36,0.35)]"
-                  : "bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.35)]"
+                  ? "rounded-full bg-emerald-500 text-white shadow-[0_0_24px_rgba(16,183,127,0.35)] px-4 py-1 text-[13px] md:text-[11px] font-bold uppercase leading-5"
+                  : "text-emerald-400 text-[13px] md:text-[11px] font-semibold uppercase tracking-wide"
               )}
             >
               {badge}
@@ -151,7 +155,7 @@ export function PricingCard({
                   <span>{feature.text}</span>
                 )}
                 {feature.comingSoon && (
-                  <span className="ml-2 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
+                  <span className="ml-2 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
                     {t("landing.pricing.coming_soon") || "Coming soon"}
                   </span>
                 )}
@@ -168,9 +172,7 @@ export function PricingCard({
             href={actionHref}
             className={cn(
               "inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold transition-all",
-              isPro
-                ? "bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.22)] hover:bg-emerald-400"
-                : "border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07]"
+              buttonClasses
             )}
           >
             {buttonContent}
@@ -182,9 +184,7 @@ export function PricingCard({
             disabled={current || disabled || isLoading || (id !== "free" && !onActionClick)}
             className={cn(
               "inline-flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50",
-              isPro
-                ? "bg-primary text-background-dark shadow-[0_0_24px_rgba(16,183,127,0.22)] hover:bg-emerald-400"
-                : "border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07]"
+              buttonClasses
             )}
           >
             {buttonContent}
