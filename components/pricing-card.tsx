@@ -86,28 +86,26 @@ export function PricingCard({
         id === "business"
           ? "border-emerald-400/30 ring-1 ring-emerald-400/40 shadow-[0_0_50px_-12px_rgba(16,183,127,0.55)] lg:-mt-4 hover:-translate-y-1"
           : id === "pro-max"
-          ? "border-zinc-800 opacity-70 hover:translate-y-0"
+          ? "border-zinc-800 hover:translate-y-0"
           : "border-zinc-800 hover:-translate-y-1",
         className
       )}
     >
-      {/* Badge spacer — h-7 (28px) reserved for ALL paid plans so prices align vertically.
-          Pro and Business render the badge text inside; Pro Plus renders an empty slot. */}
-      {!isFree && (
-        <div className="h-7">
-          {badge && (
-            <div
-              translate="no"
-              className={cn(
-                "absolute -top-3 left-1/2 -translate-x-1/2",
-                id === "business"
-                  ? "rounded-full bg-emerald-500 text-white shadow-[0_0_24px_rgba(16,183,127,0.35)] px-4 py-1 text-[13px] md:text-[11px] font-bold uppercase leading-5"
-                  : "rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 text-[13px] md:text-[11px] font-semibold uppercase tracking-wide px-4 py-1"
-              )}
-            >
-              {badge}
-            </div>
+      {/* Badge spacer — h-7 (28px) reserved for ALL paid plans so prices align vertically. */}
+      {!isFree && <div className="h-7" />}
+
+      {/* Absolute Badge */}
+      {!isFree && badge && (
+        <div
+          translate="no"
+          className={cn(
+            "absolute -top-3 left-1/2 -translate-x-1/2",
+            id === "business"
+              ? "rounded-full bg-emerald-500 text-white shadow-[0_0_24px_rgba(16,183,127,0.35)] px-4 py-1 text-[13px] md:text-[11px] font-bold uppercase leading-5"
+              : "rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 text-[13px] md:text-[11px] font-semibold uppercase tracking-wide px-4 py-1"
           )}
+        >
+          {badge}
         </div>
       )}
 
