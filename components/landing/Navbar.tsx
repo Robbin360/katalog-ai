@@ -3,10 +3,12 @@
 import { useI18n } from "@/lib/i18n-context";
 import { Brand } from "@/components/ui/brand";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 
 export const Navbar = () => {
   const { t } = useI18n();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -77,7 +79,7 @@ export const Navbar = () => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link 
           href="/"
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer transition-all hover:drop-shadow-[0_0_8px_rgba(16,183,127,0.5)]"
           aria-label="Katalog AI — Home"
           translate="no"
         >
@@ -99,25 +101,25 @@ export const Navbar = () => {
         <div className="hidden md:flex items-center gap-8">
           <Link 
             href="/features"
-            className="text-sm font-medium text-slate-400 transition-colors hover:text-white cursor-pointer"
+            className={`text-sm font-medium transition-colors cursor-pointer ${pathname === '/features' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
           >
             {t('nav.features') || 'Features'}
           </Link>
           <Link 
             href="/integrations"
-            className="text-sm font-medium text-slate-400 transition-colors hover:text-white cursor-pointer"
+            className={`text-sm font-medium transition-colors cursor-pointer ${pathname === '/integrations' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
           >
             {t('nav.how_it_works') || 'Integrations'}
           </Link>
           <Link 
             href="/pricing"
-            className="text-sm font-medium text-slate-400 transition-colors hover:text-white cursor-pointer"
+            className={`text-sm font-medium transition-colors cursor-pointer ${pathname === '/pricing' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
           >
             {t('nav.pricing') || 'Precios'}
           </Link>
           <Link 
             href="/faq"
-            className="text-sm font-medium text-slate-400 transition-colors hover:text-white cursor-pointer"
+            className={`text-sm font-medium transition-colors cursor-pointer ${pathname === '/faq' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
           >
             {t('nav.faq') || 'FAQ'}
           </Link>
@@ -164,6 +166,14 @@ export const Navbar = () => {
           className="md:hidden fixed top-[64px] left-0 right-0 bottom-0 bg-background-dark/95 backdrop-blur-lg z-40 flex flex-col border-t border-border-dark/50"
         >
           <nav className="flex flex-col p-6 gap-6 h-full">
+            <Link
+              href="/"
+              role="menuitem"
+              className="text-xl font-medium text-slate-200 hover:text-white transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Home
+            </Link>
             <Link
               href="/features"
               role="menuitem"

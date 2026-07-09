@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { Brand } from '@/components/ui/brand';
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
@@ -8,6 +9,10 @@ import { Footer } from '@/components/landing/Footer';
 
 export default function FeaturesPage() {
     const { t } = useI18n();
+
+    useEffect(() => {
+        document.title = "Features | Katalog AI";
+    }, []);
 
     return (
         <div className="bg-background-dark font-display text-slate-100 min-h-screen selection:bg-primary/30 antialiased">

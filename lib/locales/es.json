@@ -197,7 +197,7 @@
             {
                 "category": "Integraciones",
                 "question": "¿Con qué plataformas se integra Katalog AI?",
-                "answer": "Actualmente nos integramos de forma nativa con Shopify. Soporte para WooCommerce, Tienda Nube y Magento está en desarrollo activo."
+                "answer": "Actualmente nos integramos de forma nativa con Shopify. BigCommerce, WooCommerce y Magento están en nuestro roadmap."
             },
             {
                 "category": "Integraciones",
@@ -551,7 +551,7 @@
             },
             "step2": {
                 "title": "Optimización",
-                "desc": "Redes neuronales regeneran títulos, corrigen imágenes y priorizan por impacto en ventas."
+                "desc": "La IA regenera títulos, corrige imágenes y prioriza por impacto en ventas."
             },
             "step3": {
                 "title": "Sincronización",

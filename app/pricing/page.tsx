@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Check, HelpCircle, Minus } from "lucide-react";
 import { Brand } from "@/components/ui/brand";
@@ -11,6 +11,10 @@ import { PricingCard } from "@/components/pricing-card";
 const PricingPage = () => {
   const { t, Trans } = useI18n();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("monthly");
+
+  useEffect(() => {
+    document.title = "Pricing | Katalog AI";
+  }, []);
 
   const plans = [
     {
