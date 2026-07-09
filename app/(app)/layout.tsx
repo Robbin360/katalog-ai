@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 </div>
             </div>
 
-            <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
                 {/* Aquí podríamos añadir un SearchBox global en el futuro */}
                 <div className="flex-1 overflow-y-auto">
                     {children}

@@ -99,10 +99,10 @@ export function PricingCard({
         <div
           translate="no"
           className={cn(
-            "absolute -top-3 left-1/2 -translate-x-1/2",
+            "absolute -top-3 left-1/2 -translate-x-1/2 z-10",
             id === "business"
               ? "rounded-full bg-emerald-500 text-white shadow-[0_0_24px_rgba(16,183,127,0.35)] px-4 py-1 text-[13px] md:text-[11px] font-bold uppercase leading-5"
-              : "rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 text-[13px] md:text-[11px] font-semibold uppercase tracking-wide px-4 py-1"
+              : "rounded-full border border-emerald-400/40 bg-emerald-400/20 text-emerald-300 text-[13px] md:text-[11px] font-semibold uppercase tracking-wide px-4 py-1 shadow-[0_2px_12px_rgba(16,183,127,0.25)]"
           )}
         >
           {badge}
