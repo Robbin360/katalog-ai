@@ -1,12 +1,18 @@
 "use client";
 
+import { useEffect } from "react";
 import { useI18n } from "@/lib/i18n-context";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import Link from "next/link";
 
 export default function TermsPage() {
   const { t } = useI18n();
+
+  useEffect(() => {
+    document.title = "Terms of Service | Katalog AI";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', 'Terms of Service for Katalog AI, the AI-powered Shopify catalog optimization platform. Read our agreement covering usage, data, and account responsibilities.');
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-slate-100 font-display antialiased selection:bg-primary/30 overflow-x-hidden">
@@ -56,13 +62,6 @@ export default function TermsPage() {
                   You are responsible for maintaining the confidentiality of your credentials. Katalog AI uses Supabase Auth to provide secure access, but you must ensure your own security practices are up to date.
                 </p>
               </section>
-
-              <div className="pt-8 border-t border-white/5">
-                <Link href="/signup" className="text-primary hover:text-emerald-400 font-bold transition-colors inline-flex items-center gap-2">
-                  Ready to Start Optimizing?
-                  <span className="material-symbols-outlined text-[18px] notranslate">arrow_forward</span>
-                </Link>
-              </div>
             </div>
           </div>
         </div>

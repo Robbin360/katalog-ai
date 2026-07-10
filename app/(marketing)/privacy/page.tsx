@@ -1,12 +1,16 @@
 "use client";
 
-import { useI18n } from "@/lib/i18n-context";
+import { useEffect } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import Link from "next/link";
 
 export default function PrivacyPage() {
-  const { t } = useI18n();
+
+  useEffect(() => {
+    document.title = "Privacy Policy | Katalog AI";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', 'Privacy Policy for Katalog AI. Learn how we collect, use, and protect your Shopify store data, product catalog information, and account security.');
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-slate-100 font-display antialiased selection:bg-primary/30 overflow-x-hidden">
@@ -56,13 +60,6 @@ export default function PrivacyPage() {
                   We implement industry-standard security measures including end-to-end encryption and secure OAuth protocols via Supabase to ensure your store credentials and data remain private.
                 </p>
               </section>
-
-              <div className="pt-8 border-t border-white/5">
-                <Link href="/login" className="text-primary hover:text-emerald-400 font-bold transition-colors inline-flex items-center gap-2">
-                  Back to Security Dashboard
-                  <span className="material-symbols-outlined text-[18px] notranslate">arrow_forward</span>
-                </Link>
-              </div>
             </div>
           </div>
         </div>

@@ -30,7 +30,9 @@ const FAQPage = () => {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
     useEffect(() => {
-        document.title = "FAQ | Katalog AI";
+        document.title = "FAQ | Katalog AI — Shopify Catalog Optimization";
+        const meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.setAttribute('content', 'Get answers about Katalog AI: how AI catalog optimization works, supported platforms, pricing plans, Shopify integration, and store connection process.');
     }, []);
 
     const CATEGORIES = ["all", "general", "ia", "integrations", "plans"];

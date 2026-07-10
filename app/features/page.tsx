@@ -11,7 +11,9 @@ export default function FeaturesPage() {
     const { t } = useI18n();
 
     useEffect(() => {
-        document.title = "Features | Katalog AI";
+        document.title = "AI Catalog Optimization Features | Katalog AI";
+        const meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.setAttribute('content', 'Discover Katalog AI\'s features: real-time Shopify catalog auditing, AI product description writing, revenue at risk radar, and instant Shopify sync.');
     }, []);
 
     return (
