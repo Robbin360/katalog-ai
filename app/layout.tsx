@@ -9,8 +9,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Katalog AI | Revenue Optimizer",
-  description: "Autonomous E-commerce Optimization",
+  title: "Katalog AI",
+  description: "AI-powered catalog optimization for Shopify.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
