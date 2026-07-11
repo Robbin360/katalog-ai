@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { Brand } from '@/components/ui/brand';
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
-import { Footer } from '@/components/landing/Footer';
 
 export default function FeaturesPage() {
     const { t } = useI18n();
@@ -279,8 +278,6 @@ export default function FeaturesPage() {
                     </Link>
                 </section>
             </main>
-
-            <Footer />
         </div>
     );
 }

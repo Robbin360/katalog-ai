@@ -2,7 +2,6 @@
 
 import { useI18n } from "@/lib/i18n-context";
 import Link from "next/link";
-import { Footer } from "@/components/landing/Footer";
 import { useState } from "react";
 
 export interface FAQItem {
@@ -131,8 +130,6 @@ export const FAQSection = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <Footer />
     </>
   );
 };

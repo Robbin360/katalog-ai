@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing/Footer";
 
 export default function PrivacyPage() {
 
@@ -64,8 +63,6 @@ export default function PrivacyPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

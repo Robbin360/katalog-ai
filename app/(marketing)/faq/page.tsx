@@ -13,7 +13,6 @@ import {
     MessageSquare,
     Sparkles
 } from "lucide-react";
-import { Brand } from "@/components/ui/brand";
 import { Navbar } from "@/components/landing/Navbar";
 import { useI18n } from "@/lib/i18n-context";
 
@@ -207,11 +206,6 @@ const FAQPage = () => {
                             <div className="flex items-center gap-2 text-xs font-medium"><Globe size={14} /> {t('faq.suggestions.footer_email')}</div>
                         </div>
                     </div>
-                </div>
-
-                {/* Legal Disclaimer */}
-                <div className="mt-24 text-center text-zinc-600 text-[10px] uppercase tracking-widest">
-                    <p>{t('faq.legal_disclaimer').split('Katalog AI')[0]} <Brand className="text-zinc-500" /> {t('faq.legal_disclaimer').split('Katalog AI')[1]}</p>
                 </div>
             </div>
         </main>

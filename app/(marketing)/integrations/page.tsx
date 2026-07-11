@@ -6,50 +6,6 @@ const pageUrl = `${siteUrl}/integrations`;
 const title = "Integrations | Katalog AI";
 const description = "Katalog AI integrates natively with Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap. Real-time catalog sync and automated product optimization for Shopify merchants.";
 
-// Schema JSON-LD para IA-Readability
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Katalog AI",
-  url: siteUrl,
-  logo: `${siteUrl}/logo-dark.svg`,
-  description: "AI-powered Shopify catalog optimization platform",
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "customer support",
-    url: `${siteUrl}/contact`,
-  },
-};
-
-const softwareSchema = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Katalog AI",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
-  url: pageUrl,
-  image: `${siteUrl}/opengraph-image`,
-  description,
-  datePublished: "2026-01-15",
-  dateModified: new Date().toISOString().split('T')[0],
-  author: {
-    "@type": "Organization",
-    name: "Katalog AI",
-    url: siteUrl,
-  },
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-  },
-  featureList: [
-    "Shopify integration",
-    "Real-time catalog sync",
-    "API-based data exchange",
-  ],
-};
-
 const webPageSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
@@ -138,18 +94,6 @@ export const viewport: Viewport = {
 export default function IntegrationsPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(softwareSchema),
-        }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

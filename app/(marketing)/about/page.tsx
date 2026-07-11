@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing/Footer";
 import { Brand } from "@/components/ui/brand";
 
 const siteUrl = "https://katalog-ai-navy.vercel.app";
@@ -106,8 +105,6 @@ export default function AboutPage() {
           </section>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

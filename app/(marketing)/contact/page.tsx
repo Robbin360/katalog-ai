@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing/Footer";
 import { Brand } from "@/components/ui/brand";
 import { FAQAccordion } from "@/components/landing/FAQSection";
 
@@ -150,8 +149,6 @@ export default function ContactPage() {
           <p className="text-slate-500 text-sm">United States</p>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

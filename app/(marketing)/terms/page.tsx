@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useI18n } from "@/lib/i18n-context";
 import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing/Footer";
 
 export default function TermsPage() {
   const { t } = useI18n();
@@ -66,8 +65,6 @@ export default function TermsPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

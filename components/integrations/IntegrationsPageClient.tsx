@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Brand } from '@/components/ui/brand';
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
-import { Footer } from '@/components/landing/Footer';
 
 export function IntegrationsPageClient() {
     const { t } = useI18n();
@@ -351,8 +350,6 @@ export function IntegrationsPageClient() {
                     </div>
                 </section>
             </main>
-
-            <Footer />
         </div>
     );
 }

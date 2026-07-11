@@ -160,7 +160,6 @@
         "no_results": "No se encontraron resultados",
         "no_results_sub": "Intenta con otro término o limpia los filtros.",
         "clear_filters": "Limpiar filtros",
-        "legal_disclaimer": "Katalog AI utiliza modelos de lenguaje avanzados. Los resultados pueden variar según el catálogo.",
         "categories": {
             "all": "Todas",
             "general": "General",
