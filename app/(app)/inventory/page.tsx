@@ -65,6 +65,28 @@ export default function InventoryPage() {
     const [page, setPage] = useState(1)
     const [isSyncing, setIsSyncing] = useState(false)
 
+    // Sync job status polling
+    const { data: syncJob } = useQuery({
+        queryKey: ['sync-job-inventory'],
+        queryFn: async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return null
+            const { data } = await supabase
+                .from('sync_jobs')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single()
+            return data
+        },
+        refetchInterval: (data: any) => data?.status === 'syncing' ? 5000 : false,
+    })
+
+    const isSyncInterrupted = syncJob?.status === 'syncing' && syncJob?.started_at
+        ? (Date.now() - new Date(syncJob.started_at).getTime()) > 10 * 60 * 1000
+        : false
+
     const handleSync = async () => {
         setIsSyncing(true)
         try {
@@ -74,6 +96,7 @@ export default function InventoryPage() {
             }
             toast.success("Store synced successfully!")
             queryClient.invalidateQueries({ queryKey: ['inventory'] })
+            queryClient.invalidateQueries({ queryKey: ['sync-job-inventory'] })
         } catch (error: any) {
             toast.error(error.message || "An unexpected error occurred.")
         } finally {
@@ -158,6 +181,31 @@ export default function InventoryPage() {
                     <p className="text-muted-foreground mt-1 text-sm">Manage and optimize your product catalog.</p>
                 </div>
                 <div className="flex gap-3">
+                    {/* Sync Status */}
+                    {syncJob?.status === 'syncing' && !isSyncInterrupted && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            Syncing {syncJob.products_synced ?? 0}{syncJob.products_total ? ` / ${syncJob.products_total}` : ''}
+                        </div>
+                    )}
+                    {syncJob?.status === 'completed' && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
+                            <CheckCircle2 className="w-3 h-3" />
+                            {syncJob.products_synced ?? 0} synced
+                        </div>
+                    )}
+                    {isSyncInterrupted && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
+                            <AlertCircle className="w-3 h-3" />
+                            Interrupted
+                        </div>
+                    )}
+                    {syncJob?.status === 'failed' && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
+                            <AlertCircle className="w-3 h-3" />
+                            Failed
+                        </div>
+                    )}
                     <Button variant="outline" className="gap-2">
                         <Download className="w-4 h-4" /> Export
                     </Button>

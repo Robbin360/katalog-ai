@@ -250,6 +250,29 @@ export default function DashboardPage() {
         refetchInterval: 30000 // Aumentado a 30s para evitar saturación
     })
 
+    // Sync job status polling
+    const { data: syncJob } = useQuery({
+        queryKey: ['sync-job', dashboardData?.userId],
+        queryFn: async () => {
+            if (!dashboardData?.userId) return null
+            const { data } = await supabase
+                .from('sync_jobs')
+                .select('*')
+                .eq('user_id', dashboardData.userId)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single()
+            return data
+        },
+        enabled: !!dashboardData?.userId,
+        refetchInterval: (data: any) => data?.status === 'syncing' ? 5000 : false,
+    })
+
+    // Check if sync was interrupted (started >10 min ago but still syncing)
+    const isSyncInterrupted = syncJob?.status === 'syncing' && syncJob?.started_at
+        ? (Date.now() - new Date(syncJob.started_at).getTime()) > 10 * 60 * 1000
+        : false
+
     const dismissOnboarding = async () => {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
@@ -306,6 +329,7 @@ export default function DashboardPage() {
             }
 
             queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
+            queryClient.invalidateQueries({ queryKey: ['sync-job', dashboardData?.userId] });
             return data; // Returns { success: true, count: X, message: '...' }
         };
 
@@ -344,6 +368,32 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
+                    {/* Sync Status Indicator */}
+                    {syncJob?.status === 'syncing' && !isSyncInterrupted && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            Syncing {syncJob.products_synced ?? 0}{syncJob.products_total ? ` / ${syncJob.products_total}` : ''} products
+                        </div>
+                    )}
+                    {syncJob?.status === 'completed' && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
+                            <CheckCircle2 className="w-3 h-3" />
+                            {syncJob.products_synced ?? 0} products synced
+                        </div>
+                    )}
+                    {isSyncInterrupted && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
+                            <AlertCircle className="w-3 h-3" />
+                            Sync interrupted — click refresh to resume
+                        </div>
+                    )}
+                    {syncJob?.status === 'failed' && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
+                            <AlertCircle className="w-3 h-3" />
+                            Sync failed — click refresh to retry
+                        </div>
+                    )}
+
                     {dashboardData?.autoPilotData && dashboardData?.userId && (
                         <AutoPilotToggle data={dashboardData.autoPilotData} userId={dashboardData.userId} />
                     )}
