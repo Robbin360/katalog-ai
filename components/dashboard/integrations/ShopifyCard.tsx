@@ -47,26 +47,27 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
   useEffect(() => {
     if (connected === '1' || error) {
       if (connected === '1') {
-        toast.success('¡Tienda conectada!', {
-          description: 'Tu tienda Shopify fue conectada exitosamente.',
+        toast.success('Store connected!', {
+          description: 'Your Shopify store was successfully connected.',
         });
       }
       if (error) {
         const messages: Record<string, string> = {
-          missing_params: 'Faltan parámetros en la respuesta de Shopify.',
-          invalid_shop: 'La URL de la tienda no es válida.',
-          server_config: 'Error de configuración del servidor.',
-          hmac_failed: 'No pudimos verificar la autenticidad de Shopify.',
-          state_mismatch: 'Sesión expirada. Intenta de nuevo.',
-          stale_callback: 'La respuesta expiró. Intenta de nuevo.',
-          shop_already_connected: 'Esta tienda ya está conectada a otra cuenta de Katalog.',
-          token_exchange_failed: 'No pudimos conectar tu tienda. Intenta de nuevo.',
-          db_error: 'Error guardando la conexión. Intenta de nuevo.',
+          missing_params: 'Missing parameters in Shopify\'s response.',
+          invalid_shop: 'The store URL is not valid.',
+          server_config: 'Server configuration error.',
+          hmac_failed: 'We couldn\'t verify Shopify\'s authenticity.',
+          state_mismatch: 'Session expired. Please try again.',
+          stale_callback: 'The response expired. Please try again.',
+          shop_already_connected: 'This store is already connected to another Katalog account.',
+          token_exchange_failed: 'We couldn\'t connect your store. Please try again.',
+          db_error: 'Error saving the connection. Please try again.',
         };
         const errorMsg = error.includes('missing_scopes:')
-          ? `Faltan permisos críticos: ${error.split(':')[1]}`
-          : (messages[String(error)] || 'Ocurrió un error inesperado.');
+          ? `Missing critical permissions: ${error.split(':')[1]}`
+          : (messages[String(error)] || 'An unexpected error occurred.');
         toast.error('Error', { description: errorMsg });
+
       }
       const url = new URL(window.location.href);
       url.searchParams.delete('connected');
@@ -83,8 +84,8 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
       .replace(/\/$/, '');
 
     if (!cleanShop.includes('.myshopify.com')) {
-      toast.error('URL inválida', {
-        description: 'Debe ser tu URL de Shopify (ej: mi-tienda.myshopify.com)',
+      toast.error('Invalid URL', {
+        description: 'Must be your Shopify URL (e.g., my-store.myshopify.com)',
       });
       return;
     }
@@ -95,7 +96,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
 
   const handleDisconnect = async () => {
     if (!integration) return;
-    if (!confirm('¿Desconectar esta tienda de Katalog? Tu token será revocado en Shopify.')) return;
+    if (!confirm('Disconnect this store from Katalog? Your token will be revoked on Shopify.')) return;
 
     setDisconnecting(true);
     try {
@@ -104,12 +105,12 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
       });
       if (!res.ok) throw new Error('Disconnect failed');
 
-      toast.success('Tienda desconectada', {
-        description: 'Tu tienda fue desconectada y el token revocado en Shopify.',
+      toast.success('Store disconnected', {
+        description: 'Your store was disconnected and the token was revoked on Shopify.',
       });
       queryClient.invalidateQueries({ queryKey: ['integration-shopify'] });
     } catch (err) {
-      toast.error('Error', { description: 'No pudimos desconectar la tienda.' });
+      toast.error('Error', { description: 'We couldn\'t disconnect the store.' });
     } finally {
       setDisconnecting(false);
     }
@@ -136,7 +137,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
               </div>
             </div>
             <Badge className="bg-emerald-500/10 text-emerald-600">
-              <ShieldCheck className="w-3.5 h-3.5" /> Conectada
+              <ShieldCheck className="w-3.5 h-3.5" /> Connected
             </Badge>
           </div>
         </CardHeader>
@@ -144,17 +145,17 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
         <CardContent className="space-y-4 pt-6">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <dt className="text-muted-foreground">Conectada desde</dt>
+              <dt className="text-muted-foreground">Connected since</dt>
               <dd className="font-medium">
                 {integration.installed_at
-                  ? new Date(integration.installed_at).toLocaleDateString('es-CL', {
+                  ? new Date(integration.installed_at).toLocaleDateString('en-US', {
                       year: 'numeric', month: 'long', day: 'numeric',
                     })
                   : '—'}
               </dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Permisos</dt>
+              <dt className="text-muted-foreground">Permissions</dt>
               <dd className="font-medium text-xs">{integration.scopes || '—'}</dd>
             </div>
           </div>
@@ -162,7 +163,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
 
         <CardFooter className="flex justify-end gap-3">
           <Button variant="outline" onClick={() => router.push('/dashboard')}>
-            <RefreshCw className="w-4 h-4 mr-2" /> Ir al Dashboard
+            <RefreshCw className="w-4 h-4 mr-2" /> Go to Dashboard
           </Button>
           <Button
             variant="destructive"
@@ -170,7 +171,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
             disabled={disconnecting}
           >
             {disconnecting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Trash2 className="w-4 h-4 mr-2" />}
-            Desconectar
+            Disconnect
           </Button>
         </CardFooter>
       </Card>
@@ -184,14 +185,14 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
           <img src="/shopify-glyph.svg" alt="Shopify Logo" className="w-6 h-6" />
           <div>
             <CardTitle>Shopify Integration</CardTitle>
-            <CardDescription>Conecta tu tienda en un clic. No necesitas crear custom apps ni copiar tokens.</CardDescription>
+            <CardDescription>Connect your store in one click. No need to create custom apps or copy tokens.</CardDescription>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-6">
         <div className="space-y-3">
-          <Label>URL de tu tienda Shopify</Label>
+          <Label>Your Shopify store URL</Label>
           <div className="flex items-center rounded-lg border overflow-hidden">
             <div className="px-3 flex items-center h-11 border-r">
               <span className="font-mono text-sm">https://</span>
@@ -205,7 +206,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
             />
           </div>
           <p className="text-xs text-muted-foreground">
-            Te redirigiremos a Shopify para autorizar Katalog AI con los permisos necesarios.
+            We will redirect you to Shopify to authorize Katalog AI with the necessary permissions.
           </p>
         </div>
       </CardContent>
@@ -217,9 +218,9 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
           className="bg-[#95bf47] text-white hover:bg-[#74993a]"
         >
           {loading ? (
-            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Redirigiendo a Shopify...</>
+            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Redirecting to Shopify...</>
           ) : (
-            <>Conectar mi tienda Shopify <ExternalLink className="w-4 h-4 ml-2" /></>
+            <>Connect my Shopify store <ExternalLink className="w-4 h-4 ml-2" /></>
           )}
         </Button>
       </CardFooter>

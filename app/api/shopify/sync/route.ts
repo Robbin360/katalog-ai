@@ -1,46 +1,37 @@
 import { NextResponse } from "next/server"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
+import { createSupabaseServerClient, createSupabaseServiceClient, decryptShopifyToken } from '@/lib/supabase/server'
 
 export const maxDuration = 60
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"
 
-interface ShopifyIntegration {
-  shop_url: string
-  access_token: string
-}
-
 export async function POST() {
   try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookies: { getAll() { return cookieStore.getAll() } } }
-    )
+    const supabase = await createSupabaseServerClient()
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    const { data: integrationData, error: integrationError } = await supabase
-      .from("integrations")
-      .select("shop_url, access_token")
-      .eq("user_id", user.id)
-      .eq("provider", "shopify")
-      .single()
+    // Leer el access_token encriptado usando service role (bypassa RLS)
+    const serviceClient = createSupabaseServiceClient();
+    const { data: integrationData, error: integrationError } = await serviceClient
+        .from("integrations")
+        .select("shop_url, access_token")
+        .eq("user_id", user.id)
+        .eq("provider", "shopify")
+        .is("uninstalled_at", null)
+        .single();
 
-    const integration = integrationData as ShopifyIntegration | null
-
-    if (integrationError || !integration) {
-      return NextResponse.json(
-        { error: "Please connect Shopify in Settings first." },
-        { status: 400 }
-      )
+    if (integrationError || !integrationData) {
+        return NextResponse.json({ error: "No Shopify integration found" }, { status: 404 });
     }
 
+    // Desencriptar el token
+    const access_token = await decryptShopifyToken(serviceClient, integrationData.access_token);
+    const shop_url = integrationData.shop_url;
+
     const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/
-    if (!shopUrlPattern.test(integration.shop_url)) {
+    if (!shopUrlPattern.test(shop_url)) {
       return NextResponse.json(
         { error: "Invalid Shopify URL format detected." },
         { status: 400 }
@@ -56,8 +47,8 @@ export async function POST() {
       },
       body: JSON.stringify({
         user_id: user.id,
-        shop_url: integration.shop_url,
-        access_token: integration.access_token,
+        shop_url: shop_url,
+        access_token: access_token,
       }),
     })
 
