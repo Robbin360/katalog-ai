@@ -206,9 +206,9 @@ export default function DashboardPage() {
                 
                 supabase.from('profiles').select('plan_tier, onboarding_dismissed, auto_pilot_enabled').eq('id', user.id).single(),
                 
-                supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('provider', 'shopify'),
+                supabase.from('integrations_safe').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('provider', 'shopify'),
                 
-                supabase.from('integrations').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+                supabase.from('integrations_safe').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
                 
                 supabase.from('shopify_products').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('audit_status', 'PENDING_AUDIT'),
                 

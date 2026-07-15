@@ -82,7 +82,7 @@ export default function AccountPage() {
                     .eq('user_id', user.id)
                     .maybeSingle(),
                 
-                supabase.from('integrations')
+                supabase.from('integrations_safe')
                     .select('id, provider, shop_url')
                     .eq('user_id', user.id)
                     .eq('provider', 'shopify')
