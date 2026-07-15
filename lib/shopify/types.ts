@@ -4,7 +4,7 @@ export type ShopifyScope =
   | 'read_inventory'
   | 'read_orders';
 
-export const REQUIRED_SCOPES: ShopifyScope[] = ['read_products', 'write_products'];
+export const REQUIRED_SCOPES: ShopifyScope[] = ['write_products'];
 
 export interface ShopifyShopInfo {
   id: string;

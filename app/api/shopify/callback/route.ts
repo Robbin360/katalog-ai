@@ -85,6 +85,7 @@ export async function GET(request: NextRequest) {
       shop, code, apiKey, apiSecret, codeVerifier,
     });
 
+    // 11. Validar scopes
     const { valid: scopesValid, missing: missingScopes } = validateGrantedScopes(
       tokenResponse.scope, REQUIRED_SCOPES
     );
