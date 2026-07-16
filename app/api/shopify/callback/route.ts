@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { createSupabaseServerClient, createSupabaseServiceClient, encryptShopifyToken } from '@/lib/supabase/server';
 import {
   verifyHmac, extractCallbackParams, isValidShopDomain, isCallbackFresh,
@@ -7,6 +7,8 @@ import {
 import { exchangeCodeForToken, fetchShopInfo, registerWebhook } from '@/lib/shopify/admin';
 import { logSecurityEvent, SecurityEvents } from '@/lib/security/logger';
 import { REQUIRED_SCOPES } from '@/lib/shopify/types';
+
+export const maxDuration = 60;
 
 const isProd = process.env.NODE_ENV === 'production';
 const STATE_COOKIE = isProd ? '__Host-shopify_oauth_state' : 'shopify_oauth_state';
@@ -96,23 +98,6 @@ export async function GET(request: NextRequest) {
       return redirectToError(`missing_scopes:${missingScopes.join(',')}`, request);
     }
 
-    const shopInfo = await fetchShopInfo({
-      shop, accessToken: tokenResponse.access_token,
-    });
-
-    const webhookBase = `${appUrl}/api/shopify/webhooks`;
-    const webhookResults = await Promise.all([
-      registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/uninstall`, topic: 'app/uninstalled' }),
-      registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/customers-data-request`, topic: 'customers/data_request' }),
-      registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/customers-redact`, topic: 'customers/redact' }),
-      registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/shop-redact`, topic: 'shop/redact' }),
-    ]);
-    const failedWebhooks = ['app/uninstalled', 'customers/data_request', 'customers/redact', 'shop/redact']
-      .filter((_, i) => !webhookResults[i]);
-    if (failedWebhooks.length > 0) {
-      console.error('[shopify/callback] Webhook registration failed for:', failedWebhooks);
-    }
-
     const serviceClient = createSupabaseServiceClient();
     const encryptedToken = await encryptShopifyToken(serviceClient, tokenResponse.access_token);
 
@@ -124,12 +109,12 @@ export async function GET(request: NextRequest) {
       scopes: tokenResponse.scope,
       installed_at: new Date().toISOString(),
       uninstalled_at: null,
-      shopify_shop_id: shopInfo?.id ?? null,
-      shop_name: shopInfo?.name ?? null,
-      shop_email: shopInfo?.email ?? null,
-      country: shopInfo?.country ?? null,
-      currency: shopInfo?.currency ?? null,
-      plan_name: shopInfo?.plan_name ?? null,
+      shopify_shop_id: null,
+      shop_name: null,
+      shop_email: null,
+      country: null,
+      currency: null,
+      plan_name: null,
     });
 
     if (error) {
@@ -140,6 +125,42 @@ export async function GET(request: NextRequest) {
       console.error('[shopify/callback] DB insert failed', error);
       return redirectToError('db_error', request);
     }
+
+    // 12-13. Diferir shop info y webhooks a después del redirect (after)
+    after(async () => {
+      try {
+        const shopInfo = await fetchShopInfo({
+          shop, accessToken: tokenResponse.access_token,
+        });
+        
+        if (shopInfo) {
+          await serviceClient.from('integrations')
+            .update({
+              shopify_shop_id: shopInfo.id,
+              shop_name: shopInfo.name,
+              shop_email: shopInfo.email,
+              country: shopInfo.country,
+              currency: shopInfo.currency,
+              plan_name: shopInfo.plan_name,
+            })
+            .eq('user_id', user.id)
+            .eq('shop_url', shop)
+            .is('uninstalled_at', null);
+        }
+        
+        const webhookBase = `${appUrl}/api/shopify/webhooks`;
+        if (process.env.NODE_ENV === 'production') {
+          await Promise.all([
+            registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/uninstall`, topic: 'app/uninstalled' }),
+            registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/customers-data-request`, topic: 'customers/data_request' }),
+            registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/customers-redact`, topic: 'customers/redact' }),
+            registerWebhook({ shop, accessToken: tokenResponse.access_token, webhookUrl: `${webhookBase}/shop-redact`, topic: 'shop/redact' }),
+          ]).catch(err => console.error('[shopify/callback] Webhook registration failed:', err));
+        }
+      } catch (err) {
+        console.error('[after] background OAuth work failed', err);
+      }
+    });
 
     return clearCookiesAndRedirect('/account?tab=integrations&connected=1', request);
 

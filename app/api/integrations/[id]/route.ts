@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import {
   createSupabaseServerClient,
   createSupabaseServiceClient,
@@ -7,6 +7,8 @@ import {
 import { revokeToken } from '@/lib/shopify/admin';
 import { assertAllowedOrigin } from '@/lib/security/origin';
 import { logSecurityEvent, SecurityEvents } from '@/lib/security/logger';
+
+export const maxDuration = 60;
 
 export async function DELETE(
   request: NextRequest,
@@ -38,48 +40,46 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   }
 
-  // 3. Revocar token en Shopify ANTES de soft-delete
-  try {
-    const serviceClient = createSupabaseServiceClient();
-    const { data: fullIntegration, error: tokenReadError } = await serviceClient
-      .from('integrations')
-      .select('access_token, shop_url')
-      .eq('id', id)
-      .single();
+  // 3. Revocar token en Shopify (after = después del redirect)
+  after(async () => {
+    try {
+      const serviceClient = createSupabaseServiceClient();
+      const { data: fullIntegration, error: tokenReadError } = await serviceClient
+        .from('integrations')
+        .select('access_token, shop_url')
+        .eq('id', id)
+        .single();
 
-    if (tokenReadError || !fullIntegration?.access_token) {
-      console.warn('[integrations/delete] Could not read token for revocation');
-      logSecurityEvent(SecurityEvents.INTEGRATION_REVOKE_FAILED, {
-        user_id: user.id, shop: integration.shop_url, reason: 'no_token',
-      });
-    } else {
-      const plaintextToken = await decryptShopifyToken(
-        serviceClient,
-        fullIntegration.access_token as string
-      );
-
-      const revoked = await revokeToken({
-        shop: integration.shop_url,
-        accessToken: plaintextToken,
-      });
-
-      if (revoked) {
-        logSecurityEvent(SecurityEvents.INTEGRATION_REVOKED, {
-          user_id: user.id, shop: integration.shop_url,
+      if (tokenReadError || !fullIntegration?.access_token) {
+        console.warn('[integrations/delete] Could not read token for revocation');
+        logSecurityEvent(SecurityEvents.INTEGRATION_REVOKE_FAILED, {
+          user_id: user.id, shop: integration.shop_url, reason: 'no_token',
         });
       } else {
-        logSecurityEvent(SecurityEvents.INTEGRATION_REVOKE_FAILED, {
-          user_id: user.id, shop: integration.shop_url,
+        const plaintextToken = await decryptShopifyToken(
+          serviceClient,
+          fullIntegration.access_token as string
+        );
+
+        const revoked = await revokeToken({
+          shop: integration.shop_url,
+          accessToken: plaintextToken,
         });
+
+        if (revoked) {
+          logSecurityEvent(SecurityEvents.INTEGRATION_REVOKED, {
+            user_id: user.id, shop: integration.shop_url,
+          });
+        } else {
+          logSecurityEvent(SecurityEvents.INTEGRATION_REVOKE_FAILED, {
+            user_id: user.id, shop: integration.shop_url,
+          });
+        }
       }
+    } catch (err) {
+      console.error('[after] token revocation failed', err);
     }
-  } catch (err) {
-    console.error('[integrations/delete] Token revocation failed:', err);
-    logSecurityEvent(SecurityEvents.INTEGRATION_REVOKE_FAILED, {
-      user_id: user.id, shop: integration.shop_url,
-      error: err instanceof Error ? err.message : 'unknown',
-    });
-  }
+  });
 
   // 4. Soft delete + NULL access_token
   const { error: updateError } = await supabase
