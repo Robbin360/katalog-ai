@@ -10,6 +10,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 interface ShopifyCardProps {
@@ -24,6 +30,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
   const [shopInput, setShopInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
+  const [isDisconnectDialogOpen, setIsDisconnectDialogOpen] = useState(false);
 
   const connected = searchParams.get('connected');
   const error = searchParams.get('error');
@@ -76,7 +83,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
     }
   }, [connected, error]);
 
-  const handleConnect = async () => {
+  const handleConnect = () => {
     const cleanShop = shopInput
       .trim()
       .toLowerCase()
@@ -90,14 +97,19 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
       return;
     }
 
-    setLoading(true);
+    // Navigate FIRST - do NOT call setLoading(true) before this
+    // because it triggers a re-render that crashes with Google Translate
     window.location.href = `/api/shopify/auth?shop=${encodeURIComponent(cleanShop)}`;
   };
 
-  const handleDisconnect = async () => {
+  const handleDisconnectClick = () => {
     if (!integration) return;
-    if (!confirm('Disconnect this store from Katalog? Your token will be revoked on Shopify.')) return;
+    setIsDisconnectDialogOpen(true);
+  };
 
+  const handleConfirmDisconnect = async () => {
+    if (!integration) return;
+    setIsDisconnectDialogOpen(false);
     setDisconnecting(true);
     try {
       const res = await fetch(`/api/integrations/${integration.id}`, {
@@ -131,12 +143,12 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <img src="/shopify-glyph.svg" alt="Shopify Logo" className="w-6 h-6" />
-              <div>
-                <CardTitle>{integration.shop_name || integration.shop_url}</CardTitle>
-                <CardDescription>{integration.shop_url}</CardDescription>
-              </div>
+                <div>
+                  <CardTitle translate="no">{integration.shop_name || integration.shop_url}</CardTitle>
+                  <CardDescription translate="no">{integration.shop_url}</CardDescription>
+                </div>
             </div>
-            <Badge className="bg-emerald-500/10 text-emerald-600">
+            <Badge className="bg-emerald-500/10 text-emerald-600" translate="no">
               <ShieldCheck className="w-3.5 h-3.5" /> Connected
             </Badge>
           </div>
@@ -146,7 +158,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <dt className="text-muted-foreground">Connected since</dt>
-              <dd className="font-medium">
+              <dd className="font-medium" translate="no">
                 {integration.installed_at
                   ? new Date(integration.installed_at).toLocaleDateString('en-US', {
                       year: 'numeric', month: 'long', day: 'numeric',
@@ -156,7 +168,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
             </div>
             <div>
               <dt className="text-muted-foreground">Permissions</dt>
-              <dd className="font-medium text-xs">{integration.scopes || '—'}</dd>
+              <dd className="font-medium text-xs" translate="no">{integration.scopes || '—'}</dd>
             </div>
           </div>
         </CardContent>
@@ -167,13 +179,28 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
           </Button>
           <Button
             variant="destructive"
-            onClick={handleDisconnect}
+            onClick={handleDisconnectClick}
             disabled={disconnecting}
           >
             {disconnecting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Trash2 className="w-4 h-4 mr-2" />}
             Disconnect
           </Button>
         </CardFooter>
+
+        <AlertDialog open={isDisconnectDialogOpen} onOpenChange={setIsDisconnectDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Disconnect Store</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to disconnect this store from Katalog? Your access token will be revoked on Shopify.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmDisconnect} className="bg-red-600 text-white hover:bg-red-700">Disconnect</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </Card>
     );
   }

@@ -4,6 +4,7 @@ import { Brand } from "@/components/ui/brand";
 import Sidebar from "@/components/sidebar";
 import { MobileNav } from "@/components/mobile-nav";
 import { supabase } from "@/lib/supabase";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
     const cookieStore = await cookies();
@@ -26,7 +27,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
                 {/* Aquí podríamos añadir un SearchBox global en el futuro */}
                 <div className="flex-1 overflow-y-auto">
-                    {children}
+                    <ErrorBoundary>
+                      {children}
+                    </ErrorBoundary>
                 </div>
             </main>
         </div>
