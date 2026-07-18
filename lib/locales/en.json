@@ -313,10 +313,10 @@
                 "badge": "Enterprise",
                 "cta": "Contact Sales"
             },
-            "proMax": {
+            "proPlus": {
                 "name": "PRO PLUS",
                 "description": "For individual merchants outgrowing Pro",
-                "capacity": "250 Credits",
+                "capacity": "350 Credits",
                 "renewal": "Renews every month.",
                 "cta": "Activate PRO PLUS →",
       "features": {
@@ -641,10 +641,10 @@
                         "item4": "10 products/cycle (Auto-Pilot)"
                     }
                 },
-                "proMax": {
+                "proPlus": {
                     "name": "PRO PLUS",
                     "desc": "For individual merchants outgrowing Pro.",
-                    "capacity": "250 Credits",
+                    "capacity": "350 Credits",
                     "renewal": "Renews every month.",
                     "cta": "Activate PRO PLUS →",
                     "includedFrom": "↳ Everything in Pro, plus:",

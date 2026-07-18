@@ -37,6 +37,7 @@ import {
 import { useSearchParams, useRouter } from "next/navigation"
 import { useI18n } from "@/lib/i18n-context"
 import { ShopifyCard } from "@/components/dashboard/integrations/ShopifyCard"
+import { AutoScaleCard } from "@/components/billing/AutoScaleCard"
 
 export default function AccountPage() {
     const searchParams = useSearchParams()
@@ -177,7 +178,7 @@ export default function AccountPage() {
 
     return (
         <div className="min-h-screen bg-transparent text-foreground font-sans">
-            <main className="p-8 md:p-12 max-w-5xl mx-auto">
+            <main className="p-8 md:p-12 max-w-7xl mx-auto">
 
                 {/* --- PESTAÑA: BRAND BRAIN --- */}
                 {activeTab === "brain" && (
@@ -245,7 +246,7 @@ export default function AccountPage() {
                             </Button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-[3fr_4fr_4fr_4fr] gap-4 items-start">
                             <PricingCard
                                 id="free"
                                 title="FREE"
@@ -288,6 +289,28 @@ export default function AccountPage() {
                             />
 
                             <PricingCard
+                                id="pro-plus"
+                                title="PRO PLUS"
+                                description="Your 24/7 marketing department."
+                                price={isAnnual ? "$1,499" : "$139"}
+                                priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
+                                capacity="350 Credits"
+                                renewal="Renews every month."
+                                highlight="↳ Everything in Pro, plus:"
+                                features={[
+                                    { brand: null, text: "Priority processing queue" },
+                                    { brand: null, text: "5 products/cycle (Auto-Pilot)" },
+                                    { brand: null, text: "Advanced Brand Rules" },
+                                ]}
+                                current={plan === 'pro-plus'}
+                                actionLabel="Activate Pro Plus →"
+                                onActionClick={() => handleUpgrade(
+                                    isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS_ANNUAL! : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS!
+                                )}
+                                isLoading={loadingCheckout}
+                            />
+
+                            <PricingCard
                                 id="business"
                                 title="BUSINESS"
                                 description={t('landing.pricing.plans.enterprise.desc') || "Your autonomous agency that learns overnight."}
@@ -310,6 +333,15 @@ export default function AccountPage() {
                                 )}
                                 isLoading={loadingCheckout}
                             />
+                        </div>
+
+                        <div className="mt-12 mb-4">
+                          <h3 className="text-lg font-semibold">Credits & Billing</h3>
+                          <p className="text-sm text-muted-foreground">Manage your credit usage and automatic recharges.</p>
+                        </div>
+
+                        <div className="w-full">
+                          <AutoScaleCard />
                         </div>
                     </div>
                 )}

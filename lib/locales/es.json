@@ -265,14 +265,15 @@
                 "badge": "Empresarial",
                 "cta": "Contactar Ventas"
             },
-            "proMax": {
+            "proPlus": {
                 "name": "PRO PLUS",
                 "description": "Para comerciantes individuales que superan a Pro",
-                "capacity": "250 Créditos",
+                "capacity": "350 Créditos",
                 "renewal": "Se renueva cada mes.",
                 "cta": "Activar PRO PLUS →",
                 "features": {
                     "item1": "Auto-Pilot 24/7",
+
                     "item2": "",
                     "item3": "Reglas de Marca Personalizadas"
                 }
@@ -641,10 +642,10 @@
                         "item4": "10 productos/ciclo (Auto-Pilot)"
                     }
                 },
-                "proMax": {
+                "proPlus": {
                     "name": "PRO PLUS",
                     "desc": "Para comerciantes individuales que superan a Pro.",
-                    "capacity": "250 Créditos",
+                    "capacity": "350 Créditos",
                     "renewal": "Se renueva cada mes.",
                     "cta": "Activar PRO PLUS →",
                     "includedFrom": "↳ Todo lo que incluye Pro, además de:",

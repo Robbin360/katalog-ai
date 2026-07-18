@@ -76,25 +76,25 @@ const PricingPage = () => {
       popular: true,
     },
     {
-      id: "pro-max" as const,
+      id: "pro-plus" as const,
       name: "PRO PLUS",
-      descKey: "landing.pricing.plans.proMax.desc",
-      capacityKey: "landing.pricing.plans.proMax.capacity",
-      renewalKey: "landing.pricing.plans.proMax.renewal",
-      ctaKey: "landing.pricing.plans.proMax.cta",
+      descKey: "landing.pricing.plans.proPlus.desc",
+      capacityKey: "landing.pricing.plans.proPlus.capacity",
+      renewalKey: "landing.pricing.plans.proPlus.renewal",
+      ctaKey: "landing.pricing.plans.proPlus.cta",
       description: "For individual merchants outgrowing Pro.",
       monthlyPrice: "$139",
       annualPrice: "$1,499",
-      capacity: "250 Credits",
+      capacity: "350 Credits",
       renewal: "Renews every month.",
       cta: "Activate PRO PLUS →",
       highlight: "↳ Everything in Pro, plus:",
-      highlightKey: "landing.pricing.plans.proMax.includedFrom",
+      highlightKey: "landing.pricing.plans.proPlus.includedFrom",
       features: [
         { brand: null, text: "CSV Export" },
       ],
       featuresKeys: [
-        "landing.pricing.plans.proMax.features.item4",
+        "landing.pricing.plans.proPlus.features.item4",
       ],
       comingSoon: [false],
       popular: false,
@@ -141,7 +141,7 @@ const PricingPage = () => {
         name: "LIMITS & CREDITS",
         features: [
           { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited", "Unlimited"] },
-          { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "250 / month", "700 / month"] },
+          { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "350 / month", "700 / month"] },
           { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25", "$0.25"] },
           { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
         ],
@@ -440,11 +440,11 @@ const PricingPage = () => {
               <div className="space-y-2 pt-2">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">{t('pricing.autoScale.mockup.recharges')}</span>
-                  <span className="text-white">{t('pricing.autoScale.mockup.pack')}</span>
+                  <span className="text-white">1 pack (40 credits)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">{t('pricing.autoScale.mockup.extra')}</span>
-                  <span className="text-white">$12.50</span>
+                  <span className="text-zinc-400">Additional charges</span>
+                  <span className="text-white">$10</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-zinc-400">{t('pricing.autoScale.mockup.cap')}</span>

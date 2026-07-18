@@ -14,7 +14,7 @@ type PlanFeature = {
 };
 
 type PricingPlan = {
-  id: "free" | "pro" | "pro-max" | "business";
+  id: "free" | "pro" | "pro-plus" | "business";
   name: string;
   descKey: string;
   capacityKey: string;
@@ -93,25 +93,25 @@ const plans: PricingPlan[] = [
     comingSoon: [false, false, false],
   },
   {
-    id: "pro-max",
+    id: "pro-plus",
     name: "PRO PLUS",
-    descKey: "landing.pricing.plans.proMax.desc",
-    capacityKey: "landing.pricing.plans.proMax.capacity",
-    renewalKey: "landing.pricing.plans.proMax.renewal",
-    ctaKey: "landing.pricing.plans.proMax.cta",
+    descKey: "landing.pricing.plans.proPlus.desc",
+    capacityKey: "landing.pricing.plans.proPlus.capacity",
+    renewalKey: "landing.pricing.plans.proPlus.renewal",
+    ctaKey: "landing.pricing.plans.proPlus.cta",
     description: "For individual merchants outgrowing Pro.",
     monthlyPrice: "$139",
     annualPrice: "$1,499",
-    capacity: "250 Credits",
+    capacity: "350 Credits",
     renewal: "Renews every month.",
     cta: "Activate PRO PLUS →",
     highlight: "↳ Everything in Pro, plus:",
-    highlightKey: "landing.pricing.plans.proMax.includedFrom",
+    highlightKey: "landing.pricing.plans.proPlus.includedFrom",
     features: [
       { brand: null, text: "CSV Export" },
     ],
     featuresKeys: [
-      "landing.pricing.plans.proMax.features.item4",
+      "landing.pricing.plans.proPlus.features.item4",
     ],
     comingSoon: [false],
   },
