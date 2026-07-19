@@ -175,8 +175,8 @@
             },
             {
                 "category": "General",
-                "question": "¿Cómo funciona el motor de IA?",
-                "answer": "Nuestro motor analiza cada producto de tu catálogo, detecta oportunidades de mejora y genera automáticamente títulos, descripciones y metadatos optimizados para SEO y conversión."
+                "question": "¿Cómo optimiza Katalog AI mis productos?",
+                "answer": "Katalog AI analiza cada producto de tu catálogo, detecta oportunidades de mejora y genera títulos, descripciones y metadatos SEO-optimizados. En los planes Pro y Business, Auto-Pilot ejecuta este proceso continuamente en segundo plano — no tienes que activar cada optimización manualmente."
             },
             {
                 "category": "Inteligencia Artificial",
@@ -276,7 +276,7 @@
             "autopilot": "Auto-Pilot",
             "brand_brain": "Brand Brain",
             "sync_auto_1h": "Auto-sincronización cada hora",
-            "sync_realtime": "Sincronización en tiempo real",
+            "sync_realtime": "Sincronización continua",
             "publish_api": "Publicación por API",
             "analytics_adv": "Analíticas avanzadas",
             "intel_notif": "Alertas inteligentes",
@@ -384,7 +384,7 @@
             "badge": "Motor Neural de Conexión",
             "title_pre": "Conecta",
             "title_post": "con tu Ecosistema",
-            "subtitle": "Sincroniza tu tienda en segundos. Nuestra IA se conecta directamente con tu inventario para una optimización programada y en tiempo real.",
+            "subtitle": "Sincroniza tu tienda en minutos. Katalog AI se conecta directamente con tu inventario para una optimización continua en segundo plano.",
             "cta_free": "Prueba Gratis",
             "cta_connect": "Configurar Integración"
         },
@@ -393,7 +393,7 @@
             "subtitle": "Sincroniza y automatiza en minutos, sin código.",
             "step1": {
                 "title": "1. Conecta tu Tienda",
-                "desc": "Ingresa la URL de tu tienda y el token de acceso para una sincronización en tiempo real segura."
+                "desc": "Ingresa la URL de tu tienda y el token de acceso para una sincronización segura del catálogo."
             },
             "step2": {
                 "title": "2. Selecciona Permisos",
@@ -410,7 +410,7 @@
             "native": "Nativo",
             "connected": "Conexión Lista",
             "coming_soon": "Próximamente",
-            "shopify_desc": "Sincronización bidireccional en tiempo real."
+            "shopify_desc": "Sincronización bidireccional."
         },
         "benefits": {
             "title": "Ventajas de Integración",
@@ -431,9 +431,9 @@
     "features": {
         "hero": {
             "badge": "Motor Neural de Análisis",
-            "title_pre": "Auditoría en",
-            "title_post": "Tiempo Real",
-            "subtitle": "Descubre exactamente dónde estás perdiendo dinero por listados deficientes. Nuestra IA analiza cada aspecto de tu catálogo en segundos.",
+            "title_pre": "Auditoría",
+            "title_post": "Continua",
+            "subtitle": "Descubre exactamente dónde estás perdiendo dinero por listados deficientes. Katalog AI analiza cada aspecto de tu catálogo para priorizar mejoras.",
             "cta": "Escanear Catálogo Gratis"
         },
         "dashboard_widgets": {
@@ -455,16 +455,16 @@
         },
         "autoPilot": {
             "badge": "Auto-Pilot",
-            "title": "Optimización Programada",
-            "desc": "Auto-Pilot ejecuta tareas de optimización programadas automáticamente. Configura tus Reglas de Marca, selecciona productos y el ejecutor de tareas procesa cada ciclo automáticamente.",
+            "title": "Auto-Pilot",
+            "desc": "Auto-Pilot se ejecuta continuamente en segundo plano. Configura tus Reglas de Marca, selecciona productos y procesa cada ciclo de optimización automáticamente.",
             "list": [
-                "Optimización programada automáticamente",
+                "Optimización continua en segundo plano",
                 "Hasta 5 productos por ciclo en Pro, 10 en Business",
-                "Se ejecuta automáticamente 24/7",
+                "Se ejecuta continuamente en segundo plano",
                 "Configura una vez, funciona en piloto automático"
             ],
             "terminal": {
-                "analyzing": "Iniciando ciclo de optimización programada...",
+                "analyzing": "Ciclo de Auto-Pilot iniciando...",
                 "low_conv": "Encolando productos para optimizar...",
                 "executing": "Ejecutando lote de optimización de productos...",
                 "new_title": "Aplicando Reglas de Marca al producto...",
@@ -495,7 +495,7 @@
             },
             "header": {
                 "title": "Radar de Oportunidades",
-                "subtitle": "Información de optimización en tiempo real",
+                "subtitle": "Información de optimización continua",
                 "stats_label": "ESTADÍSTICAS DE CONSULTA"
             },
             "kpis": {
@@ -568,13 +568,13 @@
             },
             "item4": {
                 "title": "Métrica de Salud Global",
-                "desc": "Analizamos la integridad de tus metadatos, calidad de etiquetas y consistencia visual para generar un diagnóstico accionable en tiempo real.",
+                "desc": "Analizamos la integridad de tus metadatos, calidad de etiquetas y consistencia visual para generar un puntaje de salud accionable.",
                 "metric_label": "Optimización de Catálogo",
                 "metric_value": "Excelente"
             },
             "item5": {
                 "title": "Sincronización Total",
-                "desc": "Integración perfecta con Shopify. Cambios en vivo en segundos con un solo clic."
+                "desc": "Integración perfecta con Shopify. Sincroniza tu catálogo optimizado con un solo clic."
             }
         },
         "pricing": {

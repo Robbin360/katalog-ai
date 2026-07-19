@@ -175,8 +175,8 @@
             },
             {
                 "category": "General",
-                "question": "How does the AI engine work?",
-                "answer": "Our engine analyzes every product in your catalog, detects improvement opportunities, and automatically generates SEO-optimized titles, descriptions, and metadata for better conversion."
+                "question": "How does Katalog AI optimize my products?",
+                "answer": "Katalog AI analyzes every product in your catalog, detects improvement opportunities, and generates SEO-optimized titles, descriptions, and metadata. On Pro and Business plans, Auto-Pilot runs this process continuously in the background — you don't have to trigger each optimization manually."
             },
             {
                 "category": "Artificial Intelligence",
@@ -239,9 +239,9 @@
     "features": {
         "hero": {
             "badge": "Neural Analysis Engine",
-            "title_pre": "Real-Time",
+            "title_pre": "Continuous",
             "title_post": "Auditing",
-            "subtitle": "Discover exactly where you are losing money due to poor listings. Our AI analyzes every aspect of your catalog in seconds.",
+            "subtitle": "Discover exactly where you are losing money due to poor listings. Katalog AI analyzes every aspect of your catalog to prioritize improvements.",
             "cta": "Scan Catalog Free"
         },
         "dashboard_widgets": {
@@ -263,16 +263,16 @@
         },
         "autoPilot": {
             "badge": "Auto-Pilot",
-            "title": "Scheduled Optimization",
-            "desc": "Auto-Pilot runs scheduled optimization tasks automatically. Configure your Brand Rules, select products, and the task runner processes each cycle automatically.",
+            "title": "Auto-Pilot",
+            "desc": "Auto-Pilot runs continuously in the background. Configure your Brand Rules, select products, and it processes each optimization cycle automatically.",
             "list": [
-                "Scheduled optimization runs automatically",
+                "Continuous background optimization",
                 "Up to 5 products per cycle on Pro, 10 on Business",
-                "Runs automatically 24/7",
+                "Runs continuously in the background",
                 "Configure once, runs on autopilot"
             ],
             "terminal": {
-                "analyzing": "Scheduled optimization cycle starting...",
+                "analyzing": "Auto-Pilot cycle starting...",
                 "low_conv": "Queuing products for optimization...",
                 "executing": "Running product optimization batch...",
                 "new_title": "Applying Brand Rules to product...",
@@ -324,7 +324,7 @@
             "autopilot": "Auto-Pilot",
             "brand_brain": "Brand Brain",
             "sync_auto_1h": "Auto-sync every hour",
-            "sync_realtime": "Real-time sync",
+            "sync_realtime": "Continuous sync",
             "publish_api": "API publishing",
             "analytics_adv": "Advanced analytics",
             "intel_notif": "Intelligent alerts",
@@ -432,7 +432,7 @@
             "badge": "Connection Engine",
             "title_pre": "Connect",
             "title_post": "with your Ecosystem",
-            "subtitle": "Sync your store in seconds. Our AI connects directly to your inventory for scheduled, real-time optimization.",
+            "subtitle": "Sync your store in minutes. Katalog AI connects directly to your inventory for continuous optimization in the background.",
             "cta_free": "Start Free Trial",
             "cta_connect": "Set Up Integration"
         },
@@ -441,7 +441,7 @@
             "subtitle": "Sync and automate in minutes, zero code required.",
             "step1": {
                 "title": "1. Connect your Store",
-                "desc": "Enter your store URL and access token for secure real-time syncing."
+                "desc": "Enter your store URL and access token for secure catalog syncing."
             },
             "step2": {
                 "title": "2. Select Permissions",
@@ -458,7 +458,7 @@
             "native": "Native",
             "connected": "Connection Ready",
             "coming_soon": "Coming Soon",
-            "shopify_desc": "Real-time bidirectional synchronization."
+            "shopify_desc": "Bidirectional synchronization."
         },
         "benefits": {
             "title": "Integration Advantages",
@@ -495,7 +495,7 @@
             },
             "header": {
                 "title": "Opportunity Radar",
-                "subtitle": "Real-time optimization insights",
+                "subtitle": "Continuous optimization insights",
                 "stats_label": "QUERY STATISTICS"
             },
             "kpis": {
@@ -568,13 +568,13 @@
             },
             "item4": {
                 "title": "Global Health Metric",
-                "desc": "We analyze the integrity of your metadata, tag quality, and visual consistency to generate an actionable real-time diagnosis.",
+                "desc": "We analyze the integrity of your metadata, tag quality, and visual consistency to generate an actionable health score.",
                 "metric_label": "Catalog Optimization",
                 "metric_value": "Excellent"
             },
             "item5": {
                 "title": "Total Synchronization",
-                "desc": "Seamless integration with Shopify. Live changes in seconds with a single click."
+                "desc": "Seamless Shopify integration. Sync your optimized catalog back to your store with one click."
             }
         },
         "pricing": {

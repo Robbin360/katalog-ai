@@ -113,7 +113,7 @@ export function IntegrationsPageClient() {
                         
                         {/* Primer párrafo expandido (30-80 palabras) */}
                         <p className="text-slate-300 text-xl md:text-2xl leading-relaxed max-w-2xl font-medium">
-                            Katalog AI is built natively for Shopify. Connect your store in seconds and our AI engine syncs your catalog in real time — reading products, optimizing content, and publishing improvements back to Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap.
+                            Katalog AI is built natively for Shopify. Connect your store and our platform syncs your catalog continuously — reading products, optimizing content, and publishing improvements back to Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap.
                         </p>
                         
                         <p className="text-slate-400 text-lg md:text-xl leading-relaxed mt-4">
@@ -241,7 +241,7 @@ export function IntegrationsPageClient() {
                                 </div>
                                 <p className="text-slate-400 max-w-md">
                                     Our native Shopify integration provides seamless access to your product catalog through secure OAuth authentication. 
-                                    Sync product titles, descriptions, images, variants, inventory levels, and metadata in real-time. 
+                                    Sync product titles, descriptions, images, variants, inventory levels, and metadata. 
                                     All optimizations can be published directly back to your Shopify store with one-click approval, ensuring your catalog stays current and optimized for search engines and conversions.
                                 </p>
                             </div>

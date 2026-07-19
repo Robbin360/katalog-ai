@@ -4,7 +4,7 @@ import { IntegrationsPageClient } from "@/components/integrations/IntegrationsPa
 const siteUrl = "https://katalog-ai-navy.vercel.app";
 const pageUrl = `${siteUrl}/integrations`;
 const title = "Integrations | Katalog AI";
-const description = "Katalog AI integrates natively with Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap. Real-time catalog sync and automated product optimization for Shopify merchants.";
+const description = "Katalog AI integrates natively with Shopify. BigCommerce, WooCommerce, and Magento are on our roadmap. Automated catalog optimization for Shopify merchants.";
 
 const webPageSchema = {
   "@context": "https://schema.org",

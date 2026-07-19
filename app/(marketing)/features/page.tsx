@@ -12,7 +12,7 @@ export default function FeaturesPage() {
     useEffect(() => {
         document.title = "AI Catalog Optimization Features | Katalog AI";
         const meta = document.querySelector('meta[name="description"]');
-        if (meta) meta.setAttribute('content', 'Discover Katalog AI\'s features: real-time Shopify catalog auditing, AI product description writing, revenue at risk radar, and instant Shopify sync.');
+        if (meta) meta.setAttribute('content', 'Discover Katalog AI\'s features: Shopify catalog auditing, AI product description writing, revenue at risk radar, and automated Shopify sync.');
     }, []);
 
     return (
@@ -225,19 +225,19 @@ export default function FeaturesPage() {
                                     <ul className="space-y-4">
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autoPilot.list.0') || 'Auditoría en tiempo real de todo el catálogo'}
+                                            {t('features.autoPilot.list.0') || 'Continuous background optimization'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autoPilot.list.1') || 'Detección proactiva de fuga de ingresos'}
+                                            {t('features.autoPilot.list.1') || 'Up to 5 products per cycle on Pro, 10 on Business'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autoPilot.list.2') || 'Runs automatically on your schedule'}
+                                            {t('features.autoPilot.list.2') || 'Runs continuously in the background'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autoPilot.list.3') || 'Sincronización silenciosa sin bloqueos'}
+                                            {t('features.autoPilot.list.3') || 'Configure once, runs on autopilot'}
                                         </li>
                                     </ul>
                                 </div>
@@ -248,7 +248,7 @@ export default function FeaturesPage() {
                                             <span className="size-2 rounded-full bg-red-500/50"></span>
                                             <span className="size-2 rounded-full bg-yellow-500/50"></span>
                                             <span className="size-2 rounded-full bg-green-500/50"></span>
-                                            <span translate="no" className="ml-2 text-slate-500">Agent-Runtime v2.0.1</span>
+                                            <span translate="no" className="ml-2 text-slate-500">Auto-Pilot Runtime v2.0.1</span>
                                         </div>
                                         <div className="border-t border-white/5 pt-3">
                                             <p>&gt; {t('features.autoPilot.terminal.analyzing')}</p>
