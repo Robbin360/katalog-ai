@@ -248,7 +248,7 @@ export default function FeaturesPage() {
                                             <span className="size-2 rounded-full bg-red-500/50"></span>
                                             <span className="size-2 rounded-full bg-yellow-500/50"></span>
                                             <span className="size-2 rounded-full bg-green-500/50"></span>
-                                            <span className="ml-2 text-slate-500">Agent-Runtime v2.0.1</span>
+                                            <span translate="no" className="ml-2 text-slate-500">Agent-Runtime v2.0.1</span>
                                         </div>
                                         <div className="border-t border-white/5 pt-3">
                                             <p>&gt; {t('features.autoPilot.terminal.analyzing')}</p>
@@ -259,7 +259,7 @@ export default function FeaturesPage() {
 
                                             <Link href="/" className="group flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded bg-primary/20 text-primary flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                                                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                                                    <span translate="no" className="material-symbols-outlined text-sm">auto_awesome</span>
                                                 </div>
                                                 <Brand className="text-lg font-bold tracking-tight text-white" />
                                             </Link>
