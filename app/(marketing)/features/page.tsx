@@ -243,7 +243,7 @@ export default function FeaturesPage() {
                                 </div>
 
                                 <div className="glass-card bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-4 border-white/20 shadow-2xl">
-                                    <div className="bg-black/40 rounded-xl p-6 font-mono text-xs text-primary/80 space-y-3">
+                                    <div translate="no" className="bg-black/40 rounded-xl p-6 font-mono text-xs text-primary/80 space-y-3">
                                         <div className="flex items-center gap-2">
                                             <span className="size-2 rounded-full bg-red-500/50"></span>
                                             <span className="size-2 rounded-full bg-yellow-500/50"></span>
