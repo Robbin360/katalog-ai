@@ -224,19 +224,19 @@ export default function FeaturesPage() {
 
                                     <ul className="space-y-4">
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
                                             {t('features.autoPilot.list.0') || 'Auditoría en tiempo real de todo el catálogo'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
                                             {t('features.autoPilot.list.1') || 'Detección proactiva de fuga de ingresos'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
                                             {t('features.autoPilot.list.2') || 'Runs automatically on your schedule'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
                                             {t('features.autoPilot.list.3') || 'Sincronización silenciosa sin bloqueos'}
                                         </li>
                                     </ul>
