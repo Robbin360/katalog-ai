@@ -427,26 +427,18 @@ const PricingPage = () => {
               {t('pricing.enterprise.subtitle')}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
                 <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.credits.title')}</p>
                 <p className="text-sm text-zinc-500">{t('pricing.enterprise.credits.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.stores.title')}</p>
-                <p className="text-sm text-zinc-500">{t('pricing.enterprise.stores.desc')}</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.autoPilot.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.autoPilot.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.manager.title')}</p>
-                <p className="text-sm text-zinc-500">{t('pricing.enterprise.manager.desc')}</p>
-              </div>
-              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.sla.title')}</p>
-                <p className="text-sm text-zinc-500">{t('pricing.enterprise.sla.desc')}</p>
-              </div>
-              <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
-                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.custom.title')}</p>
-                <p className="text-sm text-zinc-500">{t('pricing.enterprise.custom.desc')}</p>
+                <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.volume.title')}</p>
+                <p className="text-sm text-zinc-500">{t('pricing.enterprise.volume.desc')}</p>
               </div>
               <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-5 text-left">
                 <p className="text-2xl font-black text-white mb-1">{t('pricing.enterprise.annual.title')}</p>

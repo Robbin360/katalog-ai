@@ -367,15 +367,13 @@
         "enterprise": {
             "badge": "Enterprise",
             "title": "KATALOG ENTERPRISE",
-            "subtitle": "Para tiendas con 10,000+ SKUs, agencias que manejan múltiples marcas, o comerciantes que necesitan una alianza estratégica — no solo software.",
-            "credits": { "title": "∞ Créditos", "desc": "Optimizaciones IA ilimitadas" },
-            "stores": { "title": "∞ Tiendas", "desc": "Conectá cada marca que manejes" },
-            "manager": { "title": "Dedicado", "desc": "Gerente de Cuenta" },
-            "sla": { "title": "99.9% SLA", "desc": "Disparidad garantizada" },
-            "custom": { "title": "IA Custom", "desc": "Entrenada con tus datos históricos" },
-            "annual": { "title": "Anual", "desc": "Facturación con términos flexibles" },
-            "price": "Desde $499/mes",
-            "price_desc": "Precios adaptados al tamaño de tu catálogo.",
+            "subtitle": "Para comerciantes de alto volumen con necesidades personalizadas, límites a medida y condiciones de facturación flexibles.",
+            "credits": { "title": "Volumen de créditos", "desc": "Créditos anuales pre-pagados a mejor precio que Auto-Scale" },
+            "autoPilot": { "title": "Límites de Auto-Pilot personalizados", "desc": "Procesa más de 10 productos por ciclo" },
+            "volume": { "title": "Precios por volumen", "desc": "Precios adaptados a tu volumen mensual" },
+            "annual": { "title": "Anual", "desc": "Facturación con términos flexibles para compromisos anuales" },
+            "price": "Personalizado",
+            "price_desc": "Precios adaptados a tu volumen y necesidades.",
             "cta": "Hablar con Ventas →"
         }
     },

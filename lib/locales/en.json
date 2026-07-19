@@ -415,15 +415,13 @@
         "enterprise": {
             "badge": "Enterprise",
             "title": "KATALOG ENTERPRISE",
-            "subtitle": "For stores with 10,000+ SKUs, agencies managing multiple brands, or merchants who need a strategic partnership — not just software.",
-            "credits": { "title": "∞ Credits", "desc": "Unlimited AI optimizations" },
-            "stores": { "title": "∞ Stores", "desc": "Connect every brand you run" },
-            "manager": { "title": "Dedicated", "desc": "Account Manager" },
-            "sla": { "title": "99.9% SLA", "desc": "Guaranteed uptime" },
-            "custom": { "title": "Custom AI", "desc": "Trained on your historical data" },
-            "annual": { "title": "Annual", "desc": "Billing with flexible terms" },
-            "price": "From $499/month",
-            "price_desc": "Pricing tailored to your catalog size.",
+            "subtitle": "For high-volume merchants with custom needs, custom limits, and flexible billing terms.",
+            "credits": { "title": "Credit volume", "desc": "Pre-paid annual credits at a better rate than Auto-Scale" },
+            "autoPilot": { "title": "Custom Auto-Pilot limits", "desc": "Process more than 10 products per cycle" },
+            "volume": { "title": "Volume pricing", "desc": "Pricing tailored to your monthly volume" },
+            "annual": { "title": "Annual", "desc": "Flexible billing terms for annual commitments" },
+            "price": "Custom",
+            "price_desc": "Pricing tailored to your volume and needs.",
             "cta": "Talk to sales →"
         }
     },
