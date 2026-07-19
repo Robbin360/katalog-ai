@@ -207,7 +207,7 @@ export default function FeaturesPage() {
                 </section>
 
                 {/* AUTO-PILOT SECTION */}
-                <section translate="no" className="py-24 relative overflow-hidden">
+                <section className="py-24 relative overflow-hidden">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="command-gradient border border-white/10 rounded-[40px] p-8 md:p-16 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-[100px] pointer-events-none"></div>
@@ -215,7 +215,7 @@ export default function FeaturesPage() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                                 <div>
                                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10 mb-6">
-                                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">{t('features.autoPilot.badge')}</span>
+                                        <span translate="no" className="text-[10px] font-black tracking-widest uppercase text-slate-400">{t('features.autoPilot.badge')}</span>
                                     </div>
                                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t('features.autoPilot.title')}</h2>
                                     <p className="text-slate-400 text-lg leading-relaxed mb-8">
