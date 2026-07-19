@@ -126,7 +126,7 @@ export default function FeaturesPage() {
                 </section>
 
                 {/* 3-WIDGET DASHBOARD SECTION */}
-                <section className="py-24 bg-white/[0.01] border-y border-white/5">
+                <section translate="no" className="py-24 bg-white/[0.01] border-y border-white/5">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="text-center mb-16">
                             <h2 className="text-4xl font-bold text-white mb-4">{t('features.dashboard_widgets.title')}</h2>
@@ -207,7 +207,7 @@ export default function FeaturesPage() {
                 </section>
 
                 {/* AUTO-PILOT SECTION */}
-                <section className="py-24 relative overflow-hidden">
+                <section translate="no" className="py-24 relative overflow-hidden">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="command-gradient border border-white/10 rounded-[40px] p-8 md:p-16 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-[100px] pointer-events-none"></div>
