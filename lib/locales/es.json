@@ -401,7 +401,7 @@
             },
             "step3": {
                 "title": "3. Automatiza Todo",
-                "desc": "El motor IA comenzará a escanear tu catálogo y sincronizará las mejoras al instante."
+                "desc": "Auto-Pilot comenzará a optimizar tu catálogo según la programación que configures, sincronizando las mejoras a Shopify después de cada ciclo."
             }
         },
         "platforms": {
@@ -416,7 +416,7 @@
             "title": "Ventajas de Integración",
             "sync": {
                 "title": "Sincronización Inteligente",
-                "desc": "Los cambios se publican al instante sin afectar el stock o precios."
+                "desc": "Los cambios se publican en Shopify después de cada ciclo de optimización. Auto-Pilot solo modifica los campos que configures — nunca stock ni precios."
             },
             "security": {
                 "title": "Máxima Seguridad",
@@ -550,7 +550,7 @@
             "subtitle": "Libera el potencial oculto de tu catálogo con nuestro motor de procesamiento avanzado.",
             "item1": {
                 "title": "Control de Salud del Inventario",
-                "desc": "Un escaneo profundo que identifica instantáneamente qué productos de tu tienda Shopify necesitan atención. Priorizamos tus activos basándonos en el impacto SEO y la completitud de los datos.",
+                "desc": "Un escaneo profundo que identifica qué productos de tu tienda Shopify necesitan atención. Priorizamos tus activos basándonos en el impacto SEO y la completitud de los datos.",
                 "footer_risk": "Productos en Riesgo"
             },
             "item2": {

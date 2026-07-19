@@ -449,7 +449,7 @@
             },
             "step3": {
                 "title": "3. Automate Everything",
-                "desc": "The AI engine will start scanning your catalog and sync improvements instantly."
+                "desc": "Auto-Pilot will start optimizing your catalog on the schedule you set, syncing improvements to Shopify after each cycle."
             }
         },
         "platforms": {
@@ -464,7 +464,7 @@
             "title": "Integration Advantages",
             "sync": {
                 "title": "Smart Syncing",
-                "desc": "Changes are published instantly without affecting stock or prices."
+                "desc": "Changes are published to Shopify after each optimization cycle. Auto-Pilot only modifies the fields you configure — never stock or prices."
             },
             "security": {
                 "title": "Maximum Security",
