@@ -108,7 +108,7 @@
                 "sync_loading": "Syncing with Shopify...",
                 "sync_success": "Catalog updated! {{count}} products imported.",
                 "sync_error": "Sync error",
-                "optimize_loading": "Notifying AI Agent...",
+                "optimize_loading": "Optimizing...",
                 "optimize_success": "Optimization queued! Your agent will process it soon.",
                 "optimize_error": "Could not contact agent."
             }
@@ -394,7 +394,7 @@
         "autoScale": {
             "badge": "Auto-Scale",
             "title": "Never run out of credits",
-            "subtitle": "Your AI agent keeps working. You never think about credits again.",
+            "subtitle": "Auto-Pilot keeps running on your schedule. Credits auto-refill so optimization never stops mid-cycle.",
             "desc1": "When you reach 80% of your credits, we automatically recharge 50 credits at $0.25 each. No notifications. No interruptions. No decisions.",
             "desc2": "You set a monthly spending cap. We respect it.",
             "mockup": {
@@ -542,7 +542,7 @@
             },
             "step3": {
                 "title": "Sync",
-                "desc": "Updates are pushed to Shopify instantly with zero downtime."
+                "desc": "Updates are synced to Shopify automatically after each optimization cycle."
             }
         },
         "features_bento": {

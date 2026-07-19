@@ -46,7 +46,7 @@ export default function PrivacyPage() {
                   How We Use Your Data
                 </h2>
                 <p>
-                  Your data is used specifically for technical analysis, trend prediction, and the execution of optimization tasks through our AI engine. We never sell your data to third parties.
+                  Your data is used specifically for technical analysis of your catalog (titles, descriptions, images, and metadata) and for executing optimization tasks you configure through Auto-Pilot. We never sell your data to third parties.
                 </p>
               </section>
 

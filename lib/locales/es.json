@@ -108,7 +108,7 @@
                 "sync_loading": "Sincronizando con Shopify...",
                 "sync_success": "¡Catálogo actualizado! {{count}} productos importados.",
                 "sync_error": "Error de sincronización",
-                "optimize_loading": "Notificando al Agente IA...",
+                "optimize_loading": "Optimizando...",
                 "optimize_success": "¡Optimización en cola! Tu agente la procesará pronto.",
                 "optimize_error": "No se pudo contactar con el agente."
             }
@@ -346,7 +346,7 @@
         "autoScale": {
             "badge": "Escala Automática",
             "title": "Nunca te quedes sin créditos",
-            "subtitle": "Tu agente de IA sigue trabajando. No tendrás que preocuparte más por los créditos.",
+            "subtitle": "Auto-Pilot sigue funcionando según tu programación. Los créditos se recargan automáticamente para que la optimización nunca se detenga a medio ciclo.",
             "desc1": "Cuando alcances el 80% de tus créditos, recargaremos automáticamente 50 créditos a $0.25 cada uno. Sin notificaciones. Sin interrupciones. Sin decisiones.",
             "desc2": "Usted establece un límite de gasto mensual. Lo respetamos.",
             "mockup": {
@@ -542,7 +542,7 @@
             },
             "step3": {
                 "title": "Sincronización",
-                "desc": "Las actualizaciones se envían a Shopify al instante sin tiempo de inactividad."
+                "desc": "Las actualizaciones se sincronizan con Shopify automáticamente después de cada ciclo de optimización."
             }
         },
         "features_bento": {

@@ -233,7 +233,7 @@ export default function FeaturesPage() {
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autoPilot.list.2') || 'Optimización predictiva de metadatos SEO'}
+                                            {t('features.autoPilot.list.2') || 'Runs automatically on your schedule'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
