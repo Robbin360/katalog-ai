@@ -272,12 +272,10 @@ export default function AccountPage() {
                                 description={t('landing.pricing.plans.pro.desc') || "AI-powered catalog optimization for your daily workflow."}
                                 price={isAnnual ? "$490" : "$49"}
                                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
-                                capacity={t('landing.pricing.plans.pro.capacity') || "250 Credits"}
+                                capacity={t('landing.pricing.plans.pro.capacity') || "350 Credits"}
                                 renewal={t('landing.pricing.plans.pro.renewal') || "Renews every month."}
                                 highlight={t('landing.pricing.plans.pro.includedFrom') || "↳ Everything in Free, plus:"}
                                 features={[
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item1') || "Everything in Free, plus:" },
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item2') || "250 AI credits per month" },
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Auto-Pilot (5 products per cycle)" },
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item4') || "1 custom Brand Rule" },
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item5') || "Up to 3 team seats" },
@@ -304,8 +302,6 @@ export default function AccountPage() {
                                 highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}
                                 badge={t('landing.pricing.plans.enterprise.badge') || "Lowest cost per credit"}
                                 features={[
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item1') || "Everything in Pro, plus:" },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "800 AI credits per month" },
                                     { brand: null, text: t('landing.pricing.plans.enterprise.features.item3') || "Auto-Pilot (10 products per cycle)" },
                                     { brand: null, text: t('landing.pricing.plans.enterprise.features.item4') || "Unlimited Brand Rules" },
                                     { brand: null, text: t('landing.pricing.plans.enterprise.features.item5') || "Priority processing queue" },

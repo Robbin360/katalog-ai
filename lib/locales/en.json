@@ -264,11 +264,11 @@
         "autoPilot": {
             "badge": "Auto-Pilot",
             "title": "Scheduled Optimization",
-            "desc": "Auto-Pilot runs scheduled optimization tasks on a cadence you set. Configure your Brand Rules, select products, and the task runner processes each cycle automatically.",
+            "desc": "Auto-Pilot runs scheduled optimization tasks automatically. Configure your Brand Rules, select products, and the task runner processes each cycle automatically.",
             "list": [
-                "Scheduled optimization on a cadence you set",
+                "Scheduled optimization runs automatically",
                 "Up to 5 products per cycle on Pro, 10 on Business",
-                "Runs automatically on your schedule",
+                "Runs automatically 24/7",
                 "Configure once, runs on autopilot"
             ],
             "terminal": {
@@ -449,7 +449,7 @@
             },
             "step3": {
                 "title": "3. Automate Everything",
-                "desc": "Auto-Pilot will start optimizing your catalog on the schedule you set, syncing improvements to Shopify after each cycle."
+                "desc": "Auto-Pilot will start optimizing your catalog automatically, syncing improvements to Shopify after each cycle."
             }
         },
         "platforms": {
@@ -606,13 +606,11 @@
                     "badge": "Recommended",
                     "name": "PRO",
                     "desc": "AI-powered catalog optimization for your daily workflow.",
-                    "capacity": "250 Credits",
+                    "capacity": "350 Credits",
                     "renewal": "Renews every month.",
                     "cta": "Get Pro",
                     "includedFrom": "↳ Everything in Free, plus:",
                     "features": {
-                        "item1": "Everything in Free, plus:",
-                        "item2": "250 AI credits per month",
                         "item3": "Auto-Pilot (5 products per cycle)",
                         "item4": "1 custom Brand Rule",
                         "item5": "Up to 3 team seats",
@@ -628,8 +626,6 @@
                     "cta": "Get Business",
                     "includedFrom": "↳ Everything in Pro, plus:",
                     "features": {
-                        "item1": "Everything in Pro, plus:",
-                        "item2": "800 AI credits per month",
                         "item3": "Auto-Pilot (10 products per cycle)",
                         "item4": "Unlimited Brand Rules",
                         "item5": "Priority processing queue",
