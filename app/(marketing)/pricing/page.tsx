@@ -26,22 +26,26 @@ const PricingPage = () => {
       capacityKey: "landing.pricing.plans.starter.capacity",
       renewalKey: "landing.pricing.plans.starter.renewal",
       ctaKey: "landing.pricing.plans.starter.cta",
-      description: "Discover your revenue at risk. No credit card.",
+      description: "Discover what's hurting your catalog. No credit card required.",
       monthlyPrice: "$0",
-      capacity: "5 Credits",
-      renewal: "One-time AI gift.",
-      cta: "Audit my store for free",
+      capacity: "15 Credits",
+      renewal: "Renews every month.",
+      cta: "Start for free",
       features: [
-        { brand: null, text: "SEO Audit (Up to 500 SKUs)" },
-        { brand: null, text: "Revenue at Risk Radar" },
-        { brand: null, text: "Manual sync" },
+        { brand: null, text: "15 AI credits per month" },
+        { brand: null, text: "SEO audit of your catalog" },
+        { brand: null, text: "Image and text search" },
+        { brand: null, text: "Up to 3 email reports" },
+        { brand: null, text: "No credit card required" },
       ],
       featuresKeys: [
         "landing.pricing.plans.starter.features.item1",
         "landing.pricing.plans.starter.features.item2",
         "landing.pricing.plans.starter.features.item3",
+        "landing.pricing.plans.starter.features.item4",
+        "landing.pricing.plans.starter.features.item5",
       ],
-      comingSoon: [false, false, false],
+      comingSoon: [false, false, false, false, false],
       popular: false,
     },
     {
@@ -52,52 +56,34 @@ const PricingPage = () => {
       renewalKey: "landing.pricing.plans.pro.renewal",
       ctaKey: "landing.pricing.plans.pro.cta",
       highlightKey: "landing.pricing.plans.pro.includedFrom",
-      description: "Your 24/7 marketing employee.",
+      description: "AI-powered catalog optimization for your daily workflow.",
       monthlyPrice: "$49",
-      annualPrice: "$529",
+      annualPrice: "$490",
       capacity: "250 Credits",
       renewal: "Renews every month.",
-      cta: "Activate Auto-Pilot →",
+      cta: "Get Pro",
       badge: "Recommended",
       highlight: "↳ Everything in Free, plus:",
       priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
       priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL,
       features: [
-        { brand: null, text: "24/7 Auto-Pilot" },
-        { brand: "RAG Engine", text: "" },
-        { brand: null, text: "Custom Brand Rules" },
+        { brand: null, text: "Everything in Free, plus:" },
+        { brand: null, text: "250 AI credits per month" },
+        { brand: null, text: "Auto-Pilot (5 products per cycle)" },
+        { brand: null, text: "1 custom Brand Rule" },
+        { brand: null, text: "Up to 3 team seats" },
+        { brand: null, text: "Email support" },
       ],
       featuresKeys: [
         "landing.pricing.plans.pro.features.item1",
         "landing.pricing.plans.pro.features.item2",
         "landing.pricing.plans.pro.features.item3",
+        "landing.pricing.plans.pro.features.item4",
+        "landing.pricing.plans.pro.features.item5",
+        "landing.pricing.plans.pro.features.item6",
       ],
-      comingSoon: [false, false, false],
+      comingSoon: [false, false, false, false, false, false],
       popular: true,
-    },
-    {
-      id: "pro-plus" as const,
-      name: "PRO PLUS",
-      descKey: "landing.pricing.plans.proPlus.desc",
-      capacityKey: "landing.pricing.plans.proPlus.capacity",
-      renewalKey: "landing.pricing.plans.proPlus.renewal",
-      ctaKey: "landing.pricing.plans.proPlus.cta",
-      description: "For individual merchants outgrowing Pro.",
-      monthlyPrice: "$139",
-      annualPrice: "$1,499",
-      capacity: "350 Credits",
-      renewal: "Renews every month.",
-      cta: "Activate PRO PLUS →",
-      highlight: "↳ Everything in Pro, plus:",
-      highlightKey: "landing.pricing.plans.proPlus.includedFrom",
-      features: [
-        { brand: null, text: "CSV Export" },
-      ],
-      featuresKeys: [
-        "landing.pricing.plans.proPlus.features.item4",
-      ],
-      comingSoon: [false],
-      popular: false,
     },
     {
       id: "business" as const,
@@ -107,30 +93,34 @@ const PricingPage = () => {
       renewalKey: "landing.pricing.plans.enterprise.renewal",
       ctaKey: "landing.pricing.plans.enterprise.cta",
       highlightKey: "landing.pricing.plans.enterprise.includedFrom",
-      description: "Your autonomous agency that learns overnight.",
+      description: "High-volume optimization with priority processing.",
       monthlyPrice: "$149",
-      annualPrice: "$1,609",
-      capacity: "700 Credits",
-      renewal: "Extended monthly limit.",
-      cta: "Activate Business →",
-      badge: "BEST VALUE",
+      annualPrice: "$1490",
+      capacity: "800 Credits",
+      renewal: "Renews every month.",
+      cta: "Get Business",
+      badge: "Lowest cost per credit",
       badgeKey: "landing.pricing.plans.enterprise.badge",
-      highlight: "↳ Everything in Pro Plus, plus:",
+      highlight: "↳ Everything in Pro, plus:",
       priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
       priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
       features: [
-        { brand: "Sleeper Agent", text: "(Sales learning)" },
-        { brand: null, text: "Multiple Brand Rules" },
+        { brand: null, text: "Everything in Pro, plus:" },
+        { brand: null, text: "800 AI credits per month" },
+        { brand: null, text: "Auto-Pilot (10 products per cycle)" },
+        { brand: null, text: "Unlimited Brand Rules" },
         { brand: null, text: "Priority processing queue" },
-        { brand: null, text: "10 products/cycle (Auto-Pilot)" },
+        { brand: null, text: "Priority support" },
       ],
       featuresKeys: [
         "landing.pricing.plans.enterprise.features.item1",
         "landing.pricing.plans.enterprise.features.item2",
         "landing.pricing.plans.enterprise.features.item3",
         "landing.pricing.plans.enterprise.features.item4",
+        "landing.pricing.plans.enterprise.features.item5",
+        "landing.pricing.plans.enterprise.features.item6",
       ],
-      comingSoon: [false, false, false, false],
+      comingSoon: [false, false, false, false, false, false],
       popular: false,
     },
   ];
@@ -140,38 +130,38 @@ const PricingPage = () => {
       {
         name: "LIMITS & CREDITS",
         features: [
-          { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited", "Unlimited"] },
-          { name: "AI Optimization Credits", values: ["5 (One-time)", "250 / month", "350 / month", "700 / month"] },
-          { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25", "$0.25"] },
-          { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
+          { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited"] },
+          { name: "AI Optimization Credits", values: ["15 / month", "250 / month", "800 / month"] },
+          { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25"] },
+          { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
         ],
       },
       {
         name: "AGENT WORKFORCE",
         features: [
-          { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents", "4 Agents"] },
-          { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
-          { name: "Sleeper Agent (Nightly Learning)", values: [false, false, false, true] },
-          { name: "Brand Voice Rules", values: ["None", "1 Global Set", "1 Global Set", "Multiple Sets"] },
-          { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product", "Never touches a winning product"] },
+          { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents"] },
+          { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
+          { name: "Sales learning mode", values: [false, false, true] },
+          { name: "Brand Voice Rules", values: ["None", "1 Global Set", "Multiple Sets"] },
+          { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product"] },
         ],
       },
       {
         name: "WORKFLOW & AUTOMATION",
         features: [
-          { name: "Automation Level", values: ["Manual", "24/7 Auto-Pilot", "24/7 Auto-Pilot", "24/7 Auto-Pilot"] },
-          { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background", "Automated Background"] },
-          { name: "Auto-Pilot Batch Size", values: ["N/A", "3 products/cycle", "5 products/cycle", "10 products/cycle"] },
-          { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify", "Direct to Shopify"] },
-          { name: "CSV Export", values: ["—", "—", "CSV", "CSV + API"] },
-          { name: "Connected Stores", values: ["1 Shopify Store", "1 Shopify Store", "1 Shopify Store", "Up to 3 Shopify Stores"] },
+          { name: "Automation Level", values: ["Manual", "Auto-Pilot", "Auto-Pilot"] },
+          { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background"] },
+          { name: "Auto-Pilot Batch Size", values: ["N/A", "5 products/cycle", "10 products/cycle"] },
+          { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify"] },
+          { name: "CSV Export", values: ["—", "—", "CSV + API"] },
+          { name: "Connected Stores", values: ["1 Shopify Store", "1 Shopify Store", "Up to 3 Shopify Stores"] },
         ],
       },
       {
         name: "SUPPORT & INFRASTRUCTURE",
         features: [
-          { name: "Queue Priority", values: ["Standard", "High", "High", "Maximum"] },
-          { name: "Support", values: ["Basic Email", "Priority Email (<48h)", "Priority Email (<48h)", "VIP Support (<12h)"] },
+          { name: "Queue Priority", values: ["Standard", "High", "Maximum"] },
+          { name: "Support", values: ["Basic Email", "Priority Email (<48h)", "VIP Support (<12h)"] },
         ],
       },
     ],
@@ -228,7 +218,7 @@ const PricingPage = () => {
         </div>
 
         {/* Pricing Cards Grid — 3:4:4:4 proportional columns. Free is narrower; paid plans are equal width. */}
-        <div className="grid grid-cols-1 md:grid-cols-[3fr_4fr_4fr_4fr] gap-4 items-start pt-4 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start pt-4 mb-24">
           {plans.map((plan) => {
             const isAnnual = billingCycle === "annually";
             const features = plan.features.map((f, i) => ({
@@ -268,20 +258,17 @@ const PricingPage = () => {
           <div className="overflow-x-auto rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl">
             <table className="w-full text-left border-collapse">
               <colgroup>
-                {/* Feature label column: 20% | Free: 15.2% | Pro, Pro Plus, Business: 21.6% each */}
-                {/* Total: 20 + 15.2 + 21.6 + 21.6 + 21.6 = 100% */}
-                <col style={{ width: "20%" }} />
-                <col style={{ width: "15.2%" }} />
-                <col style={{ width: "21.6%" }} />
-                <col style={{ width: "21.6%" }} />
-                <col style={{ width: "21.6%" }} />
+                {/* Feature label column: 25% | Free: 25% | Pro: 25% | Business: 25% */}
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
               </colgroup>
               <thead>
                 <tr className="border-b border-white/5">
                   <th className="p-8 text-sm font-bold text-zinc-500 uppercase tracking-widest">{t('pricing.comparison.functionality')}</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">FREE</th>
                   <th className="p-8 text-primary font-bold text-center">PRO</th>
-                  <th className="p-8 text-zinc-300 font-bold text-center">PRO PLUS</th>
                   <th className="p-8 text-zinc-300 font-bold text-center">BUSINESS</th>
                 </tr>
               </thead>
@@ -289,7 +276,7 @@ const PricingPage = () => {
                 {comparisonData.categories.map((category) => (
                   <React.Fragment key={category.name}>
                     <tr className="bg-white/2">
-                      <td colSpan={5} className="px-8 py-4 text-xs font-black text-primary/80 uppercase tracking-[0.2em]">
+                      <td colSpan={4} className="px-8 py-4 text-xs font-black text-primary/80 uppercase tracking-[0.2em]">
                         {category.name}
                       </td>
                     </tr>

@@ -246,42 +246,47 @@ export default function AccountPage() {
                             </Button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-[3fr_4fr_4fr_4fr] gap-4 items-start">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                             <PricingCard
                                 id="free"
                                 title="FREE"
-                                description={t('landing.pricing.plans.starter.desc') || "Discover your revenue at risk. No credit card."}
+                                description={t('landing.pricing.plans.starter.desc') || "Discover what's hurting your catalog. No credit card required."}
                                 price="$0"
-                                capacity={t('landing.pricing.plans.starter.capacity') || "5 Credits"}
-                                renewal={t('landing.pricing.plans.starter.renewal') || "One-time AI gift."}
+                                capacity={t('landing.pricing.plans.starter.capacity') || "15 Credits"}
+                                renewal={t('landing.pricing.plans.starter.renewal') || "Renews every month."}
                                 features={[
-                                    { brand: null, text: t('landing.pricing.plans.starter.features.item1') || "SEO Audit (Up to 500 SKUs)" },
-                                    { brand: null, text: t('landing.pricing.plans.starter.features.item2') || "Revenue at Risk Radar" },
-                                    { brand: null, text: t('landing.pricing.plans.starter.features.item3') || "Manual sync" },
+                                    { brand: null, text: t('landing.pricing.plans.starter.features.item1') || "15 AI credits per month" },
+                                    { brand: null, text: t('landing.pricing.plans.starter.features.item2') || "SEO audit of your catalog" },
+                                    { brand: null, text: t('landing.pricing.plans.starter.features.item3') || "Image and text search" },
+                                    { brand: null, text: t('landing.pricing.plans.starter.features.item4') || "Up to 3 email reports" },
+                                    { brand: null, text: t('landing.pricing.plans.starter.features.item5') || "No credit card required" },
                                 ]}
                                 current={plan === 'starter'}
-                                actionLabel={t('landing.pricing.plans.starter.cta') || "Audit my store for free"}
+                                actionLabel={t('landing.pricing.plans.starter.cta') || "Start for free"}
                                 actionHref={plan !== 'starter' ? undefined : "/signup"}
                             />
 
                             <PricingCard
                                 id="pro"
                                 title="PRO"
-                                description={t('landing.pricing.plans.pro.desc') || "Your 24/7 marketing employee."}
-                                price={isAnnual ? "$529" : "$49"}
+                                description={t('landing.pricing.plans.pro.desc') || "AI-powered catalog optimization for your daily workflow."}
+                                price={isAnnual ? "$490" : "$49"}
                                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
                                 capacity={t('landing.pricing.plans.pro.capacity') || "250 Credits"}
                                 renewal={t('landing.pricing.plans.pro.renewal') || "Renews every month."}
                                 highlight={t('landing.pricing.plans.pro.includedFrom') || "↳ Everything in Free, plus:"}
                                 features={[
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item1') || "24/7 Auto-Pilot" },
-                                    { brand: "RAG Engine", text: t('landing.pricing.plans.pro.features.item2') || "" },
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Custom Brand Rules" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item1') || "Everything in Free, plus:" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item2') || "250 AI credits per month" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Auto-Pilot (5 products per cycle)" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item4') || "1 custom Brand Rule" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item5') || "Up to 3 team seats" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item6') || "Email support" },
                                 ]}
                                 current={plan === 'pro'}
                                 recommended={true}
                                 badge={t('landing.pricing.plans.pro.badge') || "Recommended"}
-                                actionLabel={t('landing.pricing.plans.pro.cta') || "Activate Auto-Pilot →"}
+                                actionLabel={t('landing.pricing.plans.pro.cta') || "Get Pro"}
                                 onActionClick={() => handleUpgrade(
                                     isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL! : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO!
                                 )}
@@ -289,45 +294,25 @@ export default function AccountPage() {
                             />
 
                             <PricingCard
-                                id="pro-plus"
-                                title="PRO PLUS"
-                                description="Your 24/7 marketing department."
-                                price={isAnnual ? "$1,499" : "$139"}
-                                priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
-                                capacity="350 Credits"
-                                renewal="Renews every month."
-                                highlight="↳ Everything in Pro, plus:"
-                                features={[
-                                    { brand: null, text: "Priority processing queue" },
-                                    { brand: null, text: "5 products/cycle (Auto-Pilot)" },
-                                    { brand: null, text: "Advanced Brand Rules" },
-                                ]}
-                                current={plan === 'pro-plus'}
-                                actionLabel="Activate Pro Plus →"
-                                onActionClick={() => handleUpgrade(
-                                    isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS_ANNUAL! : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS!
-                                )}
-                                isLoading={loadingCheckout}
-                            />
-
-                            <PricingCard
                                 id="business"
                                 title="BUSINESS"
-                                description={t('landing.pricing.plans.enterprise.desc') || "Your autonomous agency that learns overnight."}
-                                price={isAnnual ? "$1,609" : "$149"}
+                                description={t('landing.pricing.plans.enterprise.desc') || "High-volume optimization with priority processing."}
+                                price={isAnnual ? "$1490" : "$149"}
                                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
-                                capacity={t('landing.pricing.plans.enterprise.capacity') || "700 Credits"}
-                                renewal={t('landing.pricing.plans.enterprise.renewal') || "Extended monthly limit."}
-                                highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro Plus, plus:"}
-                                badge={t('landing.pricing.plans.enterprise.badge') || "BEST VALUE"}
+                                capacity={t('landing.pricing.plans.enterprise.capacity') || "800 Credits"}
+                                renewal={t('landing.pricing.plans.enterprise.renewal') || "Renews every month."}
+                                highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}
+                                badge={t('landing.pricing.plans.enterprise.badge') || "Lowest cost per credit"}
                                 features={[
-                                    { brand: "Sleeper Agent", text: t('landing.pricing.plans.enterprise.features.item1') || "(Sales learning)" },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "Multiple Brand Rules" },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item3') || "Priority processing queue" },
-                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item4') || "10 products/cycle (Auto-Pilot)" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item1') || "Everything in Pro, plus:" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item2') || "800 AI credits per month" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item3') || "Auto-Pilot (10 products per cycle)" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item4') || "Unlimited Brand Rules" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item5') || "Priority processing queue" },
+                                    { brand: null, text: t('landing.pricing.plans.enterprise.features.item6') || "Priority support" },
                                 ]}
                                 current={plan === 'business'}
-                                actionLabel={t('landing.pricing.plans.enterprise.cta') || "Activate Business →"}
+                                actionLabel={t('landing.pricing.plans.enterprise.cta') || "Get Business"}
                                 onActionClick={() => handleUpgrade(
                                     isAnnual ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL! : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS!
                                 )}

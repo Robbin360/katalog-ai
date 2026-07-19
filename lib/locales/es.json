@@ -264,19 +264,6 @@
                 "description": "Máximo rendimiento para catálogos grandes y operaciones multi-tienda.",
                 "badge": "Empresarial",
                 "cta": "Contactar Ventas"
-            },
-            "proPlus": {
-                "name": "PRO PLUS",
-                "description": "Para comerciantes individuales que superan a Pro",
-                "capacity": "350 Créditos",
-                "renewal": "Se renueva cada mes.",
-                "cta": "Activar PRO PLUS →",
-                "features": {
-                    "item1": "Auto-Pilot 24/7",
-
-                    "item2": "",
-                    "item3": "Reglas de Marca Personalizadas"
-                }
             }
         },
         "features": {
@@ -603,57 +590,50 @@
             "plans": {
                 "starter": {
                     "name": "FREE",
-                    "desc": "Descubre tu revenue en riesgo. Sin tarjeta.",
-                    "capacity": "5 Créditos",
-                    "renewal": "Regalo único de IA.",
-                    "cta": "Auditar mi tienda gratis",
+                    "desc": "Discover what's hurting your catalog. No credit card required.",
+                    "capacity": "15 Credits",
+                    "renewal": "Renews every month.",
+                    "cta": "Start for free",
                     "features": {
-                        "item1": "Auditoría SEO (Hasta 500 SKUs)",
-                        "item2": "Radar de Ingresos en Riesgo",
-                        "item3": "Sincronización manual"
+                        "item1": "15 AI credits per month",
+                        "item2": "SEO audit of your catalog",
+                        "item3": "Image and text search",
+                        "item4": "Up to 3 email reports",
+                        "item5": "No credit card required"
                     }
                 },
                 "pro": {
-                    "badge": "Recomendado",
+                    "badge": "Recommended",
                     "name": "PRO",
-                    "desc": "Tu empleado de marketing 24/7.",
-                    "capacity": "250 Créditos",
-                    "renewal": "Se renuevan cada mes.",
-                    "cta": "Activar Auto-Pilot →",
-                    "includedFrom": "↳ Todo lo de Free, además de:",
-      "features": {
-      "item1": "Auto-Pilot 24/7",
-      "item2": "",
-      "item3": "Reglas de Marca personalizadas"
-    }
+                    "desc": "AI-powered catalog optimization for your daily workflow.",
+                    "capacity": "250 Credits",
+                    "renewal": "Renews every month.",
+                    "cta": "Get Pro",
+                    "includedFrom": "↳ Everything in Free, plus:",
+                    "features": {
+                        "item1": "Everything in Free, plus:",
+                        "item2": "250 AI credits per month",
+                        "item3": "Auto-Pilot (5 products per cycle)",
+                        "item4": "1 custom Brand Rule",
+                        "item5": "Up to 3 team seats",
+                        "item6": "Email support"
+                    }
                 },
                 "enterprise": {
                     "name": "BUSINESS",
-                    "badge": "MEJOR VALOR",
-                    "desc": "Tu agencia autónoma que aprende de noche.",
-                    "capacity": "700 Créditos",
-                    "renewal": "Límite mensual ampliado.",
-                    "cta": "Activar Business →",
-                    "includedFrom": "↳ Todo lo incluido en Pro Plus, más:",
+                    "badge": "Lowest cost per credit",
+                    "desc": "High-volume optimization with priority processing.",
+                    "capacity": "800 Credits",
+                    "renewal": "Renews every month.",
+                    "cta": "Get Business",
+                    "includedFrom": "↳ Everything in Pro, plus:",
                     "features": {
-                        "item1": "(Aprendizaje nocturno de ventas)",
-                        "item2": "Múltiples Reglas de Marca",
-                        "item3": "Cola de procesamiento prioritaria",
-                        "item4": "10 productos/ciclo (Auto-Pilot)"
-                    }
-                },
-                "proPlus": {
-                    "name": "PRO PLUS",
-                    "desc": "Para comerciantes individuales que superan a Pro.",
-                    "capacity": "350 Créditos",
-                    "renewal": "Se renueva cada mes.",
-                    "cta": "Activar PRO PLUS →",
-                    "includedFrom": "↳ Todo lo que incluye Pro, además de:",
-                    "features": {
-                        "item1": "Auto-Pilot 24/7",
-                        "item2": "",
-                        "item3": "Reglas de Marca Personalizadas",
-                        "item4": "Exportación CSV"
+                        "item1": "Everything in Pro, plus:",
+                        "item2": "800 AI credits per month",
+                        "item3": "Auto-Pilot (10 products per cycle)",
+                        "item4": "Unlimited Brand Rules",
+                        "item5": "Priority processing queue",
+                        "item6": "Priority support"
                     }
                 }
             }

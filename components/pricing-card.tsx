@@ -13,7 +13,7 @@ export interface PlanFeature {
 }
 
 interface PricingCardProps {
-  id: "free" | "pro" | "pro-plus" | "business";
+  id: "free" | "pro" | "business";
   title: string;
   description: string;
   price: string | number;
@@ -72,8 +72,6 @@ export function PricingCard({
     ? "bg-emerald-500 hover:bg-emerald-400 text-white font-semibold shadow-[0_0_24px_rgba(16,183,127,0.22)]"
     : id === "pro"
     ? "border border-emerald-400/40 text-emerald-300 hover:bg-emerald-400/10"
-    : id === "pro-plus"
-    ? "border border-zinc-700 bg-white/[0.03] text-white/50 hover:bg-white/[0.05]"
     : "border border-zinc-700 bg-white/[0.03] text-white hover:border-zinc-500 hover:bg-white/[0.07]";
 
   return (
@@ -85,8 +83,6 @@ export function PricingCard({
           : "min-h-[620px] p-6 sm:p-8",
         id === "business"
           ? "border-emerald-400/30 ring-1 ring-emerald-400/40 shadow-[0_0_50px_-12px_rgba(16,183,127,0.55)] lg:-mt-4 hover:-translate-y-1"
-          : id === "pro-plus"
-          ? "border-zinc-800 hover:translate-y-0"
           : "border-zinc-800 hover:-translate-y-1",
         className
       )}

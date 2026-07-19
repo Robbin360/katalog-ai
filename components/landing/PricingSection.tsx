@@ -14,7 +14,7 @@ type PlanFeature = {
 };
 
 type PricingPlan = {
-  id: "free" | "pro" | "pro-plus" | "business";
+  id: "free" | "pro" | "business";
   name: string;
   descKey: string;
   capacityKey: string;
@@ -45,21 +45,25 @@ const plans: PricingPlan[] = [
     capacityKey: "landing.pricing.plans.starter.capacity",
     renewalKey: "landing.pricing.plans.starter.renewal",
     ctaKey: "landing.pricing.plans.starter.cta",
-    description: "Discover your revenue at risk. No credit card.",
-    capacity: "5 Credits",
-    renewal: "One-time AI gift.",
-    cta: "Audit my store for free",
+    description: "Discover what's hurting your catalog. No credit card required.",
+    capacity: "15 Credits",
+    renewal: "Renews every month.",
+    cta: "Start for free",
     features: [
-      { brand: null, text: "SEO Audit (Up to 500 SKUs)" },
-      { brand: null, text: "Revenue at Risk Radar" },
-      { brand: null, text: "Manual sync" },
+      { brand: null, text: "15 AI credits per month" },
+      { brand: null, text: "SEO audit of your catalog" },
+      { brand: null, text: "Image and text search" },
+      { brand: null, text: "Up to 3 email reports" },
+      { brand: null, text: "No credit card required" },
     ],
     featuresKeys: [
       "landing.pricing.plans.starter.features.item1",
       "landing.pricing.plans.starter.features.item2",
       "landing.pricing.plans.starter.features.item3",
+      "landing.pricing.plans.starter.features.item4",
+      "landing.pricing.plans.starter.features.item5",
     ],
-    comingSoon: [false, false, false],
+    comingSoon: [false, false, false, false, false],
   },
   {
     id: "pro",
@@ -69,51 +73,34 @@ const plans: PricingPlan[] = [
     renewalKey: "landing.pricing.plans.pro.renewal",
     ctaKey: "landing.pricing.plans.pro.cta",
     highlightKey: "landing.pricing.plans.pro.includedFrom",
-    description: "Your 24/7 marketing employee.",
+    description: "AI-powered catalog optimization for your daily workflow.",
     monthlyPrice: "$49",
-    annualPrice: "$529",
+    annualPrice: "$490",
     capacity: "250 Credits",
     renewal: "Renews every month.",
-    cta: "Activate Auto-Pilot →",
+    cta: "Get Pro",
     badge: "Recommended",
     badgeKey: "landing.pricing.plans.pro.badge",
     highlight: "↳ Everything in Free, plus:",
     priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
     priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL,
     features: [
-      { brand: null, text: "24/7 Auto-Pilot" },
-      { brand: "RAG Engine", text: "" },
-      { brand: null, text: "Custom Brand Rules" },
+      { brand: null, text: "Everything in Free, plus:" },
+      { brand: null, text: "250 AI credits per month" },
+      { brand: null, text: "Auto-Pilot (5 products per cycle)" },
+      { brand: null, text: "1 custom Brand Rule" },
+      { brand: null, text: "Up to 3 team seats" },
+      { brand: null, text: "Email support" },
     ],
     featuresKeys: [
       "landing.pricing.plans.pro.features.item1",
       "landing.pricing.plans.pro.features.item2",
       "landing.pricing.plans.pro.features.item3",
+      "landing.pricing.plans.pro.features.item4",
+      "landing.pricing.plans.pro.features.item5",
+      "landing.pricing.plans.pro.features.item6",
     ],
-    comingSoon: [false, false, false],
-  },
-  {
-    id: "pro-plus",
-    name: "PRO PLUS",
-    descKey: "landing.pricing.plans.proPlus.desc",
-    capacityKey: "landing.pricing.plans.proPlus.capacity",
-    renewalKey: "landing.pricing.plans.proPlus.renewal",
-    ctaKey: "landing.pricing.plans.proPlus.cta",
-    description: "For individual merchants outgrowing Pro.",
-    monthlyPrice: "$139",
-    annualPrice: "$1,499",
-    capacity: "350 Credits",
-    renewal: "Renews every month.",
-    cta: "Activate PRO PLUS →",
-    highlight: "↳ Everything in Pro, plus:",
-    highlightKey: "landing.pricing.plans.proPlus.includedFrom",
-    features: [
-      { brand: null, text: "CSV Export" },
-    ],
-    featuresKeys: [
-      "landing.pricing.plans.proPlus.features.item4",
-    ],
-    comingSoon: [false],
+    comingSoon: [false, false, false, false, false, false],
   },
   {
     id: "business",
@@ -123,30 +110,34 @@ const plans: PricingPlan[] = [
     renewalKey: "landing.pricing.plans.enterprise.renewal",
     ctaKey: "landing.pricing.plans.enterprise.cta",
     highlightKey: "landing.pricing.plans.enterprise.includedFrom",
-    description: "Your autonomous agency that learns overnight.",
+    description: "High-volume optimization with priority processing.",
     monthlyPrice: "$149",
-    annualPrice: "$1,609",
-    capacity: "700 Credits",
-    renewal: "Extended monthly limit.",
-    cta: "Activate Business →",
-    badge: "BEST VALUE",
+    annualPrice: "$1490",
+    capacity: "800 Credits",
+    renewal: "Renews every month.",
+    cta: "Get Business",
+    badge: "Lowest cost per credit",
     badgeKey: "landing.pricing.plans.enterprise.badge",
-    highlight: "↳ Everything in Pro Plus, plus:",
+    highlight: "↳ Everything in Pro, plus:",
     priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
     priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
     features: [
-      { brand: "Sleeper Agent", text: "(Sales learning)" },
-      { brand: null, text: "Multiple Brand Rules" },
+      { brand: null, text: "Everything in Pro, plus:" },
+      { brand: null, text: "800 AI credits per month" },
+      { brand: null, text: "Auto-Pilot (10 products per cycle)" },
+      { brand: null, text: "Unlimited Brand Rules" },
       { brand: null, text: "Priority processing queue" },
-      { brand: null, text: "10 products/cycle (Auto-Pilot)" },
+      { brand: null, text: "Priority support" },
     ],
     featuresKeys: [
       "landing.pricing.plans.enterprise.features.item1",
       "landing.pricing.plans.enterprise.features.item2",
       "landing.pricing.plans.enterprise.features.item3",
       "landing.pricing.plans.enterprise.features.item4",
+      "landing.pricing.plans.enterprise.features.item5",
+      "landing.pricing.plans.enterprise.features.item6",
     ],
-    comingSoon: [false, false, false, false],
+    comingSoon: [false, false, false, false, false, false],
   },
 ];
 
@@ -232,7 +223,7 @@ export const PricingSection = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-4">
+        <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3">
           {plans.map((plan) => {
             const priceId = isAnnual ? plan.priceIdAnnual : plan.priceIdMonthly;
             const features = plan.features.map((f, i) => ({
