@@ -127,7 +127,7 @@
                 "desc": "Listo para la IA"
             },
             "autopilot": {
-                "title": "Modo Autónomo",
+                "title": "Auto-Pilot",
                 "desc": "Poder total desbloqueado"
             }
         }
@@ -171,7 +171,7 @@
             {
                 "category": "General",
                 "question": "¿Qué es Katalog AI?",
-                "answer": "Katalog AI es una plataforma de automatización de catálogos de última generación que utiliza Inteligencia Artificial para optimizar descripciones, imágenes y SEO de tus productos de forma 100% autónoma y profesional."
+                "answer": "Katalog AI es una plataforma de automatización de catálogos de última generación que utiliza Inteligencia Artificial para optimizar descripciones, imágenes y SEO de tus productos de forma profesional."
             },
             {
                 "category": "General",
@@ -273,7 +273,7 @@
             "motor_vip": "Motor Neural VIP",
             "support_email": "Soporte por email",
             "support_vip": "Soporte prioritario VIP",
-            "autopilot": "Piloto automático autónomo",
+            "autopilot": "Auto-Pilot",
             "brand_brain": "Brand Brain",
             "sync_auto_1h": "Auto-sincronización cada hora",
             "sync_realtime": "Sincronización en tiempo real",
@@ -384,7 +384,7 @@
             "badge": "Motor Neural de Conexión",
             "title_pre": "Conecta",
             "title_post": "con tu Ecosistema",
-            "subtitle": "Sincroniza tu tienda en segundos. Nuestra IA se conecta directamente con tu inventario para una optimización autónoma y en tiempo real.",
+            "subtitle": "Sincroniza tu tienda en segundos. Nuestra IA se conecta directamente con tu inventario para una optimización programada y en tiempo real.",
             "cta_free": "Prueba Gratis",
             "cta_connect": "Configurar Integración"
         },
@@ -453,22 +453,22 @@
                 "critical": "Alertas Críticas"
             }
         },
-        "autonomous": {
-            "badge": "Autopilot System",
-            "title": "Corrección Silenciosa",
-            "desc": "El Agente IA de Katalog no solo identifica problemas, sino que reescribe descripciones bloqueadas, optimiza títulos e inyecta metadatos sin que tengas que intervenir.",
+        "autoPilot": {
+            "badge": "Auto-Pilot",
+            "title": "Optimización Programada",
+            "desc": "Auto-Pilot ejecuta tareas de optimización programadas en una cadencia que tú defines. Configura tus Reglas de Marca, selecciona productos y el ejecutor de tareas procesa cada ciclo automáticamente.",
             "list": [
-                "Auditoría en tiempo real de todo el catálogo",
-                "Detección proactiva de fuga de ingresos",
-                "Optimización predictiva de metadatos SEO",
-                "Sincronización silenciosa sin bloqueos"
+                "Optimización programada en la cadencia que elijas",
+                "Hasta 5 productos por ciclo en Pro, 10 en Business",
+                "Se ejecuta automáticamente según tu programación",
+                "Configura una vez, funciona en piloto automático"
             ],
             "terminal": {
-                "analyzing": "Analizando listings...",
-                "low_conv": "Detectada baja conversión en ID 4082",
-                "executing": "Ejecutando reescritura de título SEO...",
-                "new_title": "Generando alternativa enfocada en beneficios",
-                "success": "Actualización sincronizada en Shopify"
+                "analyzing": "Iniciando ciclo de optimización programada...",
+                "low_conv": "Encolando productos para optimizar...",
+                "executing": "Ejecutando lote de optimización de productos...",
+                "new_title": "Aplicando Reglas de Marca al producto...",
+                "success": "Ciclo completo — resultados sincronizados en Shopify"
             }
         },
         "cta_final": {

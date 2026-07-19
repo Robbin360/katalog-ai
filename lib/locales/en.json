@@ -127,7 +127,7 @@
                 "desc": "Ready for AI"
             },
             "autopilot": {
-                "title": "Autonomous Mode",
+                "title": "Auto-Pilot",
                 "desc": "Full power unlocked"
             }
         }
@@ -171,7 +171,7 @@
             {
                 "category": "General",
                 "question": "What is Katalog AI?",
-                "answer": "Katalog AI is a next-generation catalog automation platform that uses Artificial Intelligence to optimize descriptions, images, and SEO for your products in a 100% autonomous and professional way."
+                "answer": "Katalog AI is a next-generation catalog automation platform that uses Artificial Intelligence to optimize descriptions, images, and SEO for your products in a professional way."
             },
             {
                 "category": "General",
@@ -261,22 +261,22 @@
                 "critical": "Critical Alerts"
             }
         },
-        "autonomous": {
-            "badge": "Autopilot System",
-            "title": "Silent Correction",
-            "desc": "Katalog's AI Agent doesn't just identify problems, it boldly rewrites locked descriptions, optimizes titles, and injects metadata without you having to lift a finger.",
+        "autoPilot": {
+            "badge": "Auto-Pilot",
+            "title": "Scheduled Optimization",
+            "desc": "Auto-Pilot runs scheduled optimization tasks on a cadence you set. Configure your Brand Rules, select products, and the task runner processes each cycle automatically.",
             "list": [
-                "Real-time audit of the entire catalog",
-                "Proactive detection of revenue leaks",
-                "Predictive optimization of SEO metadata",
-                "Silent synchronization with zero downtime"
+                "Scheduled optimization on a cadence you set",
+                "Up to 5 products per cycle on Pro, 10 on Business",
+                "Runs automatically on your schedule",
+                "Configure once, runs on autopilot"
             ],
             "terminal": {
-                "analyzing": "Analyzing listings...",
-                "low_conv": "Low conversion detected on ID 4082",
-                "executing": "Executing SEO title rewrite...",
-                "new_title": "Generating benefit-focused alternative",
-                "success": "Update synchronized in Shopify"
+                "analyzing": "Scheduled optimization cycle starting...",
+                "low_conv": "Queuing products for optimization...",
+                "executing": "Running product optimization batch...",
+                "new_title": "Applying Brand Rules to product...",
+                "success": "Cycle complete — results synced to Shopify"
             }
         },
         "cta_final": {
@@ -321,7 +321,7 @@
             "motor_vip": "VIP Neural Engine",
             "support_email": "Email support",
             "support_vip": "VIP priority support",
-            "autopilot": "Autonomous autopilot",
+            "autopilot": "Auto-Pilot",
             "brand_brain": "Brand Brain",
             "sync_auto_1h": "Auto-sync every hour",
             "sync_realtime": "Real-time sync",
@@ -432,7 +432,7 @@
             "badge": "Connection Engine",
             "title_pre": "Connect",
             "title_post": "with your Ecosystem",
-            "subtitle": "Sync your store in seconds. Our AI connects directly to your inventory for autonomous, real-time optimization.",
+            "subtitle": "Sync your store in seconds. Our AI connects directly to your inventory for scheduled, real-time optimization.",
             "cta_free": "Start Free Trial",
             "cta_connect": "Set Up Integration"
         },

@@ -48,7 +48,7 @@ export default function TermsPage() {
                   Authorized Use
                 </h2>
                 <p>
-                  You agree to use Katalog AI only for lawful purposes and in accordance with the terms of your e-commerce platform (e.g., Shopify Partner Terms). Any misuse of the autonomous optimization features is strictly prohibited.
+                  You agree to use Katalog AI only for lawful purposes and in accordance with the terms of your e-commerce platform (e.g., Shopify Partner Terms). Any misuse of the scheduled optimization features is strictly prohibited.
                 </p>
               </section>
 

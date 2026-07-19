@@ -206,7 +206,7 @@ export default function FeaturesPage() {
                     </div>
                 </section>
 
-                {/* AUTONOMOUS MODE SECTION */}
+                {/* AUTO-PILOT SECTION */}
                 <section className="py-24 relative overflow-hidden">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="command-gradient border border-white/10 rounded-[40px] p-8 md:p-16 relative overflow-hidden">
@@ -215,29 +215,29 @@ export default function FeaturesPage() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                                 <div>
                                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10 mb-6">
-                                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">{t('features.autonomous.badge')}</span>
+                                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">{t('features.autoPilot.badge')}</span>
                                     </div>
-                                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t('features.autonomous.title')}</h2>
+                                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t('features.autoPilot.title')}</h2>
                                     <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                                        {t('features.autonomous.desc')}
+                                        {t('features.autoPilot.desc')}
                                     </p>
 
                                     <ul className="space-y-4">
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autonomous.list.0') || 'Auditoría en tiempo real de todo el catálogo'}
+                                            {t('features.autoPilot.list.0') || 'Auditoría en tiempo real de todo el catálogo'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autonomous.list.1') || 'Detección proactiva de fuga de ingresos'}
+                                            {t('features.autoPilot.list.1') || 'Detección proactiva de fuga de ingresos'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autonomous.list.2') || 'Optimización predictiva de metadatos SEO'}
+                                            {t('features.autoPilot.list.2') || 'Optimización predictiva de metadatos SEO'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
                                             <span className="material-symbols-outlined text-primary text-lg">verified</span>
-                                            {t('features.autonomous.list.3') || 'Sincronización silenciosa sin bloqueos'}
+                                            {t('features.autoPilot.list.3') || 'Sincronización silenciosa sin bloqueos'}
                                         </li>
                                     </ul>
                                 </div>
@@ -251,11 +251,11 @@ export default function FeaturesPage() {
                                             <span className="ml-2 text-slate-500">Agent-Runtime v2.0.1</span>
                                         </div>
                                         <div className="border-t border-white/5 pt-3">
-                                            <p>&gt; {t('features.autonomous.terminal.analyzing')}</p>
-                                            <p>&gt; {t('features.autonomous.terminal.low_conv')}</p>
-                                            <p className="text-white">&gt; {t('features.autonomous.terminal.executing')}</p>
-                                            <p>&gt; {t('features.autonomous.terminal.new_title')} "{t('features.autonomous.terminal.new_title')}"</p>
-                                            <p className="text-emerald-400">&gt; {t('features.autonomous.terminal.success')}</p>
+                                            <p>&gt; {t('features.autoPilot.terminal.analyzing')}</p>
+                                            <p>&gt; {t('features.autoPilot.terminal.low_conv')}</p>
+                                            <p className="text-white">&gt; {t('features.autoPilot.terminal.executing')}</p>
+                                            <p>&gt; {t('features.autoPilot.terminal.new_title')} "{t('features.autoPilot.terminal.new_title')}"</p>
+                                            <p className="text-emerald-400">&gt; {t('features.autoPilot.terminal.success')}</p>
 
                                             <Link href="/" className="group flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded bg-primary/20 text-primary flex items-center justify-center group-hover:bg-primary/30 transition-colors">

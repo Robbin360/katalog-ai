@@ -36,7 +36,7 @@ export default function PrivacyPage() {
                   Information We Collect
                 </h2>
                 <p>
-                  We collect information that is necessary to provide our autonomous e-commerce optimization services. This includes store data, product performance metrics, and account information required for integrations with platforms like Shopify.
+                  We collect information that is necessary to provide our scheduled e-commerce optimization services. This includes store data, product performance metrics, and account information required for integrations with platforms like Shopify.
                 </p>
               </section>
 
