@@ -61,7 +61,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               },
               "featureList": [
                 "Shopify integration",
-                "Real-time catalog sync",
                 "AI content writing",
                 "Revenue at Risk Radar"
               ]

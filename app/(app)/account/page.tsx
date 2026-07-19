@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Brand } from "@/components/ui/brand"
 import { BrandBrainTab } from "@/components/account/BrandBrain"
 import { PricingCard } from "@/components/pricing-card"
+import { PLANS } from "@/lib/pricing-config"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
@@ -242,7 +243,7 @@ export default function AccountPage() {
                                 onClick={() => setIsAnnual(true)}
                                 className={cn("h-8 px-4 font-semibold text-xs", isAnnual && "bg-background shadow-sm")}
                             >
-                                Annual <span className="ml-1 px-1.5 py-0.5 bg-emerald-500/15 text-primary rounded-full scale-90 origin-right">Save 10%</span>
+                                Annual <span className="ml-1 px-1.5 py-0.5 bg-emerald-500/15 text-primary rounded-full scale-90 origin-right">Save 17% (2 months free)</span>
                             </Button>
                         </div>
 
@@ -272,14 +273,16 @@ export default function AccountPage() {
                                 description={t('landing.pricing.plans.pro.desc') || "AI-powered catalog optimization for your daily workflow."}
                                 price={isAnnual ? "$490" : "$49"}
                                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
-                                capacity={t('landing.pricing.plans.pro.capacity') || "350 Credits"}
+                                monthlyPrice={PLANS[1].monthlyPrice}
+                                annualPrice={PLANS[1].annualPrice}
+                                billingCycle={isAnnual ? "annually" : "monthly"}
+                                capacity={t('landing.pricing.plans.pro.capacity') || "250 Credits"}
                                 renewal={t('landing.pricing.plans.pro.renewal') || "Renews every month."}
                                 highlight={t('landing.pricing.plans.pro.includedFrom') || "↳ Everything in Free, plus:"}
                                 features={[
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Auto-Pilot (5 products per cycle)" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item3') || "Auto-Pilot: continuously optimizes your catalog in the background, up to 5 products per cycle" },
                                     { brand: null, text: t('landing.pricing.plans.pro.features.item4') || "1 custom Brand Rule" },
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item5') || "Up to 3 team seats" },
-                                    { brand: null, text: t('landing.pricing.plans.pro.features.item6') || "Email support" },
+                                    { brand: null, text: t('landing.pricing.plans.pro.features.item5') || "Email support" },
                                 ]}
                                 current={plan === 'pro'}
                                 recommended={true}
@@ -297,6 +300,9 @@ export default function AccountPage() {
                                 description={t('landing.pricing.plans.enterprise.desc') || "High-volume optimization with priority processing."}
                                 price={isAnnual ? "$1490" : "$149"}
                                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
+                                monthlyPrice={PLANS[2].monthlyPrice}
+                                annualPrice={PLANS[2].annualPrice}
+                                billingCycle={isAnnual ? "annually" : "monthly"}
                                 capacity={t('landing.pricing.plans.enterprise.capacity') || "800 Credits"}
                                 renewal={t('landing.pricing.plans.enterprise.renewal') || "Renews every month."}
                                 highlight={t('landing.pricing.plans.enterprise.includedFrom') || "↳ Everything in Pro, plus:"}

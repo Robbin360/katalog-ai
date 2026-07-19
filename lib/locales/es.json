@@ -242,7 +242,7 @@
         "billing": {
             "monthly": "Mensual",
             "annually": "Anual",
-            "save": "Ahorra 10%",
+            "save": "Ahorra 17% (2 meses gratis)",
             "billed_annually": "Facturado anualmente",
             "suffix_month": "/mes",
             "suffix_year": "/año"
@@ -585,7 +585,7 @@
             "toggle": {
                 "monthly": "Facturación Mensual",
                 "annual": "Facturación Anual",
-                "save": "Ahorra 10%"
+                "save": "Ahorra 17% (2 meses gratis)"
             },
             "plans": {
                 "starter": {
@@ -606,15 +606,14 @@
                     "badge": "Recommended",
                     "name": "PRO",
                     "desc": "AI-powered catalog optimization for your daily workflow.",
-                    "capacity": "350 Credits",
+                    "capacity": "250 Credits",
                     "renewal": "Renews every month.",
                     "cta": "Get Pro",
                     "includedFrom": "↳ Everything in Free, plus:",
                     "features": {
-                        "item3": "Auto-Pilot (5 products per cycle)",
-                        "item4": "1 custom Brand Rule",
-                        "item5": "Up to 3 team seats",
-                        "item6": "Email support"
+                        "item3": "Auto-Pilot: optimiza tu catálogo en segundo plano continuamente, hasta 5 productos por ciclo",
+                        "item4": "1 regla de marca personalizada",
+                        "item5": "Soporte por correo electrónico"
                     }
                 },
                 "enterprise": {

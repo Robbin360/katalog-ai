@@ -14,7 +14,6 @@ export interface PricingPlan {
   highlight: string;
   autoPilotBatch: string;
   brandRules: string;
-  seats: string;
   features: string[];
 }
 
@@ -32,7 +31,6 @@ export const PLANS: PricingPlan[] = [
     highlight: "",
     autoPilotBatch: "N/A",
     brandRules: "None",
-    seats: "1",
     features: [
       "15 AI credits per month",
       "SEO audit of your catalog",
@@ -46,20 +44,18 @@ export const PLANS: PricingPlan[] = [
     name: "PRO",
     monthlyPrice: "$49",
     annualPrice: "$490",
-    credits: 350,
+    credits: 250,
     description: "AI-powered catalog optimization for your daily workflow.",
-    capacity: "350 Credits",
+    capacity: "250 Credits",
     renewal: "Renews every month.",
     cta: "Get Pro",
     badge: "Recommended",
     highlight: "↳ Everything in Free, plus:",
     autoPilotBatch: "5 products/cycle",
     brandRules: "1 custom Brand Rule",
-    seats: "Up to 3",
     features: [
-      "Auto-Pilot (5 products per cycle)",
+      "Auto-Pilot: continuously optimizes your catalog in the background, up to 5 products per cycle",
       "1 custom Brand Rule",
-      "Up to 3 team seats",
       "Email support",
     ],
   },
@@ -77,7 +73,6 @@ export const PLANS: PricingPlan[] = [
     highlight: "↳ Everything in Pro, plus:",
     autoPilotBatch: "10 products/cycle",
     brandRules: "Unlimited Brand Rules",
-    seats: "Up to 5",
     features: [
       "Auto-Pilot (10 products per cycle)",
       "Unlimited Brand Rules",
@@ -94,7 +89,7 @@ export function getPlan(id: PlanId): PricingPlan {
 }
 
 export const BUSINESS_CREDITS = 800;
-export const PRO_CREDITS = 350;
+export const PRO_CREDITS = 250;
 export const FREE_CREDITS = 15;
 
 export const EXTRA_CREDIT_COST = 0.25;

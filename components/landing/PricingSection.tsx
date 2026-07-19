@@ -53,9 +53,8 @@ const planMeta: Record<PlanId, {
       "landing.pricing.plans.pro.features.item3",
       "landing.pricing.plans.pro.features.item4",
       "landing.pricing.plans.pro.features.item5",
-      "landing.pricing.plans.pro.features.item6",
     ],
-    comingSoon: [false, false, false, false],
+    comingSoon: [false, false, false],
   },
   business: {
     descKey: "landing.pricing.plans.enterprise.desc",
@@ -153,7 +152,7 @@ export const PricingSection = () => {
           <span className={cn("flex items-center gap-1.5 text-sm font-semibold transition-colors", isAnnual ? "text-white" : "text-slate-400")}>
             {t("landing.pricing.toggle.annual") || "Annual Billing"}
             <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-primary">
-              {t("landing.pricing.toggle.save") || "Save 10%"}
+              {t("landing.pricing.toggle.save") || "Save 17% (2 months free)"}
             </span>
           </span>
         </div>
@@ -176,6 +175,9 @@ export const PricingSection = () => {
                 description={translate(meta.descKey, plan.description)}
                 price={isAnnual ? plan.annualPrice : plan.monthlyPrice}
                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
+                monthlyPrice={plan.monthlyPrice}
+                annualPrice={plan.annualPrice}
+                billingCycle={isAnnual ? "annually" : "monthly"}
                 capacity={translate(meta.capacityKey, plan.capacity)}
                 renewal={translate(meta.renewalKey, plan.renewal)}
                 highlight={meta.highlightKey ? translate(meta.highlightKey, plan.highlight) : undefined}

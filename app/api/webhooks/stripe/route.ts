@@ -61,7 +61,7 @@ export async function POST(req: Request) {
                 priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO ||
                 priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL
             ) {
-                creditsToAssign = 350;
+                creditsToAssign = 250;
                 planName = 'pro';
             } else if (
                 priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS ||

@@ -49,9 +49,8 @@ const pricingMeta: Record<PlanId, {
       "landing.pricing.plans.pro.features.item3",
       "landing.pricing.plans.pro.features.item4",
       "landing.pricing.plans.pro.features.item5",
-      "landing.pricing.plans.pro.features.item6",
     ],
-    comingSoon: [false, false, false, false],
+    comingSoon: [false, false, false],
     popular: true,
   },
   business: {
@@ -90,7 +89,7 @@ const PricingPage = () => {
         name: "LIMITS & CREDITS",
         features: [
           { name: "Catalog Audit (SEO Score)", values: ["Up to 500 SKUs", "Unlimited", "Unlimited"] },
-          { name: "AI Optimization Credits", values: ["15 / month", "350 / month", "800 / month"] },
+          { name: "AI Optimization Credits", values: ["15 / month", "250 / month", "800 / month"] },
           { name: "Extra Credit Cost", values: ["N/A", "$0.25", "$0.25"] },
           { name: "Failure Compensation", values: ["N/A", "Free credit if 2+ failures in 24h", "Free credit if 2+ failures in 24h"] },
         ],
@@ -112,8 +111,7 @@ const PricingPage = () => {
           { name: "Sincronización automática de inventario sin costo extra", values: ["Manual", "Automated Background", "Automated Background"] },
           { name: "Auto-Pilot Batch Size", values: ["N/A", "5 products/cycle", "10 products/cycle"] },
           { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify"] },
-          { name: "CSV Export", values: ["—", "—", "CSV + API"] },
-          { name: "Connected Stores", values: ["1 Shopify Store", "1 Shopify Store", "Up to 3 Shopify Stores"] },
+          { name: "Connected Stores", values: ["1 Shopify Store", "1 Shopify Store", "1 Shopify Store"] },
         ],
       },
       {
@@ -195,6 +193,9 @@ const PricingPage = () => {
                 description={t(meta.descKey) || plan.description}
                 price={isAnnual ? (plan.annualPrice || "$0") : (plan.monthlyPrice || "$0")}
                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
+                monthlyPrice={plan.monthlyPrice}
+                annualPrice={plan.annualPrice}
+                billingCycle={billingCycle}
                 capacity={t(meta.capacityKey) || plan.capacity}
                 renewal={t(meta.renewalKey) || plan.renewal}
                 highlight={meta.highlightKey ? t(meta.highlightKey) || plan.highlight : undefined}

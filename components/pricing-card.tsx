@@ -18,6 +18,9 @@ interface PricingCardProps {
   description: string;
   price: string | number;
   priceSuffix?: string;
+  monthlyPrice?: string | number;
+  annualPrice?: string | number;
+  billingCycle?: "monthly" | "annually";
   capacity: string;
   renewal: string;
   highlight?: string;
@@ -40,6 +43,9 @@ export function PricingCard({
   description,
   price,
   priceSuffix,
+  monthlyPrice,
+  annualPrice,
+  billingCycle,
   capacity,
   renewal,
   highlight,
@@ -109,12 +115,20 @@ export function PricingCard({
       <div>
         <h3 translate="no" className="notranslate text-sm font-bold tracking-[0.22em] text-zinc-300 uppercase">{title}</h3>
         <div className={cn("flex items-end gap-2", isFree ? "mt-4" : "mt-6")}>
-          <span className="text-5xl font-black tracking-tight text-white sm:text-6xl">
-            {price}
+          <span className="text-5xl font-black tracking-tight text-white sm:text-6xl" style={{ display: billingCycle !== "annually" ? undefined : "none" }}>
+            {monthlyPrice || price}
+          </span>
+          <span className="text-5xl font-black tracking-tight text-white sm:text-6xl" style={{ display: billingCycle === "annually" ? undefined : "none" }}>
+            {annualPrice || price}
           </span>
           {id !== "free" && (
             <span className="pb-2 text-sm font-semibold text-zinc-500">
-              {priceSuffix}
+              <span style={{ display: billingCycle !== "annually" ? undefined : "none" }}>
+                {monthlyPrice ? "/month" : priceSuffix}
+              </span>
+              <span style={{ display: billingCycle === "annually" ? undefined : "none" }}>
+                {annualPrice ? "/year" : priceSuffix}
+              </span>
             </span>
           )}
         </div>

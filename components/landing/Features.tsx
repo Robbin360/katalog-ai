@@ -44,7 +44,7 @@ export const Features = () => {
                 <span className="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors notranslate" translate="no" lang="zxx">sync_saved_locally</span>
               </div>
               <h3 className="mt-6 text-xl font-bold text-white leading-tight">{t('landing.how_it_works.step3.title') || 'Sincronización'}</h3>
-              <p className="mt-2 text-sm text-slate-400">{t('landing.how_it_works.step3.desc') || 'Las actualizaciones se envían a Shopify al instante sin tiempo de inactividad.'}</p>
+              <p className="mt-2 text-sm text-slate-400">{t('landing.how_it_works.step3.desc') || 'Changes sync to Shopify automatically in the background with zero downtime.'}</p>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ export const Features = () => {
                 <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">health_metrics</span>
               </div>
               <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item1.title') || 'Control de Salud del Inventario'}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item1.desc') || 'Un escaneo profundo que identifica instantáneamente qué productos de tu tienda Shopify necesitan atención. Priorizamos tus activos basándonos en el impacto SEO y la completitud de los datos.'}</p>
+              <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item1.desc') || 'A deep scan that identifies which products in your Shopify store need attention. We prioritize your assets based on SEO impact and data completeness.'}</p>
               <div className="mt-auto flex flex-col items-center justify-center py-6 bg-slate-900/40 rounded-xl border border-border-dark/50">
                 <div className="relative flex items-center justify-center">
                   <svg className="h-28 w-28 transform -rotate-90">
@@ -147,7 +147,7 @@ export const Features = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item4.title') || 'Métrica de Salud Global'}</h3>
-                  <p className="text-slate-400 text-sm max-w-lg mb-6 leading-relaxed">{t('landing.features_bento.item4.desc') || 'Analizamos la integridad de tus metadatos, calidad de etiquetas y consistencia visual para generar un diagnóstico accionable en tiempo real.'}</p>
+                  <p className="text-slate-400 text-sm max-w-lg mb-6 leading-relaxed">{t('landing.features_bento.item4.desc') || 'We analyze your metadata integrity, tag quality, and visual consistency to generate an actionable health score.'}</p>
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider">
                       <span className="text-slate-500">{t('landing.features_bento.item4.metric_label') || 'Optimización de Catálogo'}</span>
@@ -168,7 +168,7 @@ export const Features = () => {
                 <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">sync_alt</span>
               </div>
               <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item5.title') || 'Sincronización Total'}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item5.desc') || 'Integración perfecta con Shopify. Cambios en vivo en segundos con un solo clic.'}</p>
+              <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item5.desc') || 'Seamless Shopify integration. Sync your optimized catalog back to your store in the background.'}</p>
               <div className="mt-auto flex justify-between items-center bg-slate-900/40 p-4 rounded-xl border border-border-dark/50">
                 <div className="h-10 w-10 rounded-lg bg-slate-800 border border-border-dark flex items-center justify-center">
                   <span className="material-symbols-outlined text-slate-300 text-sm notranslate" translate="no" lang="zxx">shopping_bag</span>
