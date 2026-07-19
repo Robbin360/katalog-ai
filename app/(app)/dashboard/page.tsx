@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n-context";
 import { Brand } from "@/components/ui/brand";
 import { AutoPilotToggle } from "@/components/dashboard/AutoPilotToggle";
+import { ExportButton } from "@/components/audit/ExportButton";
 import ProductSheet from "@/components/dashboard/ProductSheet";
 import KPIGrid from "@/components/dashboard/KPIGrid";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -400,6 +401,7 @@ export default function DashboardPage() {
                     <Button variant="outline" className="border-border hover:bg-accent text-sm font-semibold h-11" onClick={handleSync} disabled={isSyncing}>
                         {isSyncing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('dashboard.actions.syncing')}</> : <><RefreshCw className="mr-2 h-4 w-4" /> {t('dashboard.actions.refresh')}</>}
                     </Button>
+                    <ExportButton planTier={dashboardData?.autoPilotData?.plan} />
                 </div>
             </div>
 

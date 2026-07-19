@@ -3,10 +3,76 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Check, HelpCircle, Minus } from "lucide-react";
-import { Brand } from "@/components/ui/brand";
 import { Navbar } from "@/components/landing/Navbar";
 import { useI18n } from "@/lib/i18n-context";
 import { PricingCard } from "@/components/pricing-card";
+import { PLANS, type PlanId } from "@/lib/pricing-config";
+
+const pricingMeta: Record<PlanId, {
+  descKey: string;
+  capacityKey: string;
+  renewalKey: string;
+  ctaKey: string;
+  highlightKey?: string;
+  badgeKey?: string;
+  priceIdMonthly?: string;
+  priceIdAnnual?: string;
+  featuresKeys: string[];
+  comingSoon: boolean[];
+  popular: boolean;
+}> = {
+  free: {
+    descKey: "landing.pricing.plans.starter.desc",
+    capacityKey: "landing.pricing.plans.starter.capacity",
+    renewalKey: "landing.pricing.plans.starter.renewal",
+    ctaKey: "landing.pricing.plans.starter.cta",
+    featuresKeys: [
+      "landing.pricing.plans.starter.features.item1",
+      "landing.pricing.plans.starter.features.item2",
+      "landing.pricing.plans.starter.features.item3",
+      "landing.pricing.plans.starter.features.item4",
+      "landing.pricing.plans.starter.features.item5",
+    ],
+    comingSoon: [false, false, false, false, false],
+    popular: false,
+  },
+  pro: {
+    descKey: "landing.pricing.plans.pro.desc",
+    capacityKey: "landing.pricing.plans.pro.capacity",
+    renewalKey: "landing.pricing.plans.pro.renewal",
+    ctaKey: "landing.pricing.plans.pro.cta",
+    highlightKey: "landing.pricing.plans.pro.includedFrom",
+    badgeKey: "landing.pricing.plans.pro.badge",
+    priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
+    priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL,
+    featuresKeys: [
+      "landing.pricing.plans.pro.features.item3",
+      "landing.pricing.plans.pro.features.item4",
+      "landing.pricing.plans.pro.features.item5",
+      "landing.pricing.plans.pro.features.item6",
+    ],
+    comingSoon: [false, false, false, false],
+    popular: true,
+  },
+  business: {
+    descKey: "landing.pricing.plans.enterprise.desc",
+    capacityKey: "landing.pricing.plans.enterprise.capacity",
+    renewalKey: "landing.pricing.plans.enterprise.renewal",
+    ctaKey: "landing.pricing.plans.enterprise.cta",
+    highlightKey: "landing.pricing.plans.enterprise.includedFrom",
+    badgeKey: "landing.pricing.plans.enterprise.badge",
+    priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
+    priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
+    featuresKeys: [
+      "landing.pricing.plans.enterprise.features.item3",
+      "landing.pricing.plans.enterprise.features.item4",
+      "landing.pricing.plans.enterprise.features.item5",
+      "landing.pricing.plans.enterprise.features.item6",
+    ],
+    comingSoon: [false, false, false, false],
+    popular: false,
+  },
+};
 
 const PricingPage = () => {
   const { t, Trans } = useI18n();
@@ -15,107 +81,8 @@ const PricingPage = () => {
   useEffect(() => {
     document.title = "Pricing Plans | Katalog AI — Shopify Catalog AI";
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', 'Transparent pricing for Katalog AI. Start with a free Shopify catalog audit, scale to Pro at $49/mo or Business at $149/mo. No hidden fees, no credit card.');
+    if (meta) meta.setAttribute('content', 'Transparent pricing for Katalog AI. Start with a free Shopify catalog audit, scale to Pro at $49/mo or Business at $149/mo. No hidden fees.');
   }, []);
-
-  const plans = [
-    {
-      id: "free" as const,
-      name: "FREE",
-      descKey: "landing.pricing.plans.starter.desc",
-      capacityKey: "landing.pricing.plans.starter.capacity",
-      renewalKey: "landing.pricing.plans.starter.renewal",
-      ctaKey: "landing.pricing.plans.starter.cta",
-      description: "Discover what's hurting your catalog. No credit card required.",
-      monthlyPrice: "$0",
-      capacity: "15 Credits",
-      renewal: "Renews every month.",
-      cta: "Start for free",
-      features: [
-        { brand: null, text: "15 AI credits per month" },
-        { brand: null, text: "SEO audit of your catalog" },
-        { brand: null, text: "Image and text search" },
-        { brand: null, text: "Up to 3 email reports" },
-        { brand: null, text: "No credit card required" },
-      ],
-      featuresKeys: [
-        "landing.pricing.plans.starter.features.item1",
-        "landing.pricing.plans.starter.features.item2",
-        "landing.pricing.plans.starter.features.item3",
-        "landing.pricing.plans.starter.features.item4",
-        "landing.pricing.plans.starter.features.item5",
-      ],
-      comingSoon: [false, false, false, false, false],
-      popular: false,
-    },
-    {
-      id: "pro" as const,
-      name: "PRO",
-      descKey: "landing.pricing.plans.pro.desc",
-      capacityKey: "landing.pricing.plans.pro.capacity",
-      renewalKey: "landing.pricing.plans.pro.renewal",
-      ctaKey: "landing.pricing.plans.pro.cta",
-      highlightKey: "landing.pricing.plans.pro.includedFrom",
-      description: "AI-powered catalog optimization for your daily workflow.",
-      monthlyPrice: "$49",
-      annualPrice: "$490",
-      capacity: "350 Credits",
-      renewal: "Renews every month.",
-      cta: "Get Pro",
-      badge: "Recommended",
-      highlight: "↳ Everything in Free, plus:",
-      priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
-      priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_ANNUAL,
-      features: [
-        { brand: null, text: "Auto-Pilot (5 products per cycle)" },
-        { brand: null, text: "1 custom Brand Rule" },
-        { brand: null, text: "Up to 3 team seats" },
-        { brand: null, text: "Email support" },
-      ],
-      featuresKeys: [
-        "landing.pricing.plans.pro.features.item3",
-        "landing.pricing.plans.pro.features.item4",
-        "landing.pricing.plans.pro.features.item5",
-        "landing.pricing.plans.pro.features.item6",
-      ],
-      comingSoon: [false, false, false, false],
-      popular: true,
-    },
-    {
-      id: "business" as const,
-      name: "BUSINESS",
-      descKey: "landing.pricing.plans.enterprise.desc",
-      capacityKey: "landing.pricing.plans.enterprise.capacity",
-      renewalKey: "landing.pricing.plans.enterprise.renewal",
-      ctaKey: "landing.pricing.plans.enterprise.cta",
-      highlightKey: "landing.pricing.plans.enterprise.includedFrom",
-      description: "High-volume optimization with priority processing.",
-      monthlyPrice: "$149",
-      annualPrice: "$1490",
-      capacity: "800 Credits",
-      renewal: "Renews every month.",
-      cta: "Get Business",
-      badge: "Lowest cost per credit",
-      badgeKey: "landing.pricing.plans.enterprise.badge",
-      highlight: "↳ Everything in Pro, plus:",
-      priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS,
-      priceIdAnnual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS_ANNUAL,
-      features: [
-        { brand: null, text: "Auto-Pilot (10 products per cycle)" },
-        { brand: null, text: "Unlimited Brand Rules" },
-        { brand: null, text: "Priority processing queue" },
-        { brand: null, text: "Priority support" },
-      ],
-      featuresKeys: [
-        "landing.pricing.plans.enterprise.features.item3",
-        "landing.pricing.plans.enterprise.features.item4",
-        "landing.pricing.plans.enterprise.features.item5",
-        "landing.pricing.plans.enterprise.features.item6",
-      ],
-      comingSoon: [false, false, false, false],
-      popular: false,
-    },
-  ];
 
   const comparisonData = {
     categories: [
@@ -132,8 +99,8 @@ const PricingPage = () => {
         name: "AGENT WORKFORCE",
         features: [
           { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents"] },
-          { name: "Copywriting RAG", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
-          { name: "Sales learning mode", values: [false, false, true] },
+          { name: "Copy entrenado en principios de venta comprobados", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
+          { name: "Aprendizaje nocturno de rendimiento", values: ["—", "—", "Nightly"] },
           { name: "Brand Voice Rules", values: ["None", "1 Global Set", "Multiple Sets"] },
           { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product"] },
         ],
@@ -142,7 +109,7 @@ const PricingPage = () => {
         name: "WORKFLOW & AUTOMATION",
         features: [
           { name: "Automation Level", values: ["Manual", "Auto-Pilot", "Auto-Pilot"] },
-          { name: "Inventory Sync", values: ["Manual", "Automated Background", "Automated Background"] },
+          { name: "Sincronización automática de inventario sin costo extra", values: ["Manual", "Automated Background", "Automated Background"] },
           { name: "Auto-Pilot Batch Size", values: ["N/A", "5 products/cycle", "10 products/cycle"] },
           { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify"] },
           { name: "CSV Export", values: ["—", "—", "CSV + API"] },
@@ -211,11 +178,13 @@ const PricingPage = () => {
 
         {/* Pricing Cards Grid — 3:4:4:4 proportional columns. Free is narrower; paid plans are equal width. */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start pt-4 mb-24">
-          {plans.map((plan) => {
+          {PLANS.map((plan) => {
+            const meta = pricingMeta[plan.id];
             const isAnnual = billingCycle === "annually";
             const features = plan.features.map((f, i) => ({
-              ...f,
-              comingSoon: plan.comingSoon?.[i],
+              brand: null,
+              text: t(meta.featuresKeys[i]) || f,
+              comingSoon: meta.comingSoon?.[i],
             }));
 
             return (
@@ -223,16 +192,16 @@ const PricingPage = () => {
                 key={plan.id}
                 id={plan.id}
                 title={plan.name}
-                description={t(plan.descKey) || plan.description}
-                price={isAnnual ? (plan.annualPrice || plan.monthlyPrice || "$0") : (plan.monthlyPrice || "$0")}
+                description={t(meta.descKey) || plan.description}
+                price={isAnnual ? (plan.annualPrice || "$0") : (plan.monthlyPrice || "$0")}
                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
-                capacity={t(plan.capacityKey) || plan.capacity}
-                renewal={t(plan.renewalKey) || plan.renewal}
-                highlight={plan.highlightKey ? t(plan.highlightKey) || plan.highlight : undefined}
+                capacity={t(meta.capacityKey) || plan.capacity}
+                renewal={t(meta.renewalKey) || plan.renewal}
+                highlight={meta.highlightKey ? t(meta.highlightKey) || plan.highlight : undefined}
                 features={features}
-                recommended={plan.popular}
-                badge={plan.badgeKey ? t(plan.badgeKey) : plan.badge}
-                actionLabel={t(plan.ctaKey) || plan.cta}
+                recommended={meta.popular}
+                badge={meta.badgeKey ? t(meta.badgeKey) : plan.badge}
+                actionLabel={t(meta.ctaKey) || plan.cta}
                 actionHref="/signup"
                 disableShift={true}
               />
@@ -405,7 +374,7 @@ const PricingPage = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">{t('pricing.autoScale.mockup.included')}</span>
-                  <span className="text-white">700 {t('pricing.autoScale.mockup.month')}</span>
+                  <span className="text-white">800 {t('pricing.autoScale.mockup.month')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">{t('pricing.autoScale.mockup.used')}</span>

@@ -186,7 +186,7 @@
             {
                 "category": "Artificial Intelligence",
                 "question": "Can Katalog AI hallucinate false product information?",
-                "answer": "No. Katalog AI includes an anti-hallucination guard that verifies each generation against real product data before publishing any changes."
+                "answer": "Very rarely — Katalog AI includes an anti-hallucination guard that verifies each generation against real product data before publishing any changes."
             },
             {
                 "category": "Artificial Intelligence",
@@ -216,12 +216,12 @@
             {
                 "category": "Plans",
                 "question": "What happens if I run out of credits?",
-                "answer": "If you exhaust your monthly credits, the Autopilot pauses. You can purchase additional credits or wait for the next cycle. Unexpected charges are never generated."
+                "answer": "Auto-Pilot pauses when you exhaust your monthly credits. To avoid interruptions, you can enable Auto-Scale (opt-in) from your dashboard: when you reach 80% usage, we automatically recharge 50 credits at $0.25 each. You set a monthly spending cap, and charges never exceed that limit. You can also purchase credit packs as a one-time buy at a lower per-credit rate."
             },
             {
                 "category": "Plans",
                 "question": "Is there a free trial?",
-                "answer": "Yes. All plans include a 14-day free trial with no credit card required. You can cancel at any time."
+                "answer": "No, there is no time-limited trial. Katalog AI is a permanent freemium model — the Free plan is free forever with 15 credits that renew every month. No credit card required. Upgrade to a paid plan only when you need more capacity."
             }
         ],
         "suggestions": {
@@ -381,13 +381,13 @@
             "faq_btn": "View FAQ",
             "support_btn": "Contact Support"
         },
-        "footer": "All plans include a 14-day free trial. Cancel anytime.",
+        "footer": "Freemium forever. No credit card required for the Free plan.",
         "creditPacks": {
             "title": "Need more firepower?",
             "subtitle": "Add credits to any Pro or Business plan. No plan change required.",
             "best_value": "Best value",
             "buy": "Buy pack",
-            "disclaimer": "Credits never expire. Use them anytime. Packs are a one-time purchase, not a subscription.",
+            "disclaimer": "Credit packs are a one-time purchase at a lower per-credit rate. Auto-Scale (dashboard feature) recharges at $0.25/credit automatically — two different mechanisms. Credits never expire.",
             "pack_suffix": "/credit",
             "once": "one-time purchase"
         },

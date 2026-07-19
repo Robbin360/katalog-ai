@@ -186,7 +186,7 @@
             {
                 "category": "Inteligencia Artificial",
                 "question": "¿Katalog AI puede alucinar información falsa sobre productos?",
-                "answer": "No. Katalog AI incluye un sistema de protección anti-alucinación que verifica cada generación contra los datos reales del producto antes de publicar cualquier cambio."
+                "answer": "Muy raramente — Katalog AI incluye un guardia anti-alucinaciones que verifica cada generación contra los datos reales del producto antes de publicar cualquier cambio."
             },
             {
                 "category": "Inteligencia Artificial",
@@ -216,12 +216,12 @@
             {
                 "category": "Planes",
                 "question": "¿Qué pasa si me quedo sin créditos?",
-                "answer": "Si agotás tus créditos del mes, el Piloto Automático se pausa. Podés comprar créditos adicionales o esperar al próximo ciclo. Nunca se generan cargos inesperados."
+                "answer": "El Auto-Pilot se pausa cuando agotás tus créditos mensuales. Para evitar interrupciones, podés activar Auto-Scale (opt-in) desde tu panel: al llegar al 80% de uso, recargamos automáticamente 50 créditos a $0.25 cada uno. Vos definís un tope mensual y los cargos nunca superan ese límite. También podés comprar paquetes de créditos como compra única a una tarifa más baja."
             },
             {
                 "category": "Planes",
                 "question": "¿Hay un período de prueba gratuito?",
-                "answer": "Sí. Todos los planes incluyen 14 días de prueba gratuita sin necesidad de tarjeta de crédito. Podés cancelar en cualquier momento."
+                "answer": "No, no hay prueba con límite de tiempo. Katalog AI es un modelo freemium permanente — el plan Free es gratis para siempre con 15 créditos que se renuevan cada mes. Sin tarjeta de crédito. Actualizá a un plan pago solo cuando necesites más capacidad."
             }
         ],
         "suggestions": {
@@ -333,13 +333,13 @@
             "faq_btn": "Ver FAQ",
             "support_btn": "Contactar Soporte"
         },
-        "footer": "Todos los planes incluyen 14 días de prueba gratis. Cancelá en cualquier momento.",
+        "footer": "Freemium para siempre. Sin tarjeta de crédito para el plan Free.",
         "creditPacks": {
             "title": "¿Necesitás más potencia?",
             "subtitle": "Agregá créditos a cualquier plan Pro o Business. Sin cambiar de plan.",
             "best_value": "Mejor valor",
             "buy": "Comprar pack",
-            "disclaimer": "Los créditos nunca expiran. Usalos cuando quieras. Los packs son compra única, no una suscripción.",
+            "disclaimer": "Los paquetes de créditos son compra única a una tarifa más baja por crédito. Auto-Scale (en tu panel) recarga a $0.25/crédito automáticamente — dos mecanismos distintos. Los créditos nunca expiran.",
             "pack_suffix": "/crédito",
             "once": "compra única"
         },

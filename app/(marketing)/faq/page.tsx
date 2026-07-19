@@ -188,7 +188,7 @@ const FAQPage = () => {
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                             <Link
-                                href="mailto:soporte@katalog.ai"
+                                href="mailto:support@katalog.ai"
                                 className="w-full sm:w-auto px-10 py-4 bg-primary text-black font-bold rounded-2xl hover:bg-white transition-all duration-300 flex items-center justify-center gap-3 shadow-[0_10px_30px_-10px_rgba(16,183,127,0.3)] hover:scale-105"
                             >
                                 <MessageSquare size={20} />

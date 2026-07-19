@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { LandingPageClient } from "@/components/landing/LandingPageClient";
 
 const siteUrl = "https://katalog-ai-navy.vercel.app";
-const title = "Katalog AI | Your AI Catalog Team for Shopify";
+const title = "Katalog AI | Your Shopify Catalog, Optimized by AI.";
 const description =
-  "Katalog AI is your AI catalog team for Shopify. Audit products, rewrite SEO, recover revenue, and sync — while you focus on selling.";
+  "Katalog AI audits your Shopify catalog, rewrites SEO, recovers revenue, and syncs — while you focus on selling.";
 
 
 export const metadata: Metadata = {
