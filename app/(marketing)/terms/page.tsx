@@ -250,7 +250,7 @@ export default function TermsPage() {
                   10. Intellectual Property
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li>Katalog AI and all its content (excluding user data) are owned by [Company Legal Name].</li>
+                  <li>Katalog AI and all its content (excluding user data) are owned by Katalog AI.</li>
                   <li>You retain all rights to your product data.</li>
                   <li>You grant us a limited license to process your product data for the purpose of providing the service.</li>
                   <li>We may use aggregated, anonymized data to improve our AI models.</li>
@@ -304,7 +304,10 @@ export default function TermsPage() {
                   14. Governing Law
                 </h2>
                 <p>
-                  These terms are governed by the laws of [Country/State]. Disputes will be resolved in the courts of [City].
+                  These terms are governed by applicable laws. Any disputes will be resolved through good-faith negotiation first, and if unresolved, through arbitration or courts of competent jurisdiction as required by applicable law.
+                </p>
+                <p className="mt-2">
+                  We will notify you of any changes to our legal structure (such as incorporation) by updating this section and emailing active users 30 days before the change takes effect.
                 </p>
               </section>
 
