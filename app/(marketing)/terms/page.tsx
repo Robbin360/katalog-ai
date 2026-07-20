@@ -105,13 +105,56 @@ export default function TermsPage() {
                 <p>
                   <strong>What is a credit:</strong> 1 credit = 1 product optimized (audit + AI optimization + sync to Shopify).
                 </p>
-                <p className="font-semibold text-white mt-4">Credit allocation:</p>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>Free: 15 credits/month</li>
-                  <li>Pro: 250 credits/month</li>
-                  <li>Business: 800 credits/month</li>
-                  <li>Enterprise: custom</li>
-                </ul>
+
+                <p className="font-semibold text-white mt-4">Credit Allocation by Plan:</p>
+                <div className="overflow-x-auto mt-2">
+                  <table className="w-full text-sm border border-white/10 rounded-lg">
+                    <thead>
+                      <tr className="border-b border-white/10 bg-white/5">
+                        <th className="px-4 py-3 text-left text-white font-semibold">Plan</th>
+                        <th className="px-4 py-3 text-left text-white font-semibold">Monthly Credits</th>
+                        <th className="px-4 py-3 text-left text-white font-semibold">Auto-Pilot Patrol Limit</th>
+                        <th className="px-4 py-3 text-left text-white font-semibold">Patrol Interval</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Free</td>
+                        <td className="px-4 py-3">15</td>
+                        <td className="px-4 py-3">3 products per patrol</td>
+                        <td className="px-4 py-3">60 seconds</td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Pro</td>
+                        <td className="px-4 py-3">250</td>
+                        <td className="px-4 py-3">5 products per patrol</td>
+                        <td className="px-4 py-3">300 seconds (5 min)</td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Business</td>
+                        <td className="px-4 py-3">800</td>
+                        <td className="px-4 py-3">10 products per patrol</td>
+                        <td className="px-4 py-3">600 seconds (10 min)</td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-3 font-medium text-white">Enterprise</td>
+                        <td className="px-4 py-3">Custom</td>
+                        <td className="px-4 py-3">Custom</td>
+                        <td className="px-4 py-3">Custom</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="font-semibold text-white mt-4">What "patrol" means:</p>
+                <p>Auto-Pilot runs in the background, periodically checking for products that need optimization. Each "patrol" is one execution cycle, processing up to the patrol limit number of products.</p>
+
+                <p className="font-semibold text-white mt-4">How credits are consumed:</p>
+                <p>Each product that Auto-Pilot optimizes consumes 1 credit. If a product fails to optimize (due to API error, rate limit, etc.), the credit is automatically refunded to your account.</p>
+
+                <p className="font-semibold text-white mt-4">Parallel processing:</p>
+                <p>On Pro and Business plans, multiple products may be processed in parallel within a single patrol to improve throughput. Each product still goes through the full optimization pipeline (audit, generate proposals, evaluate, publish).</p>
+
                 <p className="font-semibold text-white mt-4">Credit renewal:</p>
                 <p>
                   Credits renew automatically at the start of each billing cycle (a cron job runs daily at 2 AM UTC). Free plan credits renew monthly as long as the account is active.
@@ -135,7 +178,30 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  6. Acceptable Use
+                  6. AI Providers
+                </h2>
+                <p>
+                  Katalog AI uses multiple AI providers to deliver optimization services:
+                </p>
+                <ol className="list-decimal pl-6 space-y-2 mt-2">
+                  <li><strong>Google Gemini</strong> (primary) — Used for product optimization, critique, and research.</li>
+                  <li><strong>Groq</strong> (fallback) — Used when Gemini is unavailable or rate-limited.</li>
+                  <li><strong>DeepSeek</strong> — Used for product reclassification (processes data in China).</li>
+                </ol>
+                <p className="font-semibold text-white mt-4">No warranties on AI output:</p>
+                <p>
+                  We do not guarantee that AI-generated optimizations will improve conversion rates, SEO rankings, or revenue. AI output is provided "as is" and should be reviewed by the merchant before publication.
+                </p>
+                <p className="font-semibold text-white mt-4">Data processing:</p>
+                <p>
+                  Your product data is sent to these AI providers for processing. See our Privacy Policy for details on data transfers and retention.
+                </p>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <span className="w-8 h-[1px] bg-primary/50"></span>
+                  7. Acceptable Use
                 </h2>
                 <p>You agree <strong>not</strong> to:</p>
                 <ul className="list-disc pl-6 space-y-1">
@@ -151,7 +217,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  7. Refund Policy
+                  8. Refund Policy
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Monthly subscriptions:</strong> No refunds for partial months. Cancellation takes effect at the end of the current billing period.</li>
@@ -167,7 +233,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  8. Limitation of Liability
+                  9. Limitation of Liability
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Katalog AI is provided "as is" without warranties of any kind, express or implied.</li>
@@ -181,7 +247,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  9. Intellectual Property
+                  10. Intellectual Property
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Katalog AI and all its content (excluding user data) are owned by [Company Legal Name].</li>
@@ -194,7 +260,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  10. Termination
+                  11. Termination
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>You can cancel your subscription anytime from your Katalog AI account or Shopify admin.</li>
@@ -212,7 +278,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  11. Auto-Pilot Usage Limits
+                  12. Auto-Pilot Usage Limits
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Auto-Pilot processes up to 5 products per cycle on Pro, 10 on Business.</li>
@@ -225,7 +291,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  12. Changes to Terms
+                  13. Changes to Terms
                 </h2>
                 <p>
                   We may update these Terms of Service from time to time. Material changes will be notified via email at least 30 days before taking effect. Continued use of Katalog AI after the effective date constitutes acceptance of the updated terms.
@@ -235,7 +301,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  13. Governing Law
+                  14. Governing Law
                 </h2>
                 <p>
                   These terms are governed by the laws of [Country/State]. Disputes will be resolved in the courts of [City].
@@ -245,7 +311,7 @@ export default function TermsPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  14. Contact Us
+                  15. Contact Us
                 </h2>
                 <p>
                   For support inquiries: <span className="text-primary font-semibold">support@katalog.ai</span>

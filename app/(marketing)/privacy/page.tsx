@@ -97,13 +97,72 @@ export default function PrivacyPage() {
                 </h2>
                 <p className="font-semibold text-emerald-400">We do not sell your data to third parties.</p>
                 <p className="mt-4">We use the following subprocessors to provide our service:</p>
-                <ul className="list-disc pl-6 space-y-2 mt-2">
-                  <li><strong>Supabase</strong> — Database and authentication (<a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">supabase.com/privacy</a>)</li>
-                  <li><strong>Shopify</strong> — OAuth provider and product data source (<a href="https://www.shopify.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">shopify.com/legal/privacy</a>)</li>
-                  <li><strong>Vercel</strong> — Hosting and edge functions (<a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">vercel.com/legal/privacy-policy</a>)</li>
-                  <li><strong>Google (Gemini API)</strong> — AI provider for optimization (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">policies.google.com/privacy</a>)</li>
-                  <li><strong>Stripe</strong> — Payment processing (<a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">stripe.com/privacy</a>)</li>
-                </ul>
+
+                {/* Subprocessors table */}
+                <div className="overflow-x-auto mt-4">
+                  <table className="w-full text-sm border border-white/10 rounded-lg">
+                    <thead>
+                      <tr className="border-b border-white/10 bg-white/5">
+                        <th className="px-4 py-3 text-left text-white font-semibold">Provider</th>
+                        <th className="px-4 py-3 text-left text-white font-semibold">Purpose</th>
+                        <th className="px-4 py-3 text-left text-white font-semibold">Location</th>
+                        <th className="px-4 py-3 text-left text-white font-semibold">Privacy Policy</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Supabase</td>
+                        <td className="px-4 py-3">Database and authentication</td>
+                        <td className="px-4 py-3">USA / EU</td>
+                        <td className="px-4 py-3"><a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">supabase.com/privacy</a></td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Shopify</td>
+                        <td className="px-4 py-3">OAuth provider and product data source</td>
+                        <td className="px-4 py-3">Global</td>
+                        <td className="px-4 py-3"><a href="https://www.shopify.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">shopify.com/legal/privacy</a></td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Vercel</td>
+                        <td className="px-4 py-3">Hosting and edge functions</td>
+                        <td className="px-4 py-3">Global</td>
+                        <td className="px-4 py-3"><a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">vercel.com/legal/privacy-policy</a></td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Google (Gemini)</td>
+                        <td className="px-4 py-3">AI provider for optimization (primary)</td>
+                        <td className="px-4 py-3">USA</td>
+                        <td className="px-4 py-3"><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">policies.google.com/privacy</a></td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">Groq</td>
+                        <td className="px-4 py-3">AI provider for optimization (fallback)</td>
+                        <td className="px-4 py-3">USA</td>
+                        <td className="px-4 py-3"><a href="https://wow.groq.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">wow.groq.com/privacy-policy</a></td>
+                      </tr>
+                      <tr className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium text-white">DeepSeek</td>
+                        <td className="px-4 py-3">AI provider for product reclassification</td>
+                        <td className="px-4 py-3">China</td>
+                        <td className="px-4 py-3"><a href="https://www.deepseek.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">deepseek.com/privacy-policy</a></td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-3 font-medium text-white">Stripe</td>
+                        <td className="px-4 py-3">Payment processing</td>
+                        <td className="px-4 py-3">USA</td>
+                        <td className="px-4 py-3"><a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">stripe.com/privacy</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                  <p className="font-semibold text-amber-400">Important note about DeepSeek:</p>
+                  <p className="mt-2 text-slate-300">
+                    DeepSeek processes data in China. By using Katalog AI, you consent to this international data transfer for the limited purpose of product reclassification. We are working to migrate this functionality to a US-hosted provider in a future update. If you do not consent to this transfer, please contact us at <span className="text-primary font-semibold">privacy@katalog.ai</span> before using the reclassification feature.
+                  </p>
+                </div>
+
                 <p className="mt-4">
                   We may disclose information if required by law, court order, or to protect our legal rights.
                 </p>
@@ -126,7 +185,52 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  6. Your Rights
+                  6. Auto-Pilot and Patrol Logs
+                </h2>
+                <p>
+                  When Auto-Pilot is enabled, we log each patrol execution to substantiate our service performance claims (required by FTC §5 and similar regulations). These logs include:
+                </p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>User ID (UUID, not email)</li>
+                  <li>Plan tier at time of patrol</li>
+                  <li>Number of products processed, succeeded, and failed</li>
+                  <li>Credits consumed</li>
+                  <li>LLM provider used (Gemini, Groq, or DeepSeek)</li>
+                  <li>Timestamps (start and end of patrol)</li>
+                </ul>
+                <p className="font-semibold text-white mt-4">Retention:</p>
+                <p>Patrol logs are retained for 24 months, then automatically deleted.</p>
+                <p className="font-semibold text-white mt-4">Access:</p>
+                <p>You can request a copy of your patrol logs by emailing <span className="text-primary font-semibold">privacy@katalog.ai</span>. We will respond within 30 days.</p>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <span className="w-8 h-[1px] bg-primary/50"></span>
+                  7. LLM Usage Logs
+                </h2>
+                <p>
+                  We log each LLM (AI) call for cost monitoring and audit purposes. These logs include:
+                </p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>User ID (UUID)</li>
+                  <li>LLM provider and model name</li>
+                  <li>Call type (expand_queries, synthesize, writer_title, etc.)</li>
+                  <li>Token usage (input and output)</li>
+                  <li>Estimated cost</li>
+                  <li>Success/failure status</li>
+                  <li>Timestamp</li>
+                </ul>
+                <p className="font-semibold text-white mt-4">Retention:</p>
+                <p>LLM usage logs are retained for 12 months, then automatically deleted.</p>
+                <p className="font-semibold text-white mt-4">Purpose:</p>
+                <p>These logs are used solely for internal cost monitoring and debugging. They are never shared with third parties.</p>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <span className="w-8 h-[1px] bg-primary/50"></span>
+                  8. Your Rights
                 </h2>
                 <p>
                   Depending on your jurisdiction (GDPR, CCPA, and similar laws), you have the following rights:
@@ -147,7 +251,7 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  7. Security
+                  9. Security
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>We use TLS encryption (HTTPS) for data in transit.</li>
@@ -164,7 +268,7 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  8. International Data Transfers
+                  10. International Data Transfers
                 </h2>
                 <p>
                   Your data may be processed in countries other than your own, including the United States and Ireland. We rely on Standard Contractual Clauses (SCCs) for transfers from the European Economic Area (EEA) to non-EEA countries. By using Katalog AI, you consent to these transfers.
@@ -174,7 +278,7 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  9. Children's Privacy
+                  11. Children's Privacy
                 </h2>
                 <p>
                   Katalog AI is not intended for users under 16 years of age. We do not knowingly collect personal data from children. If you believe we have collected data from a child, please contact us at <span className="text-primary font-semibold">privacy@katalog.ai</span>.
@@ -184,7 +288,7 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  10. Changes to This Policy
+                  12. Changes to This Policy
                 </h2>
                 <p>
                   We may update this Privacy Policy from time to time. Material changes will be notified via email at least 30 days before taking effect. Continued use of Katalog AI after the effective date constitutes acceptance of the updated policy.
@@ -194,7 +298,7 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-primary/50"></span>
-                  11. Contact Us
+                  13. Contact Us
                 </h2>
                 <p>
                   For privacy-related inquiries, GDPR or CCPA requests, or general questions:

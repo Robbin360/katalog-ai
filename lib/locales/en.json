@@ -712,5 +712,84 @@
             "has_account": "Already have an account?",
             "switch": "Log in"
         }
+    },
+    "legal": {
+        "privacy": {
+            "subprocessors": {
+                "intro": "We use the following subprocessors to provide our service:",
+                "table_header_provider": "Provider",
+                "table_header_purpose": "Purpose",
+                "table_header_location": "Location",
+                "table_header_policy": "Privacy Policy",
+                "supabase": { "name": "Supabase", "purpose": "Database and authentication", "location": "USA / EU", "url": "https://supabase.com/privacy" },
+                "shopify": { "name": "Shopify", "purpose": "OAuth provider and product data source", "location": "Global", "url": "https://www.shopify.com/legal/privacy" },
+                "vercel": { "name": "Vercel", "purpose": "Hosting and edge functions", "location": "Global", "url": "https://vercel.com/legal/privacy-policy" },
+                "google": { "name": "Google (Gemini)", "purpose": "AI provider for optimization (primary)", "location": "USA", "url": "https://policies.google.com/privacy" },
+                "groq": { "name": "Groq", "purpose": "AI provider for optimization (fallback)", "location": "USA", "url": "https://wow.groq.com/privacy-policy/" },
+                "deepseek": { "name": "DeepSeek", "purpose": "AI provider for product reclassification", "location": "China", "url": "https://www.deepseek.com/privacy-policy" },
+                "stripe": { "name": "Stripe", "purpose": "Payment processing", "location": "USA", "url": "https://stripe.com/privacy" },
+                "deepseek_warning": "DeepSeek processes data in China. By using Katalog AI, you consent to this international data transfer for the limited purpose of product reclassification. We are working to migrate this functionality to a US-hosted provider in a future update. If you do not consent to this transfer, please contact us at privacy@katalog.ai before using the reclassification feature."
+            },
+            "patrol_logs": {
+                "title": "Auto-Pilot and Patrol Logs",
+                "intro": "When Auto-Pilot is enabled, we log each patrol execution to substantiate our service performance claims (required by FTC §5 and similar regulations). These logs include:",
+                "items": [
+                    "User ID (UUID, not email)",
+                    "Plan tier at time of patrol",
+                    "Number of products processed, succeeded, and failed",
+                    "Credits consumed",
+                    "LLM provider used (Gemini, Groq, or DeepSeek)",
+                    "Timestamps (start and end of patrol)"
+                ],
+                "retention_title": "Retention:",
+                "retention_text": "Patrol logs are retained for 24 months, then automatically deleted.",
+                "access_title": "Access:",
+                "access_text": "You can request a copy of your patrol logs by emailing privacy@katalog.ai. We will respond within 30 days."
+            },
+            "llm_logs": {
+                "title": "LLM Usage Logs",
+                "intro": "We log each LLM (AI) call for cost monitoring and audit purposes. These logs include:",
+                "items": [
+                    "User ID (UUID)",
+                    "LLM provider and model name",
+                    "Call type (expand_queries, synthesize, writer_title, etc.)",
+                    "Token usage (input and output)",
+                    "Estimated cost",
+                    "Success/failure status",
+                    "Timestamp"
+                ],
+                "retention_title": "Retention:",
+                "retention_text": "LLM usage logs are retained for 12 months, then automatically deleted.",
+                "purpose_title": "Purpose:",
+                "purpose_text": "These logs are used solely for internal cost monitoring and debugging. They are never shared with third parties."
+            }
+        },
+        "terms": {
+            "credit_allocation": {
+                "title": "Credit Allocation by Plan",
+                "table_header_plan": "Plan",
+                "table_header_credits": "Monthly Credits",
+                "table_header_limit": "Auto-Pilot Patrol Limit",
+                "table_header_interval": "Patrol Interval",
+                "free": { "plan": "Free", "credits": "15", "limit": "3 products per patrol", "interval": "60 seconds" },
+                "pro": { "plan": "Pro", "credits": "250", "limit": "5 products per patrol", "interval": "300 seconds (5 min)" },
+                "business": { "plan": "Business", "credits": "800", "limit": "10 products per patrol", "interval": "600 seconds (10 min)" },
+                "enterprise": { "plan": "Enterprise", "credits": "Custom", "limit": "Custom", "interval": "Custom" },
+                "patrol_definition": "What \"patrol\" means: Auto-Pilot runs in the background, periodically checking for products that need optimization. Each \"patrol\" is one execution cycle, processing up to the patrol limit number of products.",
+                "credit_consumption": "Each product that Auto-Pilot optimizes consumes 1 credit. If a product fails to optimize (due to API error, rate limit, etc.), the credit is automatically refunded to your account.",
+                "parallel_processing": "On Pro and Business plans, multiple products may be processed in parallel within a single patrol to improve throughput. Each product still goes through the full optimization pipeline (audit, generate proposals, evaluate, publish)."
+            },
+            "ai_providers": {
+                "title": "AI Providers",
+                "intro": "Katalog AI uses multiple AI providers to deliver optimization services:",
+                "gemini": "Google Gemini (primary) — Used for product optimization, critique, and research.",
+                "groq": "Groq (fallback) — Used when Gemini is unavailable or rate-limited.",
+                "deepseek": "DeepSeek — Used for product reclassification (processes data in China).",
+                "no_warranty_title": "No warranties on AI output:",
+                "no_warranty_text": "We do not guarantee that AI-generated optimizations will improve conversion rates, SEO rankings, or revenue. AI output is provided \"as is\" and should be reviewed by the merchant before publication.",
+                "data_processing_title": "Data processing:",
+                "data_processing_text": "Your product data is sent to these AI providers for processing. See our Privacy Policy for details on data transfers and retention."
+            }
+        }
     }
 }

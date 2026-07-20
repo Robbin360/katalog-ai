@@ -712,5 +712,84 @@
             "has_account": "¿Ya tienes una cuenta?",
             "switch": "Inicia sesión"
         }
+    },
+    "legal": {
+        "privacy": {
+            "subprocessors": {
+                "intro": "Utilizamos los siguientes subprocesadores para brindar nuestro servicio:",
+                "table_header_provider": "Proveedor",
+                "table_header_purpose": "Propósito",
+                "table_header_location": "Ubicación",
+                "table_header_policy": "Política de Privacidad",
+                "supabase": { "name": "Supabase", "purpose": "Base de datos y autenticación", "location": "USA / EU", "url": "https://supabase.com/privacy" },
+                "shopify": { "name": "Shopify", "purpose": "Proveedor OAuth y fuente de datos de productos", "location": "Global", "url": "https://www.shopify.com/legal/privacy" },
+                "vercel": { "name": "Vercel", "purpose": "Hosting y edge functions", "location": "Global", "url": "https://vercel.com/legal/privacy-policy" },
+                "google": { "name": "Google (Gemini)", "purpose": "Proveedor de IA para optimización (primario)", "location": "USA", "url": "https://policies.google.com/privacy" },
+                "groq": { "name": "Groq", "purpose": "Proveedor de IA para optimización (fallback)", "location": "USA", "url": "https://wow.groq.com/privacy-policy/" },
+                "deepseek": { "name": "DeepSeek", "purpose": "Proveedor de IA para reclasificación de productos", "location": "China", "url": "https://www.deepseek.com/privacy-policy" },
+                "stripe": { "name": "Stripe", "purpose": "Procesamiento de pagos", "location": "USA", "url": "https://stripe.com/privacy" },
+                "deepseek_warning": "DeepSeek procesa datos en China. Al usar Katalog AI, usted consiente esta transferencia internacional de datos para el propósito limitado de reclasificación de productos. Estamos trabajando para migrar esta funcionalidad a un proveedor alojado en EE.UU. en una futura actualización. Si no consiente esta transferencia, por favor contáctenos en privacy@katalog.ai antes de usar la función de reclasificación."
+            },
+            "patrol_logs": {
+                "title": "Auto-Pilot y Registros de Patrullaje",
+                "intro": "Cuando Auto-Pilot está habilitado, registramos cada ejecución de patrullaje para sustentar nuestras declaraciones de rendimiento del servicio (requerido por FTC §5 y regulaciones similares). Estos registros incluyen:",
+                "items": [
+                    "ID de usuario (UUID, no email)",
+                    "Tier de plan al momento del patrullaje",
+                    "Número de productos procesados, exitosos y fallidos",
+                    "Créditos consumidos",
+                    "Proveedor de IA utilizado (Gemini, Groq, o DeepSeek)",
+                    "Marcas de tiempo (inicio y fin del patrullaje)"
+                ],
+                "retention_title": "Retención:",
+                "retention_text": "Los registros de patrullaje se conservan por 24 meses, luego se eliminan automáticamente.",
+                "access_title": "Acceso:",
+                "access_text": "Puede solicitar una copia de sus registros de patrullaje enviando un email a privacy@katalog.ai. Responderemos dentro de 30 días."
+            },
+            "llm_logs": {
+                "title": "Registros de Uso de LLM",
+                "intro": "Registramos cada llamada LLM (IA) para monitoreo de costos y auditoría. Estos registros incluyen:",
+                "items": [
+                    "ID de usuario (UUID)",
+                    "Proveedor LLM y nombre del modelo",
+                    "Tipo de llamada (expand_queries, synthesize, writer_title, etc.)",
+                    "Uso de tokens (entrada y salida)",
+                    "Costo estimado",
+                    "Estado de éxito/fallo",
+                    "Marca de tiempo"
+                ],
+                "retention_title": "Retención:",
+                "retention_text": "Los registros de uso de LLM se conservan por 12 meses, luego se eliminan automáticamente.",
+                "purpose_title": "Propósito:",
+                "purpose_text": "Estos registros se utilizan únicamente para monitoreo interno de costos y depuración. Nunca se comparten con terceros."
+            }
+        },
+        "terms": {
+            "credit_allocation": {
+                "title": "Asignación de Créditos por Plan",
+                "table_header_plan": "Plan",
+                "table_header_credits": "Créditos Mensuales",
+                "table_header_limit": "Límite de Patrullaje Auto-Pilot",
+                "table_header_interval": "Intervalo de Patrullaje",
+                "free": { "plan": "Free", "credits": "15", "limit": "3 productos por patrullaje", "interval": "60 segundos" },
+                "pro": { "plan": "Pro", "credits": "250", "limit": "5 productos por patrullaje", "interval": "300 segundos (5 min)" },
+                "business": { "plan": "Business", "credits": "800", "limit": "10 productos por patrullaje", "interval": "600 segundos (10 min)" },
+                "enterprise": { "plan": "Enterprise", "credits": "Personalizado", "limit": "Personalizado", "interval": "Personalizado" },
+                "patrol_definition": "Qué significa \"patrullaje\": Auto-Pilot se ejecuta en segundo plano, verificando periódicamente si hay productos que necesitan optimización. Cada \"patrullaje\" es un ciclo de ejecución, procesando hasta el número de productos del límite de patrullaje.",
+                "credit_consumption": "Cada producto que Auto-Pilot optimiza consume 1 crédito. Si un producto falla al optimizarse (debido a error de API, límite de tasa, etc.), el crédito se reembolsa automáticamente a su cuenta.",
+                "parallel_processing": "En los planes Pro y Business, múltiples productos pueden procesarse en paralelo dentro de un mismo patrullaje para mejorar el rendimiento. Cada producto aún pasa por el pipeline completo de optimización (auditoría, generación de propuestas, evaluación, publicación)."
+            },
+            "ai_providers": {
+                "title": "Proveedores de IA",
+                "intro": "Katalog AI utiliza múltiples proveedores de IA para entregar servicios de optimización:",
+                "gemini": "Google Gemini (primario) — Usado para optimización de productos, crítica e investigación.",
+                "groq": "Groq (fallback) — Usado cuando Gemini no está disponible o está limitado por tasa.",
+                "deepseek": "DeepSeek — Usado para reclasificación de productos (procesa datos en China).",
+                "no_warranty_title": "Sin garantías sobre el output de IA:",
+                "no_warranty_text": "No garantizamos que las optimizaciones generadas por IA mejoren tasas de conversión, rankings SEO, o ingresos. El output de IA se proporciona \"tal cual\" y debe ser revisado por el comerciante antes de su publicación.",
+                "data_processing_title": "Procesamiento de datos:",
+                "data_processing_text": "Sus datos de productos se envían a estos proveedores de IA para su procesamiento. Vea nuestra Política de Privacidad para detalles sobre transferencias y retención de datos."
+            }
+        }
     }
 }
