@@ -394,7 +394,7 @@
         "autoScale": {
             "badge": "Auto-Scale",
             "title": "Never run out of credits",
-            "subtitle": "Auto-Pilot keeps running on your schedule. Credits auto-refill so optimization never stops mid-cycle.",
+            "subtitle": "Auto-Pilot keeps running in the background. Credits auto-refill so optimization never stops mid-cycle.",
             "desc1": "When you reach 80% of your credits, we automatically recharge 50 credits at $0.25 each. No notifications. No interruptions. No decisions.",
             "desc2": "You set a monthly spending cap. We respect it.",
             "mockup": {

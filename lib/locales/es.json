@@ -346,7 +346,7 @@
         "autoScale": {
             "badge": "Escala Automática",
             "title": "Nunca te quedes sin créditos",
-            "subtitle": "Auto-Pilot sigue funcionando según tu programación. Los créditos se recargan automáticamente para que la optimización nunca se detenga a medio ciclo.",
+            "subtitle": "Auto-Pilot sigue funcionando en segundo plano. Los créditos se recargan automáticamente para que la optimización nunca se detenga a medio ciclo.",
             "desc1": "Cuando alcances el 80% de tus créditos, recargaremos automáticamente 50 créditos a $0.25 cada uno. Sin notificaciones. Sin interrupciones. Sin decisiones.",
             "desc2": "Usted establece un límite de gasto mensual. Lo respetamos.",
             "mockup": {
