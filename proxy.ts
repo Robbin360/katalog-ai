@@ -46,7 +46,10 @@ export async function proxy(request: NextRequest) {
         path.startsWith('/faq') ||
         path.startsWith('/integrations') ||
         path.startsWith('/about') ||
-        path.startsWith('/contact');
+        path.startsWith('/contact') ||
+        path.startsWith('/legal') ||
+        path.startsWith('/cookies') ||
+        path.startsWith('/gdpr');
 
     // Si no está logueado y va a una ruta privada -> Al Login
     if (!user && !isPublicRoute) {

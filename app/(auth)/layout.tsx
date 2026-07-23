@@ -138,7 +138,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                         Katalog AI
                     </h1>
                     <p className="text-xs tracking-[0.25em] uppercase font-bold text-[#10b77f]">
-                        Intelligence Redefined
+                        Catalog optimization for Shopify
                     </p>
                 </div>
 

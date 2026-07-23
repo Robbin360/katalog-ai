@@ -49,7 +49,7 @@ export default function TermsPage() {
                   Katalog AI is a Shopify app that audits and optimizes product catalogs. The service uses AI (Gemini) to generate SEO-optimized titles, descriptions, and metadata for your products.
                 </p>
                 <ul className="list-disc pl-6 space-y-1 mt-2">
-                  <li><strong>Auto-Pilot:</strong> Runs continuously in the background (approximately every 30 seconds), processing products for optimization — up to 5 per cycle on Pro, 10 per cycle on Business.</li>
+                  <li><strong>Auto-Pilot:</strong> Runs continuously in the background (periodically based on your plan), processing products for optimization — up to 5 per cycle on Pro, 10 per cycle on Business.</li>
                   <li><strong>Brand Rules:</strong> Custom instructions you define, applied to optimizations.</li>
                   <li><strong>CSV Export:</strong> Download audit results (Pro and Business plans only).</li>
                 </ul>
@@ -282,7 +282,7 @@ export default function TermsPage() {
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Auto-Pilot processes up to 5 products per cycle on Pro, 10 on Business.</li>
-                  <li>A "cycle" runs approximately every 30 seconds (continuous background processing).</li>
+                  <li>A "cycle" runs periodically based on your plan (continuous background processing).</li>
                   <li>We reserve the right to throttle Auto-Pilot during high-load periods.</li>
                   <li>Auto-Pilot only processes products that have not yet been optimized or have been flagged for re-optimization.</li>
                 </ul>

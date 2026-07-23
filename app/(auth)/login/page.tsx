@@ -25,7 +25,7 @@ export default function LoginPage() {
                     Welcome Back
                 </h2>
                 <p className="text-slate-600 dark:text-[#d4d4d8] text-[17px] font-medium leading-relaxed max-w-sm mx-auto transition-colors duration-700">
-                    Access your neural dashboard and AI models.
+                    Sign in to your Katalog AI dashboard.
                 </p>
             </div>
 

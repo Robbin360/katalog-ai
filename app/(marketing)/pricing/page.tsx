@@ -95,20 +95,10 @@ const PricingPage = () => {
         ],
       },
       {
-        name: "AGENT WORKFORCE",
-        features: [
-          { name: "Crew Size", values: ["1 Agent", "4 Agents", "4 Agents"] },
-          { name: "Copy entrenado en principios de venta comprobados", values: ["None", "Global (Ogilvy/Cialdini)", "Global + Custom"] },
-          { name: "Aprendizaje nocturno de rendimiento", values: ["—", "—", "Nightly"] },
-          { name: "Brand Voice Rules", values: ["None", "1 Global Set", "Multiple Sets"] },
-          { name: "Revenue Safety Lock", values: [false, "Never touches a winning product", "Never touches a winning product"] },
-        ],
-      },
-      {
         name: "WORKFLOW & AUTOMATION",
         features: [
           { name: "Automation Level", values: ["Manual", "Auto-Pilot", "Auto-Pilot"] },
-          { name: "Sincronización automática de inventario sin costo extra", values: ["Manual", "Automated Background", "Automated Background"] },
+          { name: "Automatic inventory sync at no extra cost", values: ["Manual", "Automated Background", "Automated Background"] },
           { name: "Auto-Pilot Batch Size", values: ["N/A", "5 products/cycle", "10 products/cycle"] },
           { name: "Publishing Method", values: ["Blocked", "Direct to Shopify", "Direct to Shopify"] },
           { name: "Connected Stores", values: ["1 Shopify Store", "1 Shopify Store", "1 Shopify Store"] },
