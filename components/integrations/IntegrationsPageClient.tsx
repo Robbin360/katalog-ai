@@ -120,7 +120,7 @@ export function IntegrationsPageClient() {
                             {t('integrations.hero.subtitle')}
                         </p>
                         <div className="mt-4">
-                            <Link href="/login" className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
+                            <Link href="/signup" className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
                                 {t('integrations.hero.cta_free')}
                             </Link>
                         </div>
@@ -168,7 +168,7 @@ export function IntegrationsPageClient() {
                     </div>
 
                     <div className="mt-16 flex justify-center">
-                        <Link href="/login" className="px-10 py-5 bg-primary hover:bg-[#0da371] text-background-dark font-black text-lg rounded-2xl shadow-2xl shadow-primary/30 flex items-center gap-3 transition-transform hover:-translate-y-1">
+                        <Link href="/signup" className="px-10 py-5 bg-primary hover:bg-[#0da371] text-background-dark font-black text-lg rounded-2xl shadow-2xl shadow-primary/30 flex items-center gap-3 transition-transform hover:-translate-y-1">
                             {t('integrations.hero.cta_connect')}
                             <span className="material-symbols-outlined notranslate" translate="no" lang="zxx">arrow_forward</span>
                         </Link>

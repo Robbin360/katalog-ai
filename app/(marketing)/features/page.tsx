@@ -78,7 +78,7 @@ export default function FeaturesPage() {
                                 {t('features.hero.subtitle')}
                             </p>
                             <div className="mt-10 flex justify-center lg:justify-start">
-                                <Link href="/login" className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
+                                <Link href="/signup" className="bg-white text-black font-extrabold px-10 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-xl shadow-white/10 scale-100 hover:scale-105 active:scale-95">
                                     {t('features.hero.cta')}
                                 </Link>
                             </div>
@@ -273,7 +273,7 @@ export default function FeaturesPage() {
 
                 <section className="py-24 max-w-7xl mx-auto px-6 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">{t('features.cta_final.title')}</h2>
-                    <Link href="/login" className="inline-block bg-primary hover:bg-[#0da371] text-background-dark font-black px-10 py-5 rounded-2xl text-xl shadow-2xl shadow-primary/20 transition-transform hover:-translate-y-1">
+                    <Link href="/signup" className="inline-block bg-primary hover:bg-[#0da371] text-background-dark font-black px-10 py-5 rounded-2xl text-xl shadow-2xl shadow-primary/20 transition-transform hover:-translate-y-1">
                         {t('features.cta_final.btn')}
                     </Link>
                 </section>

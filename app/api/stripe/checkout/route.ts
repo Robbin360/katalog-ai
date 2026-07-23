@@ -2,12 +2,19 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServerClient } from '@supabase/ssr'
 import { cookies, headers } from 'next/headers'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Inicializamos Stripe con la clave secreta del servidor
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 export async function POST(req: Request) {
     try {
+        const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+        const { allowed, remaining } = rateLimit(`checkout:${ip}`, 10);
+        if (!allowed) {
+          return NextResponse.json({ error: 'Too many requests. Please try again in a minute.' }, { status: 429, headers: { 'X-RateLimit-Remaining': '0' } });
+        }
+
         // 1. Parseamos el body para obtener el priceId
         const body = await req.json()
         const { priceId } = body

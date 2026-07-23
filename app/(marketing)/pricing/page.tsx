@@ -138,6 +138,7 @@ const PricingPage = () => {
           <div className="mt-10 flex items-center justify-center gap-4">
             <button
               onClick={() => setBillingCycle("monthly")}
+              aria-pressed={billingCycle === "monthly"}
               className={`text-sm font-medium transition-colors ${billingCycle === "monthly" ? "text-white" : "text-zinc-500"}`}
             >
               {t('pricing.billing.monthly')}
@@ -153,6 +154,7 @@ const PricingPage = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setBillingCycle("annually")}
+                aria-pressed={billingCycle === "annually"}
                 className={`text-sm font-medium transition-colors ${billingCycle === "annually" ? "text-white" : "text-zinc-500"}`}
               >
                 {t('pricing.billing.annually')}
@@ -181,7 +183,7 @@ const PricingPage = () => {
                 id={plan.id}
                 title={plan.name}
                 description={t(meta.descKey) || plan.description}
-                price={isAnnual ? (plan.annualPrice || "$0") : (plan.monthlyPrice || "$0")}
+                price={isAnnual ? (plan.annualPrice ? `$${parseInt(plan.annualPrice.replace(/\$/g, '')).toLocaleString('en-US')}` : "$0") : (plan.monthlyPrice || "$0")}
                 priceSuffix={isAnnual ? t('pricing.billing.suffix_year') : t('pricing.billing.suffix_month')}
                 monthlyPrice={plan.monthlyPrice}
                 annualPrice={plan.annualPrice}

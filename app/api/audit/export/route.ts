@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { rateLimit } from '@/lib/rate-limit';
 
 interface AuditProduct {
   shopify_id: string;
@@ -89,6 +90,12 @@ function convertToCSV(products: AuditProduct[]): string {
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    const { allowed, remaining } = rateLimit(`export:${ip}`);
+    if (!allowed) {
+      return NextResponse.json({ error: 'Too many requests. Please try again in a minute.' }, { status: 429, headers: { 'X-RateLimit-Remaining': '0' } });
+    }
+
     const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

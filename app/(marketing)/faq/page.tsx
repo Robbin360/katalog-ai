@@ -49,16 +49,47 @@ const FAQPage = () => {
         return items;
     }, [t, locale]);
 
-    const filteredFaqs = useMemo(() => {
-        return FAQ_DATA.filter(faq => {
-            const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    function extractText(value: unknown): string {
+      if (typeof value === 'string') return value;
+      if (typeof value === 'number') return String(value);
+      if (Array.isArray(value)) return value.map(extractText).join(' ');
+      if (value && typeof value === 'object' && 'props' in value) {
+        return extractText((value as any).props?.children);
+      }
+      return '';
+    }
 
+    const filteredFaqs = useMemo(() => {
+        let items = FAQ_DATA;
+
+        if (activeCategory !== 'all') {
             const categoryLabel = t(`faq.categories.${activeCategory}`);
-            const matchesCategory = activeCategory === "all" || faq.category === categoryLabel;
-            return matchesSearch && matchesCategory;
-        });
+            items = items.filter(item => item.category === categoryLabel);
+        }
+
+        if (searchQuery.trim()) {
+            const q = searchQuery.toLowerCase();
+            items = items.filter(item => {
+                const searchText = `${extractText(item.question)} ${extractText(item.answer)}`.toLowerCase();
+                return searchText.includes(q);
+            });
+        }
+
+        return items;
     }, [searchQuery, activeCategory, FAQ_DATA, t]);
+
+    const faqJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: FAQ_DATA.map(item => ({
+            '@type': 'Question',
+            name: extractText(item.question),
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: extractText(item.answer),
+            },
+        })),
+    };
 
     return (
     <div className="flex flex-col min-h-screen">
@@ -96,6 +127,13 @@ const FAQPage = () => {
                             <span className="text-[10px] font-mono text-zinc-700 border border-zinc-800 px-1.5 py-0.5 rounded leading-none uppercase">Ctrl K</span>
                         </div>
                     </div>
+
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{
+                            __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e'),
+                        }}
+                    />
                 </div>
 
                 {/* Categories Tabs */}

@@ -74,23 +74,27 @@ export async function POST(req: Request) {
     const headersList = await headers();
     const signature = headersList.get('stripe-signature');
 
-    if (!signature || !process.env.STRIPE_WEBHOOK_SECRET) {
-        console.error('❌ Webhook error: Faltan credenciales o firma.');
-        return new NextResponse('Webhook secret missing', { status: 400 });
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+        console.error('❌ STRIPE_WEBHOOK_SECRET env var not set');
+        return new NextResponse('Webhook configuration error', { status: 500 });
+    }
+
+    if (!signature) {
+        return new NextResponse('Missing stripe-signature header', { status: 400 });
     }
 
     let event: Stripe.Event;
 
     try {
-        // Validamos que el aviso venga realmente de Stripe
         event = stripe.webhooks.constructEvent(
             body,
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
         );
-    } catch (err: any) {
-        console.error(`❌ Error de firma de Webhook: ${err.message}`);
-        return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+    } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error('❌ Webhook signature verification failed:', errorMsg);
+        return new NextResponse('Webhook signature verification failed', { status: 400 });
     }
 
     const session = event.data.object as Stripe.Checkout.Session;
@@ -174,8 +178,9 @@ export async function POST(req: Request) {
             console.log(`Checkout completed: user ${userId} upgraded to ${planName} with ${creditsToAssign} credits.`);
 
         } catch (dbError: any) {
-            console.error(`Error updating Supabase on checkout: ${dbError.message}`);
-            return new NextResponse('Database error', { status: 500 });
+            const errorMsg = dbError instanceof Error ? dbError.message : String(dbError);
+            console.error('Error processing webhook:', errorMsg);
+            return new NextResponse('Webhook processing failed', { status: 500 });
         }
     }
 

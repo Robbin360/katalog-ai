@@ -7,6 +7,8 @@ const siteUrl = "https://katalog-ai-navy.vercel.app";
 const title = "About Us | Katalog AI";
 const description = "Learn about Katalog AI's mission to revolutionize e-commerce catalog management through AI-powered optimization and automation.";
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app';
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
@@ -20,12 +22,14 @@ export const metadata: Metadata = {
     url: `${siteUrl}/about`,
     siteName: "Katalog AI",
     type: "website",
+    images: [{ url: `${baseUrl}/og-image.png`, width: 1200, height: 630, alt: 'Katalog AI — About' }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
   },
+  robots: { index: true, follow: true },
 };
 
 export default function AboutPage() {
@@ -99,7 +103,7 @@ export default function AboutPage() {
             <p className="text-slate-400 mb-8">
               Ready to optimize your catalog with AI?
             </p>
-            <Link href="/login" className="inline-block bg-primary hover:bg-[#0da371] text-background-dark font-black px-10 py-4 rounded-xl transition-all shadow-xl shadow-primary/30">
+            <Link href="/signup" className="inline-block bg-primary hover:bg-[#0da371] text-background-dark font-black px-10 py-4 rounded-xl transition-all shadow-xl shadow-primary/30">
               Get Started Free
             </Link>
           </section>

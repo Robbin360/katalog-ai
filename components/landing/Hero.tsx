@@ -203,7 +203,7 @@ export const Hero = () => {
                         </td>
                         <td className="px-6 py-4 text-right text-slate-400">$120.00</td>
                         <td className="px-6 py-4 text-right">
-                          <span aria-hidden="true" className="text-primary text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.fix') || 'Fix Now'}</span>
+                          <Link href="/signup" aria-label="Sign up to fix this issue" className="text-primary text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.fix') || 'Fix Now'}</Link>
                         </td>
                       </tr>
                       <tr className="group hover:bg-white/[0.02] transition-colors">
@@ -226,7 +226,7 @@ export const Hero = () => {
                         </td>
                         <td className="px-6 py-4 text-right text-slate-400">$85.50</td>
                         <td className="px-6 py-4 text-right">
-                          <span aria-hidden="true" className="text-primary text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.review') || 'Review'}</span>
+                          <Link href="/signup" aria-label="Sign up to review this product" className="text-primary text-xs font-bold uppercase tracking-wide">{t('landing.mockup.table.actions.review') || 'Review'}</Link>
                         </td>
                       </tr>
                     </tbody>

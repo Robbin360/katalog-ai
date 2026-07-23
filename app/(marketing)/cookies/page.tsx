@@ -1,14 +1,14 @@
-"use client";
+import type { Metadata } from "next";
 
-import { useEffect } from "react";
+export const metadata: Metadata = {
+  title: "Cookie Policy | Katalog AI",
+  description: "How Katalog AI uses cookies for authentication, preferences, security, and analytics.",
+  alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app'}/cookies` },
+};
+
 import { Navbar } from "@/components/landing/Navbar";
 
 export default function CookiesPage() {
-  useEffect(() => {
-    document.title = "Cookies Policy | Katalog AI";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', 'Cookies policy for Katalog AI. Learn how we use cookies and similar tracking technologies.');
-  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-slate-100 font-display antialiased selection:bg-primary/30 overflow-x-hidden">

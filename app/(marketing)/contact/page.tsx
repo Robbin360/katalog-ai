@@ -14,11 +14,11 @@ const CONTACT_FAQS = [
   },
   {
     question: "Can I schedule a demo?",
-    answer: "Yes! Email us at hello@katalog-ai.com with \"Demo Request\" in the subject line. Include your company name, e-commerce platform, and approximate catalog size. We'll schedule a personalized walkthrough."
+    answer: "Yes! Email us at hello@katalog.ai with \"Demo Request\" in the subject line. Include your company name, e-commerce platform, and approximate catalog size. We'll schedule a personalized walkthrough."
   }
 ];
 
-const siteUrl = "https://katalog-ai-navy.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app';
 const title = "Contact Us | Katalog AI";
 const description = "Get in touch with the Katalog AI team for support, partnerships, or general inquiries about our AI-powered catalog optimization platform.";
 
@@ -35,12 +35,14 @@ export const metadata: Metadata = {
     url: `${siteUrl}/contact`,
     siteName: "Katalog AI",
     type: "website",
+    images: [{ url: `${siteUrl}/og-image.png`, width: 1200, height: 630, alt: 'Katalog AI — Contact' }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
   },
+  robots: { index: true, follow: true },
 };
 
 export default function ContactPage() {
@@ -67,8 +69,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="text-lg font-bold">Email</h3>
-                <a href="mailto:hello@katalog-ai.com" className="text-slate-400 hover:text-primary transition-colors">
-                  hello@katalog-ai.com
+                <a href="mailto:hello@katalog.ai" className="text-slate-400 hover:text-primary transition-colors">
+                  hello@katalog.ai
                 </a>
               </div>
             </div>
@@ -84,8 +86,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="text-lg font-bold">Support</h3>
-                <a href="mailto:support@katalog-ai.com" className="text-slate-400 hover:text-primary transition-colors">
-                  support@katalog-ai.com
+                <a href="mailto:support@katalog.ai" className="text-slate-400 hover:text-primary transition-colors">
+                  support@katalog.ai
                 </a>
               </div>
             </div>
@@ -101,8 +103,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="text-lg font-bold">Partnerships</h3>
-                <a href="mailto:partnerships@katalog-ai.com" className="text-slate-400 hover:text-primary transition-colors">
-                  partnerships@katalog-ai.com
+                <a href="mailto:partnerships@katalog.ai" className="text-slate-400 hover:text-primary transition-colors">
+                  partnerships@katalog.ai
                 </a>
               </div>
             </div>

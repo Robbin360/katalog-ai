@@ -1,14 +1,14 @@
-"use client";
+import type { Metadata } from "next";
 
-import { useEffect } from "react";
+export const metadata: Metadata = {
+  title: "GDPR Compliance | Katalog AI",
+  description: "Your GDPR rights and how to exercise them with Katalog AI.",
+  alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app'}/gdpr` },
+};
+
 import { Navbar } from "@/components/landing/Navbar";
 
 export default function GDPRPage() {
-  useEffect(() => {
-    document.title = "GDPR Compliance | Katalog AI";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', 'General Data Protection Regulation (GDPR) compliance information for Katalog AI.');
-  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-slate-100 font-display antialiased selection:bg-primary/30 overflow-x-hidden">

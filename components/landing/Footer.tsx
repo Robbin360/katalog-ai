@@ -25,7 +25,7 @@ export const Footer = () => {
           {/* Links Sections */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="text-sm font-semibold text-white mb-3">Product</h4>
+              <h3 className="text-sm font-semibold text-white mb-3">Product</h3>
               <div className="flex flex-col gap-2">
                 <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/features">
                   Features
@@ -40,7 +40,7 @@ export const Footer = () => {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-white mb-3">Company</h4>
+              <h3 className="text-sm font-semibold text-white mb-3">Company</h3>
               <div className="flex flex-col gap-2">
                 <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/about">
                   {t("footer.about") || "About Us"}
@@ -55,13 +55,22 @@ export const Footer = () => {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-white mb-3">Legal</h4>
+              <h3 className="text-sm font-semibold text-white mb-3">Legal</h3>
               <div className="flex flex-col gap-2">
                 <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/privacy">
                   {t("footer.privacy") || "Privacy"}
                 </Link>
                 <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/terms">
                   {t("footer.terms") || "Terms"}
+                </Link>
+                <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/legal">
+                  Legal
+                </Link>
+                <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/cookies">
+                  Cookie Policy
+                </Link>
+                <Link className="text-sm text-slate-500 hover:text-white transition-colors" href="/gdpr">
+                  GDPR
                 </Link>
               </div>
             </div>

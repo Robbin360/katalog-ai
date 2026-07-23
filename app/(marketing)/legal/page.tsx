@@ -1,14 +1,14 @@
-"use client";
+import type { Metadata } from "next";
 
-import { useEffect } from "react";
+export const metadata: Metadata = {
+  title: "Legal | Katalog AI",
+  description: "Legal documents and policies for Katalog AI — Terms, Privacy, Cookies, GDPR.",
+  alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app'}/legal` },
+};
+
 import { Navbar } from "@/components/landing/Navbar";
 
 export default function LegalNoticePage() {
-  useEffect(() => {
-    document.title = "Legal Notice | Katalog AI";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', 'Legal notice and company information for Katalog AI.');
-  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-slate-100 font-display antialiased selection:bg-primary/30 overflow-x-hidden">

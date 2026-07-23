@@ -1,13 +1,21 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// En Next.js 16, la convención es 'proxy' en lugar de 'middleware'
+const protectedPaths = ['/dashboard', '/account', '/inventory', '/settings', '/app'];
+
 export async function proxy(request: NextRequest) {
+    const path = request.nextUrl.pathname;
+
+    // Solo aplicar a rutas protegidas — el resto cae a not-found.tsx
+    if (!protectedPaths.some(p => path.startsWith(p))) {
+        return NextResponse.next();
+    }
+
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
-    })
+    });
 
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,40 +36,11 @@ export async function proxy(request: NextRequest) {
     )
 
     const { data: { user } } = await supabase.auth.getUser()
-    const path = request.nextUrl.pathname
 
-    // Rutas que no requieren estar logueado
-    const isPublicRoute =
-        path === '/' ||
-        path.startsWith('/login') ||
-        path.startsWith('/signup') ||
-        path.startsWith('/forgot-password') ||
-        path.startsWith('/update-password') ||
-        path.startsWith('/privacy') ||
-        path.startsWith('/terms') ||
-        path.startsWith('/auth') ||
-        path.startsWith('/api') ||
-        path.startsWith('/pricing') ||
-        path.startsWith('/features') ||
-        path.startsWith('/faq') ||
-        path.startsWith('/integrations') ||
-        path.startsWith('/about') ||
-        path.startsWith('/contact') ||
-        path.startsWith('/legal') ||
-        path.startsWith('/cookies') ||
-        path.startsWith('/gdpr');
-
-    // Si no está logueado y va a una ruta privada -> Al Login
-    if (!user && !isPublicRoute) {
+    if (!user) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
-        return NextResponse.redirect(url)
-    }
-
-    // Si está logueado y va a la Landing o al Auth Suite -> Al Dashboard
-    if (user && (path === '/' || path.startsWith('/login') || path.startsWith('/signup') || path.startsWith('/forgot-password') || path.startsWith('/update-password'))) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/dashboard'
+        url.searchParams.set('redirect', path)
         return NextResponse.redirect(url)
     }
 
@@ -69,7 +48,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|robots.txt|sitemap.xml|manifest.webmanifest|opengraph-image|twitter-image|_next/data|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-    ],
-}
+    matcher: ['/dashboard/:path*', '/account/:path*', '/inventory/:path*', '/settings/:path*', '/app/:path*'],
+};
