@@ -78,9 +78,15 @@ const PricingPage = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("monthly");
 
   useEffect(() => {
-    document.title = "Pricing Plans | Katalog AI — Shopify Catalog AI";
+    document.title = "Pricing | Katalog AI";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute('content', 'Transparent pricing for Katalog AI. Start with a free Shopify catalog audit, scale to Pro at $49/mo or Business at $149/mo. No hidden fees.');
+    const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
+    link.rel = 'canonical'; link.href = '/pricing';
+    document.head.appendChild(link);
+    const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+    robots.name = 'robots'; robots.content = 'index, follow';
+    document.head.appendChild(robots);
   }, []);
 
   const comparisonData = {

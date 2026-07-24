@@ -13,6 +13,12 @@ export default function FeaturesPage() {
         document.title = "AI Catalog Optimization Features | Katalog AI";
         const meta = document.querySelector('meta[name="description"]');
         if (meta) meta.setAttribute('content', 'Discover Katalog AI\'s features: Shopify catalog auditing, AI product description writing, revenue at risk radar, and automated Shopify sync.');
+        const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
+        link.rel = 'canonical'; link.href = '/features';
+        document.head.appendChild(link);
+        const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+        robots.name = 'robots'; robots.content = 'index, follow';
+        document.head.appendChild(robots);
     }, []);
 
     return (

@@ -9,6 +9,12 @@ export default function PrivacyPage() {
     document.title = "Privacy Policy | Katalog AI";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute('content', 'Privacy Policy for Katalog AI. Learn how we collect, use, share, and protect your Shopify store data, product catalog information, and account security.');
+    const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
+    link.rel = 'canonical'; link.href = '/privacy';
+    document.head.appendChild(link);
+    const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+    robots.name = 'robots'; robots.content = 'index, follow';
+    document.head.appendChild(robots);
   }, []);
 
   return (

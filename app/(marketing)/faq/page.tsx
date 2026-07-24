@@ -32,6 +32,12 @@ const FAQPage = () => {
         document.title = "FAQ | Katalog AI — Shopify Catalog Optimization";
         const meta = document.querySelector('meta[name="description"]');
         if (meta) meta.setAttribute('content', 'Get answers about Katalog AI: how AI catalog optimization works, supported platforms, pricing plans, Shopify integration, and store connection process.');
+        const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
+        link.rel = 'canonical'; link.href = '/faq';
+        document.head.appendChild(link);
+        const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+        robots.name = 'robots'; robots.content = 'index, follow';
+        document.head.appendChild(robots);
     }, []);
 
     const CATEGORIES = ["all", "general", "ia", "integrations", "plans"];
@@ -60,22 +66,24 @@ const FAQPage = () => {
     }
 
     const filteredFaqs = useMemo(() => {
-        let items = FAQ_DATA;
+        const itemsWithIndex = FAQ_DATA.map((item, originalIndex) => ({ ...item, originalIndex }));
+
+        let filtered = itemsWithIndex;
 
         if (activeCategory !== 'all') {
             const categoryLabel = t(`faq.categories.${activeCategory}`);
-            items = items.filter(item => item.category === categoryLabel);
+            filtered = filtered.filter(item => item.category === categoryLabel);
         }
 
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            items = items.filter(item => {
+            filtered = filtered.filter(item => {
                 const searchText = `${extractText(item.question)} ${extractText(item.answer)}`.toLowerCase();
                 return searchText.includes(q);
             });
         }
 
-        return items;
+        return filtered;
     }, [searchQuery, activeCategory, FAQ_DATA, t]);
 
     const faqJsonLd = {
@@ -155,18 +163,18 @@ const FAQPage = () => {
                 {/* FAQ List (Accordion) */}
                 <div className="space-y-4 min-h-[400px]">
                     {filteredFaqs.length > 0 ? (
-                        filteredFaqs.map((faq, index) => {
-                            const isOpen = openIndex === index;
+                        filteredFaqs.map((faq, idx) => {
+                            const isOpen = openIndex === faq.originalIndex;
                             return (
                                 <div
-                                    key={faq.question}
+                                    key={`faq-${faq.originalIndex}`}
                                     className={`group rounded-2xl border transition-all duration-300 ${isOpen
                                         ? "bg-zinc-900/60 border-primary/30 shadow-[0_4px_20px_-10px_rgba(16,183,127,0.1)]"
                                         : "bg-zinc-900/30 border-white/5 hover:border-white/10"
                                         }`}
                                 >
                                     <button
-                                        onClick={() => setOpenIndex(isOpen ? null : index)}
+                                        onClick={() => setOpenIndex(isOpen ? null : faq.originalIndex)}
                                         className="w-full flex items-center justify-between p-6 text-left"
                                     >
                                         <div className="flex items-center gap-4">
@@ -176,7 +184,7 @@ const FAQPage = () => {
                                                 {faq.category === t('faq.categories.integrations') && <ShieldCheck size={18} />}
                                                 {faq.category === t('faq.categories.plans') && <CreditCard size={18} />}
                                             </div>
-                                            <Trans i18nKey={`faq.items.${index}.question`} className={`font-semibold text-lg transition-colors ${isOpen ? "text-white" : "text-zinc-300"}`} />
+                                            <Trans i18nKey={`faq.items.${faq.originalIndex}.question`} className={`font-semibold text-lg transition-colors ${isOpen ? "text-white" : "text-zinc-300"}`} />
                                         </div>
                                         <ChevronDown
                                             className={`text-zinc-500 transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""}`}
@@ -188,7 +196,7 @@ const FAQPage = () => {
                                             }`}
                                     >
                                         <div className="px-6 pb-6 pt-0 ml-14">
-                                            <Trans i18nKey={`faq.items.${index}.answer`} className="text-zinc-400 leading-relaxed text-base block" />
+                                            <Trans i18nKey={`faq.items.${faq.originalIndex}.answer`} className="text-zinc-400 leading-relaxed text-base block" />
                                         </div>
                                     </div>
                                 </div>

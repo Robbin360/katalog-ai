@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Legal | Katalog AI",
   description: "Legal documents and policies for Katalog AI — Terms, Privacy, Cookies, GDPR.",
   alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app'}/legal` },
+  robots: { index: true, follow: true },
 };
 
 import { Navbar } from "@/components/landing/Navbar";

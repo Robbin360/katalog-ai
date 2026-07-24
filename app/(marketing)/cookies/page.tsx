@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Cookie Policy | Katalog AI",
   description: "How Katalog AI uses cookies for authentication, preferences, security, and analytics.",
   alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app'}/cookies` },
+  robots: { index: true, follow: true },
 };
 
 import { Navbar } from "@/components/landing/Navbar";

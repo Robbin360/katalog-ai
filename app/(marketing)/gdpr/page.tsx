@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "GDPR Compliance | Katalog AI",
   description: "Your GDPR rights and how to exercise them with Katalog AI.",
   alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://katalog-ai-navy.vercel.app'}/gdpr` },
+  robots: { index: true, follow: true },
 };
 
 import { Navbar } from "@/components/landing/Navbar";

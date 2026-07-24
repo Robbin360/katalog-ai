@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { rateLimit } from '@/lib/rate-limit';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -70,6 +71,12 @@ async function atomicallyUpdatePlanAndLimit(
 }
 
 export async function POST(req: Request) {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    const { allowed } = rateLimit(`stripe-webhook:${ip}`);
+    if (!allowed) {
+        return new NextResponse('Too many requests', { status: 429 });
+    }
+
     const body = await req.text();
     const headersList = await headers();
     const signature = headersList.get('stripe-signature');

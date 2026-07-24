@@ -9,6 +9,12 @@ export default function TermsPage() {
     document.title = "Terms of Service | Katalog AI";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute('content', 'Terms of Service for Katalog AI, the AI-powered Shopify catalog optimization platform. Read our agreement covering subscription plans, credits, refunds, and usage policies.');
+    const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
+    link.rel = 'canonical'; link.href = '/terms';
+    document.head.appendChild(link);
+    const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+    robots.name = 'robots'; robots.content = 'index, follow';
+    document.head.appendChild(robots);
   }, []);
 
   return (
