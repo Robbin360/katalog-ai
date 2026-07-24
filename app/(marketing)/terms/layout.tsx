@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Katalog AI",
-  description: "Terms of Service for Katalog AI, the AI-powered Shopify catalog optimization platform. Read our agreement covering usage, data, and account responsibilities.",
+  title: { absolute: "Terms of Service | Katalog AI" },
+  description: "Terms and conditions for using Katalog AI.",
+  alternates: { canonical: `${SITE_URL}/terms` },
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: "Terms of Service | Katalog AI",
+    description: "Terms and conditions for using Katalog AI.",
+    url: `${SITE_URL}/terms`,
+  },
 };
 
 export default function TermsLayout({ children }: { children: React.ReactNode }) {

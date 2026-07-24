@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Check, HelpCircle, Minus } from "lucide-react";
 import { Navbar } from "@/components/landing/Navbar";
@@ -76,18 +76,6 @@ const pricingMeta: Record<PlanId, {
 const PricingPage = () => {
   const { t, Trans } = useI18n();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("monthly");
-
-  useEffect(() => {
-    document.title = "Pricing | Katalog AI";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', 'Transparent pricing for Katalog AI. Start with a free Shopify catalog audit, scale to Pro at $49/mo or Business at $149/mo. No hidden fees.');
-    const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
-    link.rel = 'canonical'; link.href = '/pricing';
-    document.head.appendChild(link);
-    const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
-    robots.name = 'robots'; robots.content = 'index, follow';
-    document.head.appendChild(robots);
-  }, []);
 
   const comparisonData = {
     categories: [

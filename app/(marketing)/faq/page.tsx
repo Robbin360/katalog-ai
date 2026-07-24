@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import {
     Search,
@@ -27,18 +27,6 @@ const FAQPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [activeCategory, setActiveCategory] = useState("all");
     const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-    useEffect(() => {
-        document.title = "FAQ | Katalog AI — Shopify Catalog Optimization";
-        const meta = document.querySelector('meta[name="description"]');
-        if (meta) meta.setAttribute('content', 'Get answers about Katalog AI: how AI catalog optimization works, supported platforms, pricing plans, Shopify integration, and store connection process.');
-        const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
-        link.rel = 'canonical'; link.href = '/faq';
-        document.head.appendChild(link);
-        const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
-        robots.name = 'robots'; robots.content = 'index, follow';
-        document.head.appendChild(robots);
-    }, []);
 
     const CATEGORIES = ["all", "general", "ia", "integrations", "plans"];
 

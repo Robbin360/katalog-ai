@@ -1,3 +1,17 @@
+/**
+ * PROVIDER RATE LIMITER
+ *
+ * WARNING: Known limitation — this in-memory rate limiter does NOT work
+ * reliably on Vercel serverless. Each invocation gets a fresh instance,
+ * so the Map is empty every time. Rate limiting is best-effort only.
+ *
+ * For production-grade rate limiting, use:
+ * - @upstash/ratelimit (Redis-backed, works across invocations)
+ * - Vercel KV (native Vercel integration)
+ * - Edge Config (for distributed rate limiting)
+ *
+ * Migration to @upstash/ratelimit is a post-launch TODO.
+ */
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
 const RATE_LIMIT_MAX = 30;

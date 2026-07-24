@@ -1,25 +1,12 @@
 "use client";
 
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { Brand } from '@/components/ui/brand';
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
 
 export default function FeaturesPage() {
     const { t } = useI18n();
-
-    useEffect(() => {
-        document.title = "AI Catalog Optimization Features | Katalog AI";
-        const meta = document.querySelector('meta[name="description"]');
-        if (meta) meta.setAttribute('content', 'Discover Katalog AI\'s features: Shopify catalog auditing, AI product description writing, revenue at risk radar, and automated Shopify sync.');
-        const link = document.querySelector('link[rel="canonical"]') || document.createElement('link');
-        link.rel = 'canonical'; link.href = '/features';
-        document.head.appendChild(link);
-        const robots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
-        robots.name = 'robots'; robots.content = 'index, follow';
-        document.head.appendChild(robots);
-    }, []);
 
     return (
         <div className="bg-background-dark font-display text-slate-100 min-h-screen selection:bg-primary/30 antialiased">
