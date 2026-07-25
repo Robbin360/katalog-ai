@@ -134,7 +134,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                             className="w-10 h-10 relative z-10 block dark:hidden object-contain" 
                         />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-2 transition-colors duration-700">
+                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 dark:text-white mb-2 transition-colors duration-700">
                         Katalog AI
                     </h1>
                     <p className="text-xs tracking-[0.25em] uppercase font-bold text-[#10b77f]">

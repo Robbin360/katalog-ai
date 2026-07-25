@@ -3,6 +3,7 @@
 import { useI18n } from "@/lib/i18n-context";
 import Link from "next/link";
 import { useState } from "react";
+import { Plus, Minus } from 'lucide-react'
 
 export interface FAQItem {
   question: string;
@@ -81,8 +82,8 @@ export const FAQAccordion = ({ items, enableSchema = false }: { items: FAQItem[]
             >
               <h3 className="font-medium text-sm">{item.question}</h3>
               <span className="ml-1.5 flex-shrink-0 rounded-full bg-white/5 p-1 text-white sm:p-1.5 group-open:bg-primary/20 group-open:text-primary transition-colors notranslate" translate="no">
-                <span className="material-symbols-outlined group-open:hidden text-lg" translate="no" lang="zxx">add</span>
-                <span className="material-symbols-outlined hidden group-open:block text-lg" translate="no" lang="zxx">remove</span>
+                <Plus className="group-open:hidden text-lg" />
+                <Minus className="hidden group-open:block text-lg" />
               </span>
             </summary>
             <p className="mt-2 leading-relaxed text-slate-400 text-sm">

@@ -80,7 +80,13 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
     }, [isCollapsed])
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
-    const initials = displayName.substring(0, 2).toUpperCase()
+    const initials = displayName
+        .split(' ')
+        .filter(Boolean)
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2) || displayName.substring(0, 2).toUpperCase()
 
     return (
         <TooltipProvider delayDuration={0}>

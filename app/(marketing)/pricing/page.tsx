@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Check, HelpCircle, Minus } from "lucide-react";
+import { Check, HelpCircle, Minus, Rocket } from "lucide-react";
 import { Navbar } from "@/components/landing/Navbar";
 import { useI18n } from "@/lib/i18n-context";
 import { PricingCard } from "@/components/pricing-card";
@@ -331,7 +331,7 @@ const PricingPage = () => {
           <div className="bg-zinc-900/20 border border-white/5 rounded-3xl p-8 md:p-12 backdrop-blur">
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                <span translate="no" className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
+                <Rocket className="text-primary text-sm" />
                 <span className="text-[10px] font-black tracking-widest uppercase text-primary">{t('pricing.autoScale.badge')}</span>
               </div>
 

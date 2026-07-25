@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Brand } from '@/components/ui/brand';
+import { TrendingUp, Layers, CheckCircle2, BarChart3, RefreshCw, XCircle, AlertTriangle, BadgeCheck, Sparkles } from 'lucide-react'
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
 
@@ -131,7 +132,7 @@ export default function FeaturesPage() {
                             <div className="glass-card bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 hover:border-primary/30 transition-all">
                                 <div className="flex justify-between items-start mb-6">
                                     <span className="text-slate-400 text-sm font-medium">{t('features.dashboard_widgets.revenue.label')}</span>
-                                    <span className="material-symbols-outlined text-primary">trending_up</span>
+                                    <TrendingUp className="text-primary" />
                                 </div>
                                 <div className="text-4xl font-bold text-white mb-2">$42.8k</div>
                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -161,14 +162,14 @@ export default function FeaturesPage() {
                                 <div className="flex items-center justify-between mb-8">
                                     <h3 className="text-xl font-bold tracking-tight text-slate-100">{t('features.dashboard_widgets.queue.title')}</h3>
                                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary">
-                                        <span className="material-symbols-outlined text-2xl font-bold">layers</span>
+                                        <Layers className="text-2xl font-bold" />
                                     </div>
                                 </div>
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between bg-primary/10 border border-primary/20 px-5 py-4 rounded-full transition-all hover:bg-primary/15">
                                         <div className="flex items-center gap-3">
                                             <div className="flex items-center justify-center size-8 rounded-full bg-primary/20 text-primary">
-                                                <span className="material-symbols-outlined text-xl">check_circle</span>
+                                                <CheckCircle2 className="text-xl" />
                                             </div>
                                             <span className="text-primary font-bold text-lg">1,248 {t('features.dashboard_widgets.queue.optimized')}</span>
                                         </div>
@@ -177,20 +178,20 @@ export default function FeaturesPage() {
                                     <div className="flex items-center justify-between bg-blue-500/10 border border-blue-500/20 px-5 py-4 rounded-full transition-all hover:bg-blue-500/15">
                                         <div className="flex items-center gap-3">
                                             <div className="flex items-center justify-center size-8 rounded-full bg-blue-500/20 text-blue-500">
-                                                <span className="material-symbols-outlined text-xl">query_stats</span>
+                                                <BarChart3 className="text-xl" />
                                             </div>
                                             <span className="text-blue-500 font-bold text-lg">15 {t('features.dashboard_widgets.queue.in_progress')}</span>
                                         </div>
-                                        <span className="material-symbols-outlined text-blue-500 text-xl animate-spin">sync</span>
+                                        <RefreshCw className="text-blue-500 text-xl animate-spin" />
                                     </div>
                                     <div className="flex items-center justify-between bg-red-500/10 border border-red-500/20 px-5 py-4 rounded-full transition-all hover:bg-red-500/15">
                                         <div className="flex items-center gap-3">
                                             <div className="flex items-center justify-center size-8 rounded-full bg-red-500/20 text-red-500">
-                                                <span className="material-symbols-outlined text-xl">error</span>
+                                                <XCircle className="text-xl" />
                                             </div>
                                             <span className="text-red-500 font-bold text-lg">84 {t('features.dashboard_widgets.queue.critical')}</span>
                                         </div>
-                                        <span className="material-symbols-outlined text-red-500 text-xl">warning</span>
+                                        <AlertTriangle className="text-red-500 text-xl" />
                                     </div>
                                 </div>
                             </div>
@@ -217,19 +218,19 @@ export default function FeaturesPage() {
 
                                     <ul className="space-y-4">
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <BadgeCheck className="text-primary text-lg" />
                                             {t('features.autoPilot.list.0') || 'Continuous background optimization'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <BadgeCheck className="text-primary text-lg" />
                                             {t('features.autoPilot.list.1') || 'Up to 5 products per cycle on Pro, 10 on Business'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <BadgeCheck className="text-primary text-lg" />
                                             {t('features.autoPilot.list.2') || 'Runs continuously in the background'}
                                         </li>
                                         <li className="flex items-center gap-3 text-sm text-slate-300">
-                                            <span translate="no" className="material-symbols-outlined text-primary text-lg">verified</span>
+                                            <BadgeCheck className="text-primary text-lg" />
                                             {t('features.autoPilot.list.3') || 'Configure once, runs on autopilot'}
                                         </li>
                                     </ul>
@@ -252,7 +253,7 @@ export default function FeaturesPage() {
 
                                             <Link href="/" className="group flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded bg-primary/20 text-primary flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                                                    <span translate="no" className="material-symbols-outlined text-sm">auto_awesome</span>
+                                                    <Sparkles className="text-sm" />
                                                 </div>
                                                 <Brand className="text-lg font-bold tracking-tight text-white" />
                                             </Link>

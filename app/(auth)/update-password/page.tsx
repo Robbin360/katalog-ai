@@ -3,6 +3,7 @@
 import { useState, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Eye, EyeOff, Lock } from 'lucide-react'
 
 function PasswordStrength({ value }: { value: string }) {
     let label = "Enter password"
@@ -102,9 +103,7 @@ export default function UpdatePasswordPage() {
                                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-slate-400 dark:text-[#d4d4d8]/40 hover:text-[#10b77f] dark:hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                                 aria-label="Toggle password visibility"
                             >
-                                <span className="material-symbols-outlined text-[20px] notranslate">
-                                    {showPassword ? "visibility_off" : "visibility"}
-                                </span>
+                                {showPassword ? <EyeOff className="text-[20px] notranslate" /> : <Eye className="text-[20px] notranslate" />}
                             </button>
                         </div>
                         <PasswordStrength value={password} />
@@ -139,9 +138,7 @@ export default function UpdatePasswordPage() {
                                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-slate-400 dark:text-[#d4d4d8]/40 hover:text-[#10b77f] dark:hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                                 aria-label="Toggle confirm password visibility"
                             >
-                                <span className="material-symbols-outlined text-[20px] notranslate">
-                                    {showConfirm ? "visibility_off" : "visibility"}
-                                </span>
+                                {showConfirm ? <EyeOff className="text-[20px] notranslate" /> : <Eye className="text-[20px] notranslate" />}
                             </button>
                         </div>
                         {confirmError && (
@@ -173,9 +170,7 @@ export default function UpdatePasswordPage() {
                 <div className="text-center py-6 animate-fade-in">
                     <div className="w-16 h-16 bg-[#10b77f]/10 rounded-full flex items-center justify-center mx-auto mb-6 relative">
                         <div className="absolute inset-0 bg-[#10b77f]/20 blur-md rounded-full animate-pulse" />
-                        <span className="material-symbols-outlined text-[#10b77f] text-[32px] relative z-10">
-                            lock_open
-                        </span>
+                        <Lock className="text-[#10b77f] text-[32px] relative z-10" />
                     </div>
                     <h3 className="text-xl font-bold text-zinc-950 dark:text-white mb-2 transition-colors duration-700">Password Updated!</h3>
                     <p className="text-slate-600 dark:text-[#d4d4d8] text-[15px] leading-relaxed mb-10 transition-colors duration-700">

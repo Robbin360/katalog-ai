@@ -5,6 +5,7 @@ import { Brand } from "@/components/ui/brand";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import { ArrowRight, X, Menu } from 'lucide-react'
 
 export const Navbar = () => {
   const { t } = useI18n();
@@ -94,7 +95,7 @@ export const Navbar = () => {
             aria-hidden="true"
           />
           <span className="text-base md:text-lg font-bold text-white whitespace-nowrap notranslate" translate="no">
-            Katalog <span className="ml-2">AI</span>
+            Katalog<span>AI</span>
           </span>
         </Link>
         
@@ -131,8 +132,8 @@ export const Navbar = () => {
             className="group relative flex h-9 items-center justify-center overflow-hidden rounded-lg bg-primary px-4 text-sm font-medium text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,183,127,0.4)]"
           >
             <span className="relative z-10 flex items-center gap-2">
-              <span className="capitalize">{t('common.connect_store') || 'connect store'}</span>
-              <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-0.5 notranslate" translate="no" lang="zxx">arrow_forward</span>
+              <span className="capitalize">{t('common.connect_store') || 'start free'}</span>
+              <ArrowRight className="text-[18px] transition-transform group-hover:translate-x-0.5" />
             </span>
           </Link>
 
@@ -147,9 +148,9 @@ export const Navbar = () => {
             aria-label={isOpen ? "Close menu" : "Open menu"}
           >
             {isOpen ? (
-              <span className="material-symbols-outlined text-[24px] notranslate" translate="no" lang="zxx">close</span>
+              <X className="text-[24px]" />
             ) : (
-              <span className="material-symbols-outlined text-[24px] notranslate" translate="no" lang="zxx">menu</span>
+              <Menu className="text-[24px]" />
             )}
           </button>
         </div>
@@ -213,7 +214,7 @@ export const Navbar = () => {
                 className="flex h-14 w-full items-center justify-center rounded-xl bg-primary px-8 text-lg font-bold text-background-dark shadow-[0_0_40px_rgba(16,183,127,0.4)] transition-all hover:bg-emerald-400 text-center"
                 onClick={() => setIsOpen(false)}
               >
-                {t('common.connect_store') || 'Connect Store'}
+                {t('common.connect_store') || 'Start free'}
               </Link>
             </div>
           </nav>

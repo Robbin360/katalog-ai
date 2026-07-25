@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/Navbar";
 import { Brand } from "@/components/ui/brand";
+import { Mail, Headset, Handshake, Users } from 'lucide-react'
 import { FAQAccordion } from "@/components/landing/FAQSection";
 
 const CONTACT_FAQS = [
@@ -65,7 +66,7 @@ export default function ContactPage() {
           <div className="glass-card rounded-3xl p-8 flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">mail</span>
+                <Mail className="text-primary text-2xl" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">Email</h3>
@@ -82,7 +83,7 @@ export default function ContactPage() {
           <div className="glass-card rounded-3xl p-8 flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">support_agent</span>
+                <Headset className="text-primary text-2xl" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">Support</h3>
@@ -99,7 +100,7 @@ export default function ContactPage() {
           <div className="glass-card rounded-3xl p-8 flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">handshake</span>
+                <Handshake className="text-primary text-2xl" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">Partnerships</h3>
@@ -116,7 +117,7 @@ export default function ContactPage() {
           <div className="glass-card rounded-3xl p-8 flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">groups</span>
+                <Users className="text-primary text-2xl" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">Social Media</h3>

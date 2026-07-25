@@ -22,7 +22,7 @@ export const Hero = () => {
             href="/signup"
             className="group flex h-14 w-full min-w-[200px] items-center justify-center rounded-lg bg-primary px-8 text-lg font-bold text-background-dark transition-all hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,183,127,0.3)] hover:scale-105 sm:w-auto capitalize text-center"
           >
-            {t('landing.hero.cta') || 'connect store'}
+            {t('landing.hero.cta') || 'start free'}
           </Link>
         </div>
 

@@ -194,7 +194,7 @@ export default function KPIGrid({ userId }: KPIGridProps) {
                 title="Catalog Health"
                 value={`${animatedHealth}%`}
                 icon={Activity}
-                trend={{ label: animatedHealth > 80 ? "Healthy" : "Needs Attention", type: animatedHealth > 80 ? "pos" : "neg" }}
+                trend={{ label: animatedHealth === 0 ? "Connect a store" : (animatedHealth > 80 ? "Healthy" : "Needs Attention"), type: animatedHealth === 0 ? "pos" : (animatedHealth > 80 ? "pos" : "neg") }}
                 glowColor="#eab308"
                 subtitle="Overall quality score across all store products"
                 loading={isLoading}

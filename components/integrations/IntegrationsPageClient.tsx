@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Brand } from '@/components/ui/brand';
+import { GitBranch, Link2, BarChart3, ArrowRight, Sparkles, Code2, Share2, Clock, ShoppingCart, Store, RefreshCw, BadgeCheck, Key } from 'lucide-react'
 import { useI18n } from '@/lib/i18n-context';
 import { Navbar } from '@/components/landing/Navbar';
 
@@ -132,7 +133,7 @@ export function IntegrationsPageClient() {
                             <div className="relative group shrink-0">
                                 <div className="absolute -inset-8 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-all"></div>
                                 <div className="size-32 glass-card rounded-3xl flex items-center justify-center shadow-2xl relative z-10 border-primary/20 bg-background-dark/50 backdrop-blur-xl">
-                                    <span className="material-symbols-outlined text-primary text-6xl notranslate" translate="no" lang="zxx">account_tree</span>
+                                    <GitBranch className="text-primary text-6xl" />
                                 </div>
                             </div>
 
@@ -157,11 +158,11 @@ export function IntegrationsPageClient() {
                             <div className="relative group w-64 h-32 overflow-hidden glass-card rounded-3xl flex items-center shrink-0 border-primary/10 bg-background-dark/50 backdrop-blur-xl">
                                 <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 via-transparent to-background-dark/80 z-20 pointer-events-none"></div>
                                 <div className="flex gap-10 animate-scroll items-center whitespace-nowrap px-6">
-                                    <span className="material-symbols-outlined text-primary text-4xl mx-4 notranslate" translate="no" lang="zxx">storefront</span>
-                                    <span className="material-symbols-outlined text-slate-400 text-4xl mx-4 notranslate" translate="no" lang="zxx">shopping_cart</span>
-                                    <span className="material-symbols-outlined text-primary text-4xl mx-4 notranslate" translate="no" lang="zxx">storefront</span>
-                                    <span className="material-symbols-outlined text-slate-400 text-4xl mx-4 notranslate" translate="no" lang="zxx">deployed_code</span>
-                                    <span className="material-symbols-outlined text-slate-400 text-4xl mx-4 notranslate" translate="no" lang="zxx">hub</span>
+                                    <Store className="text-primary text-4xl mx-4" />
+                                    <ShoppingCart className="text-slate-400 text-4xl mx-4" />
+                                    <Store className="text-primary text-4xl mx-4" />
+                                    <Code2 className="text-slate-400 text-4xl mx-4" />
+                                    <Share2 className="text-slate-400 text-4xl mx-4" />
                                 </div>
                             </div>
                         </div>
@@ -170,7 +171,7 @@ export function IntegrationsPageClient() {
                     <div className="mt-16 flex justify-center">
                         <Link href="/signup" className="px-10 py-5 bg-primary hover:bg-[#0da371] text-background-dark font-black text-lg rounded-2xl shadow-2xl shadow-primary/30 flex items-center gap-3 transition-transform hover:-translate-y-1">
                             {t('integrations.hero.cta_connect')}
-                            <span className="material-symbols-outlined notranslate" translate="no" lang="zxx">arrow_forward</span>
+                            <ArrowRight />
                         </Link>
                     </div>
                 </section>
@@ -185,7 +186,7 @@ export function IntegrationsPageClient() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div className="flex flex-col items-center text-center gap-6">
                             <div className="size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
-                                <span className="material-symbols-outlined text-primary text-3xl notranslate" translate="no" lang="zxx">add_link</span>
+                                <Link2 className="text-primary text-3xl" />
                                 <div className="absolute -right-2 top-0 size-6 bg-primary text-background-dark text-xs font-black rounded-full flex items-center justify-center">1</div>
                             </div>
                             <h3 className="text-xl font-bold">{t('integrations.steps.step1.title')}</h3>
@@ -193,7 +194,7 @@ export function IntegrationsPageClient() {
                         </div>
                         <div className="flex flex-col items-center text-center gap-6">
                             <div className="size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
-                                <span className="material-symbols-outlined text-primary text-3xl notranslate" translate="no" lang="zxx">vpn_key</span>
+                                <Key className="text-primary text-3xl" />
                                 <div className="absolute -right-2 top-0 size-6 bg-primary text-background-dark text-xs font-black rounded-full flex items-center justify-center">2</div>
                             </div>
                             <h3 className="text-xl font-bold">{t('integrations.steps.step2.title')}</h3>
@@ -201,7 +202,7 @@ export function IntegrationsPageClient() {
                         </div>
                         <div className="flex flex-col items-center text-center gap-6">
                             <div className="size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
-                                <span className="material-symbols-outlined text-primary text-3xl notranslate" translate="no" lang="zxx">auto_awesome</span>
+                                <Sparkles className="text-primary text-3xl" />
                                 <div className="absolute -right-2 top-0 size-6 bg-primary text-background-dark text-xs font-black rounded-full flex items-center justify-center">3</div>
                             </div>
                             <h3 className="text-xl font-bold">{t('integrations.steps.step3.title')}</h3>
@@ -256,7 +257,7 @@ export function IntegrationsPageClient() {
                                 <span className="px-2 py-1 rounded-lg bg-white/5 text-slate-500 text-[10px] font-black tracking-widest uppercase">{t('integrations.platforms.coming_soon')}</span>
                             </div>
                             <div className="size-14 rounded-2xl bg-white/5 flex items-center justify-center text-slate-600 transition-colors">
-                                <span className="material-symbols-outlined text-3xl notranslate" translate="no" lang="zxx">hub</span>
+                                <Share2 className="text-3xl" />
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-slate-500">BigCommerce</h3>
@@ -274,7 +275,7 @@ export function IntegrationsPageClient() {
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="size-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-700">
-                                        <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">shopping_cart</span>
+                                        <ShoppingCart className="text-2xl" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-500">WooCommerce</h3>
@@ -288,7 +289,7 @@ export function IntegrationsPageClient() {
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="size-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-700">
-                                        <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">deployed_code</span>
+                                        <Code2 className="text-2xl" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-500">Magento / Adobe</h3>
@@ -306,7 +307,7 @@ export function IntegrationsPageClient() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <div className="glass-card rounded-2xl p-6 flex items-start gap-5">
                             <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                <span className="material-symbols-outlined text-primary notranslate" translate="no" lang="zxx">sync</span>
+                                <RefreshCw className="text-primary" />
                             </div>
                             <div>
                                 <h4 className="text-lg font-bold mb-2">{t('integrations.benefits.sync.title')}</h4>
@@ -315,7 +316,7 @@ export function IntegrationsPageClient() {
                         </div>
                         <div className="glass-card rounded-2xl p-6 flex items-start gap-5">
                             <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                <span className="material-symbols-outlined text-primary notranslate" translate="no" lang="zxx">verified_user</span>
+                                <BadgeCheck className="text-primary" />
                             </div>
                             <div>
                                 <h4 className="text-lg font-bold mb-2">{t('integrations.benefits.security.title')}</h4>
@@ -324,7 +325,7 @@ export function IntegrationsPageClient() {
                         </div>
                         <div className="glass-card rounded-2xl p-6 flex items-start gap-5">
                             <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                <span className="material-symbols-outlined text-primary notranslate" translate="no" lang="zxx">analytics</span>
+                                <BarChart3 className="text-primary" />
                             </div>
                             <div>
                                 <h4 className="text-lg font-bold mb-2">{t('integrations.benefits.mapping.title')}</h4>
@@ -338,7 +339,7 @@ export function IntegrationsPageClient() {
                 <section className="max-w-7xl mx-auto px-6 py-8 border-t border-white/10">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-base notranslate" translate="no" lang="zxx">schedule</span>
+                            <Clock className="text-base" />
                             <span>Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         </div>
                         <div className="flex items-center gap-4">

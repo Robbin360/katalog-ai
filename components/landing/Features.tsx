@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n-context";
+import { BarChart3, Wand2, CheckCircle2, Activity, AlertTriangle, BookOpen, TrendingDown, ShoppingBag, Zap, Sparkles, RefreshCw } from 'lucide-react'
 
 export const Features = () => {
   const { t } = useI18n();
@@ -21,7 +22,7 @@ export const Features = () => {
             <div className="flex flex-col items-center text-center max-w-xs group">
               <div className="w-20 h-20 rounded-2xl bg-surface-dark border border-border-dark flex items-center justify-center shadow-lg group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(16,183,127,0.15)] transition-all duration-300 relative">
                 <span className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-surface-darker border border-border-dark flex items-center justify-center text-xs font-bold text-slate-400">1</span>
-                <span className="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors notranslate" translate="no" lang="zxx">query_stats</span>
+                <BarChart3 className="text-4xl text-white group-hover:text-primary transition-colors" />
               </div>
               <h3 className="mt-6 text-xl font-bold text-white leading-tight">{t('landing.how_it_works.step1.title') || 'Auditoría'}</h3>
               <p className="mt-2 text-sm text-slate-400">{t('landing.how_it_works.step1.desc') || 'La IA escanea todo tu catálogo en busca de datos faltantes y errores de conversión.'}</p>
@@ -31,7 +32,7 @@ export const Features = () => {
             <div className="flex flex-col items-center text-center max-w-xs group">
               <div className="w-20 h-20 rounded-2xl bg-surface-dark border border-border-dark flex items-center justify-center shadow-lg group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(16,183,127,0.15)] transition-all duration-300 relative">
                 <span className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-surface-darker border border-border-dark flex items-center justify-center text-xs font-bold text-slate-400">2</span>
-                <span className="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors notranslate" translate="no" lang="zxx">auto_fix_high</span>
+                <Wand2 className="text-4xl text-white group-hover:text-primary transition-colors" />
               </div>
               <h3 className="mt-6 text-xl font-bold text-white leading-tight">{t('landing.how_it_works.step2.title') || 'Optimización'}</h3>
               <p className="mt-2 text-sm text-slate-400">{t('landing.how_it_works.step2.desc') || 'Redes neuronales regeneran títulos, corrigen imágenes y priorizan por impacto en ventas.'}</p>
@@ -41,7 +42,7 @@ export const Features = () => {
             <div className="flex flex-col items-center text-center max-w-xs group">
               <div className="w-20 h-20 rounded-2xl bg-surface-dark border border-border-dark flex items-center justify-center shadow-lg group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(16,183,127,0.15)] transition-all duration-300 relative">
                 <span className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-surface-darker border border-border-dark flex items-center justify-center text-xs font-bold text-slate-400">3</span>
-                <span className="material-symbols-outlined text-4xl text-white group-hover:text-primary transition-colors notranslate" translate="no" lang="zxx">sync_saved_locally</span>
+                <CheckCircle2 className="text-4xl text-white group-hover:text-primary transition-colors" />
               </div>
               <h3 className="mt-6 text-xl font-bold text-white leading-tight">{t('landing.how_it_works.step3.title') || 'Sincronización'}</h3>
               <p className="mt-2 text-sm text-slate-400">{t('landing.how_it_works.step3.desc') || 'Changes sync to Shopify automatically in the background with zero downtime.'}</p>
@@ -63,7 +64,7 @@ export const Features = () => {
             <div className="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-primary shadow-inner">
-                <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">health_metrics</span>
+                <Activity className="text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item1.title') || 'Control de Salud del Inventario'}</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item1.desc') || 'A deep scan that identifies which products in your Shopify store need attention. We prioritize your assets based on SEO impact and data completeness.'}</p>
@@ -78,7 +79,7 @@ export const Features = () => {
                 </div>
                 <div className="mt-4 flex flex-col items-center">
                   <span className="text-xs font-bold text-red-400 flex items-center gap-1 uppercase tracking-wider">
-                    <span className="material-symbols-outlined text-[14px] notranslate" translate="no" lang="zxx">warning</span> 32 {t('landing.features_bento.item1.footer_risk') || 'Productos en Riesgo'}
+                    <AlertTriangle className="text-[14px]" /> 32 {t('landing.features_bento.item1.footer_risk') || 'Productos en Riesgo'}
                   </span>
                 </div>
               </div>
@@ -88,7 +89,7 @@ export const Features = () => {
             <div className="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-primary shadow-inner">
-                <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">history_edu</span>
+                <BookOpen className="text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item2.title') || 'Escritura de Contenido IA'}</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item2.desc') || 'Genera títulos SEO y descripciones optimizadas para conversión. Nuestra IA analiza tus datos de Shopify para crear textos que rankean y venden.'}</p>
@@ -109,7 +110,7 @@ export const Features = () => {
             <div className="group relative overflow-hidden glass-card p-8 hover:border-red-500/30 transition-all duration-300 flex flex-col h-full">
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-red-500/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-red-500 shadow-inner">
-                <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">monitoring</span>
+                <Activity className="text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item3.title') || 'Radar de Ingresos en Riesgo'}</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item3.desc') || 'No optimices a ciegas. Nuestra IA calcula el valor monetario de cada mejora, permitiéndote priorizar los cambios que realmente mueven la aguja de tus ingresos mensuales.'}</p>
@@ -119,7 +120,7 @@ export const Features = () => {
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{t('landing.features_bento.item3.loss_label') || 'Pérdida Mensual Estimada'}</span>
                   <div className="flex items-end gap-3 w-full">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 text-red-500 shrink-0">
-                      <span className="material-symbols-outlined text-xl notranslate" translate="no" lang="zxx">trending_down</span>
+                      <TrendingDown className="text-xl" />
                     </div>
                     <div className="flex flex-col">
                       <span className="text-4xl font-extrabold text-white tracking-tight drop-shadow-[0_0_15px_rgba(239,68,68,0.2)]">$1,240.00</span>
@@ -143,7 +144,7 @@ export const Features = () => {
               <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/5 blur-[80px] pointer-events-none"></div>
               <div className="flex flex-col md:flex-row md:items-center gap-8">
                 <div className="flex-shrink-0 flex h-14 w-14 items-center justify-center rounded-xl bg-surface-darker border border-border-dark text-primary shadow-inner">
-                  <span className="material-symbols-outlined text-3xl notranslate" translate="no" lang="zxx">analytics</span>
+                  <BarChart3 className="text-3xl" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item4.title') || 'Métrica de Salud Global'}</h3>
@@ -165,20 +166,20 @@ export const Features = () => {
             <div className="group relative overflow-hidden glass-card p-8 hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-darker border border-border-dark text-primary shadow-inner">
-                <span className="material-symbols-outlined text-2xl notranslate" translate="no" lang="zxx">sync_alt</span>
+                <RefreshCw className="text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2 leading-tight">{t('landing.features_bento.item5.title') || 'Sincronización Total'}</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-8">{t('landing.features_bento.item5.desc') || 'Seamless Shopify integration. Sync your optimized catalog back to your store in the background.'}</p>
               <div className="mt-auto flex justify-between items-center bg-slate-900/40 p-4 rounded-xl border border-border-dark/50">
                 <div className="h-10 w-10 rounded-lg bg-slate-800 border border-border-dark flex items-center justify-center">
-                  <span className="material-symbols-outlined text-slate-300 text-sm notranslate" translate="no" lang="zxx">shopping_bag</span>
+                  <ShoppingBag className="text-slate-300 text-sm" />
                 </div>
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent mx-3 relative">
                   <div className="absolute inset-0 bg-primary/20 blur-sm"></div>
-                  <span className="absolute top-1/2 left-1/2 -track-x-1/2 -translate-y-1/2 material-symbols-outlined text-primary text-xs bg-surface-dark px-1 notranslate" translate="no" lang="zxx">bolt</span>
+                  <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary text-xs bg-surface-dark px-1" />
                 </div>
                 <div className="h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary text-sm notranslate" translate="no" lang="zxx">auto_awesome</span>
+                  <Sparkles className="text-primary text-sm" />
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { MailCheck } from 'lucide-react'
 
 export default function ForgotPasswordPage() {
     const [isLoading, setIsLoading] = useState(false)
@@ -74,9 +75,7 @@ export default function ForgotPasswordPage() {
                 <div className="text-center py-6 animate-fade-in">
                     <div className="w-16 h-16 bg-[#10b77f]/10 rounded-full flex items-center justify-center mx-auto mb-6 relative">
                         <div className="absolute inset-0 bg-[#10b77f]/20 blur-md rounded-full animate-pulse" />
-                        <span className="material-symbols-outlined text-[#10b77f] text-[32px] relative z-10">
-                            mark_email_read
-                        </span>
+                        <MailCheck className="text-[#10b77f] text-[32px] relative z-10" />
                     </div>
                     <h3 className="text-xl font-bold text-zinc-950 dark:text-white mb-2 transition-colors duration-700">Check your inbox</h3>
                     <p className="text-slate-600 dark:text-[#d4d4d8] text-[15px] leading-relaxed mb-10 transition-colors duration-700">

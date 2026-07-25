@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { Moon, Sun } from 'lucide-react'
 
 export function AuthThemeToggle() {
     const { resolvedTheme, setTheme } = useTheme()
@@ -24,18 +25,8 @@ export function AuthThemeToggle() {
                 />
                 {/* Icons */}
                 <div className="flex justify-between items-center w-full px-1.5 relative z-20">
-                    <span
-                        className={`material-symbols-outlined text-[18px] transition-all duration-500 ${isDark ? "text-white" : "text-zinc-400"}`}
-                        style={{ fontVariationSettings: isDark ? "'FILL' 1, 'wght' 500" : "'FILL' 0, 'wght' 500" }}
-                    >
-                        dark_mode
-                    </span>
-                    <span
-                        className={`material-symbols-outlined text-[18px] transition-all duration-500 ${!isDark ? "text-white" : "text-zinc-600"}`}
-                        style={{ fontVariationSettings: !isDark ? "'FILL' 1, 'wght' 500" : "'FILL' 0, 'wght' 500" }}
-                    >
-                        light_mode
-                    </span>
+                    <Moon className={`text-[18px] transition-all duration-500 ${isDark ? "text-white" : "text-zinc-400"}`} />
+                    <Sun className={`text-[18px] transition-all duration-500 ${!isDark ? "text-white" : "text-zinc-600"}`} />
                 </div>
             </button>
         </div>

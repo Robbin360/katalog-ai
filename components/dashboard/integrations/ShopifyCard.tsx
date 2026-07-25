@@ -227,7 +227,7 @@ function ShopifyCardInner({ userId }: ShopifyCardProps) {
             <Input
               value={shopInput}
               onChange={(e) => setShopInput(e.target.value)}
-              placeholder="mi-tienda.myshopify.com"
+              placeholder="your-store.myshopify.com"
               disabled={loading}
               autoFocus
             />

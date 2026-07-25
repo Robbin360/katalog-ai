@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import Link from "next/link"
+import { Eye, EyeOff } from 'lucide-react'
 import { signup, signInWithGoogle, signInWithSlack, signInWithX } from "../actions"
 
 function PasswordStrength({ value }: { value: string }) {
@@ -87,7 +88,7 @@ export default function SignupForm() {
                         <button type="button" onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-[#d4d4d8]/40 hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                             aria-label="Toggle password visibility">
-                            <span className="material-symbols-outlined text-[20px] notranslate">{showPassword ? "visibility_off" : "visibility"}</span>
+                            {showPassword ? <EyeOff className="text-[20px] notranslate" /> : <Eye className="text-[20px] notranslate" />}
                         </button>
                     </div>
                     <PasswordStrength value={password} />
@@ -104,7 +105,7 @@ export default function SignupForm() {
                         <button type="button" onClick={() => setShowConfirm(!showConfirm)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-[#d4d4d8]/40 hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                             aria-label="Toggle confirm password visibility">
-                            <span className="material-symbols-outlined text-[20px] notranslate">{showConfirm ? "visibility_off" : "visibility"}</span>
+                            {showConfirm ? <EyeOff className="text-[20px] notranslate" /> : <Eye className="text-[20px] notranslate" />}
                         </button>
                     </div>
                     {confirmError && <p className="text-[12px] text-red-400 font-bold mt-1 ml-1 tracking-wide">Passwords do not match</p>}

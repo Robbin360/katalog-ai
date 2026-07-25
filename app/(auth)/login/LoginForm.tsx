@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from "react"
 import Link from "next/link"
+import { Eye, EyeOff } from 'lucide-react'
 import { login, signInWithGoogle, signInWithSlack, signInWithX } from "../actions"
 
 const errorMessages: Record<string, string> = {
@@ -75,9 +76,7 @@ export default function LoginForm() {
               <button type="button" onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 flex items-center justify-center text-[#d4d4d8]/40 hover:text-[#10b77f] transition-all duration-300 focus:outline-none pass-toggle"
                 aria-label="Toggle password visibility">
-                <span className="material-symbols-outlined text-[20px] notranslate">
-                  {showPassword ? "visibility_off" : "visibility"}
-                </span>
+                {showPassword ? <EyeOff className="text-[20px] notranslate" /> : <Eye className="text-[20px] notranslate" />}
               </button>
             </div>
           </div>
