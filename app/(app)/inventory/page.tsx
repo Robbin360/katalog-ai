@@ -401,7 +401,7 @@ export default function InventoryPage() {
             {/* PAGINATION */}
             <div className="flex items-center justify-between py-4">
                 <div className="text-sm text-muted-foreground font-medium">
-                    Showed <span className="text-foreground">{products.length}</span> of <span className="text-foreground">{totalCount}</span> assets
+                    Showing <span className="text-foreground">{products.length}</span> of <span className="text-foreground">{totalCount}</span> assets
                 </div>
                 <div className="flex items-center space-x-2">
                     <span className="text-sm text-muted-foreground mr-2">Page {page} of {totalPages || 1}</span>

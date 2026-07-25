@@ -32,7 +32,7 @@
             "tones": {
                 "general": { "label": "General", "desc": "Adaptable to any type of product" },
                 "profesional": { "label": "Professional", "desc": "Clear, direct, results-oriented" },
-                "cercano": { "label": "Friendly", "desc": "Approachative, accessible, no technical jargon" },
+                "cercano": { "label": "Friendly", "desc": "Approachable, accessible, no technical jargon" },
                 "técnico": { "label": "Technical", "desc": "Specifications, data, evidence" },
                 "aspiracional": { "label": "Aspirational", "desc": "Lifestyle, desire, exclusivity" },
                 "urgente": { "label": "Urgent", "desc": "Offers, scarcity, strong CTA" }
@@ -476,7 +476,7 @@
     },
     "landing": {
         "hero": {
-            "title": "Your Shopify Catalog,\nOptimized by AI.",
+            "title": "Your Shopify Catalog, Optimized by AI.",
             "subtitle": "Katalog AI audits your Shopify catalog, detects weak product titles, descriptions, tags, and metadata, then recommends the highest-impact fixes first. Your team can rewrite listings with AI, protect brand voice, and sync approved improvements back to Shopify without guessing.",
             "cta": "connect store"
         },
