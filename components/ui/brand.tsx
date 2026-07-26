@@ -15,7 +15,7 @@ export const Brand = ({ withAI = true, className = "" }: BrandProps) => {
             translate="no"
             className={`notranslate inline-flex items-center ${className}`}
         >
-            Katalog{withAI && <span>AI</span>}
+            Katalog {withAI && <span>AI</span>}
         </span>
     );
 };

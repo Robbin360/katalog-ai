@@ -95,7 +95,7 @@ export const Navbar = () => {
             aria-hidden="true"
           />
           <span className="text-base md:text-lg font-bold text-white whitespace-nowrap notranslate" translate="no">
-            Katalog<span>AI</span>
+            Katalog <span>AI</span>
           </span>
         </Link>
         

@@ -478,7 +478,7 @@
         "hero": {
             "title": "Your Shopify Catalog, Optimized by AI.",
             "subtitle": "Katalog AI audits your Shopify catalog, detects weak product titles, descriptions, tags, and metadata, then recommends the highest-impact fixes first. Your team can rewrite listings with AI, protect brand voice, and sync approved improvements back to Shopify without guessing.",
-            "cta": "connect store"
+            "cta": "start free"
         },
         "mockup": {
             "sidebar": {
@@ -678,7 +678,7 @@
         "copyright": "Katalog AI. All rights reserved."
     },
     "common": {
-        "connect_store": "connect store",
+        "connect_store": "start free",
         "privacy": "Privacy Policy",
         "terms": "Terms of Service",
         "contact": "Contact Support",

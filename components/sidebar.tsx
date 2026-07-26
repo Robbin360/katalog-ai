@@ -83,7 +83,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
     const initials = displayName
         .split(' ')
         .filter(Boolean)
-        .map(n => n[0])
+        .map((n: string) => n[0])
         .join('')
         .toUpperCase()
         .substring(0, 2) || displayName.substring(0, 2).toUpperCase()
