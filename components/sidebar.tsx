@@ -39,6 +39,19 @@ interface SidebarProps {
     user: any
 }
 
+function getInitials(name: string | null | undefined): string {
+  if (!name || !name.trim()) return '??'
+  const parts = name.trim().split(/\s+/)
+  const initials = parts
+    .filter((n): n is string => Boolean(n))
+    .map((n: string) => n[0])
+    .filter((c): c is string => Boolean(c))
+    .join('')
+    .toUpperCase()
+    .substring(0, 2)
+  return initials || '??'
+}
+
 export default function Sidebar({ initialCollapsed = false, user }: SidebarProps) {
     const { t } = useI18n()
     const [isCollapsed, setIsCollapsed] = useState(initialCollapsed)
@@ -80,13 +93,7 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
     }, [isCollapsed])
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
-    const initials = displayName
-        .split(' ')
-        .filter(Boolean)
-        .map((n: string) => n[0])
-        .join('')
-        .toUpperCase()
-        .substring(0, 2) || displayName.substring(0, 2).toUpperCase()
+    const initials = getInitials(user?.user_metadata?.full_name) || getInitials(user?.email?.split('@')[0]) || "??"
 
     return (
         <TooltipProvider delayDuration={0}>

@@ -24,6 +24,40 @@ interface BrandRules {
   forbidden_words: string[]
 }
 
+const TONE_DISPLAY_MAP: Record<string, string> = {
+  general: 'General',
+  profesional: 'Professional',
+  professional: 'Professional',
+  professional_persuasive: 'Professional and Persuasive',
+  cercano: 'Friendly',
+  friendly: 'Friendly',
+  'técnico': 'Technical',
+  technical: 'Technical',
+  aspiracional: 'Aspirational',
+  aspirational: 'Aspirational',
+  urgente: 'Urgent',
+  urgent: 'Urgent',
+  'Professional y Persuasivo': 'Professional and Persuasive',
+  'Profesional': 'Professional',
+}
+
+const AUDIENCE_DISPLAY_MAP: Record<string, string> = {
+  consumidor: 'End Consumer',
+  'consumidor final': 'End Consumer',
+  b2c: 'End Consumer',
+  empresas: 'Companies',
+  b2b: 'Business Buyer',
+  revendedor: 'Reseller',
+  reseller: 'Reseller',
+  profesional: 'Professional',
+  professional: 'Professional',
+}
+
+function getDisplayLabel(value: string | null | undefined, map: Record<string, string>, fallback: string): string {
+  if (!value || !value.trim()) return fallback
+  return map[value.trim()] || map[value.trim().toLowerCase()] || value
+}
+
 const TONES: { value: ToneVoice; label: string; desc: string; isDefault?: boolean }[] = [
   { value: "general",      label: "General",      desc: "Adaptable to any type of product", isDefault: true },
   { value: "profesional",  label: "Professional", desc: "Clear, direct, results-oriented" },
@@ -58,8 +92,8 @@ function buildPreview(rules: BrandRules, t: any): string {
   const toneKey = `account.brain.tones.${rules.tone_voice.toLowerCase()}.label`
   const audienceKey = `account.brain.audiences.${rules.target_audience.toLowerCase()}.label`
   
-  const toneLabel = t(toneKey) ?? rules.tone_voice
-  const audienceLabel = t(audienceKey) ?? rules.target_audience
+  const toneLabel = t(toneKey) ?? getDisplayLabel(rules.tone_voice, TONE_DISPLAY_MAP, 'General')
+  const audienceLabel = t(audienceKey) ?? getDisplayLabel(rules.target_audience, AUDIENCE_DISPLAY_MAP, 'End Consumer')
 
   if (rules.tone_voice.toLowerCase() === "general") {
     return t('account.brain.preview.write', { lang: rules.language }) + 
