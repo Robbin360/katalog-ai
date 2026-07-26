@@ -175,7 +175,13 @@ export default function AccountPage() {
 
     // Helpers para Profile
     const joinDate = user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'
-    const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U"
+    const userInitials = user?.user_metadata?.full_name
+        ?.split(' ')
+        .filter(Boolean)
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2) || user?.email?.substring(0, 2).toUpperCase() || "U"
 
     return (
         <div className="min-h-screen bg-transparent text-foreground font-sans">

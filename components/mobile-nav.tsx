@@ -57,7 +57,13 @@ export function MobileNav({ user }: MobileNavProps) {
     ]
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
-    const initials = displayName.substring(0, 2).toUpperCase()
+    const initials = displayName
+        .split(' ')
+        .filter(Boolean)
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2) || displayName.substring(0, 2).toUpperCase()
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>

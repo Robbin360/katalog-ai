@@ -25,19 +25,19 @@ interface BrandRules {
 }
 
 const TONES: { value: ToneVoice; label: string; desc: string; isDefault?: boolean }[] = [
-  { value: "general",      label: "General",      desc: "Adaptable a cualquier tipo de producto", isDefault: true },
-  { value: "profesional",  label: "Profesional",  desc: "Claro, directo, orientado a resultados" },
-  { value: "cercano",      label: "Cercano",       desc: "Amigable, accesible, sin tecnicismos" },
-  { value: "técnico",      label: "Técnico",       desc: "Especificaciones, datos, evidencia" },
-  { value: "aspiracional", label: "Aspiracional",  desc: "Lifestyle, deseo, exclusividad" },
-  { value: "urgente",      label: "Urgente",       desc: "Ofertas, escasez, CTA fuerte" },
+  { value: "general",      label: "General",      desc: "Adaptable to any type of product", isDefault: true },
+  { value: "profesional",  label: "Professional", desc: "Clear, direct, results-oriented" },
+  { value: "cercano",      label: "Friendly",     desc: "Approachable, accessible, no jargon" },
+  { value: "técnico",      label: "Technical",    desc: "Specifications, data, evidence" },
+  { value: "aspiracional", label: "Aspirational", desc: "Lifestyle, desire, exclusivity" },
+  { value: "urgente",      label: "Urgent",       desc: "Offers, scarcity, strong CTA" },
 ]
 
 const AUDIENCES: { value: TargetAudience; label: string; desc: string; isDefault?: boolean }[] = [
-  { value: "consumidor",  label: "Consumidor final", desc: "B2C — decisión rápida, emocional", isDefault: true },
-  { value: "empresas",    label: "Empresas",          desc: "B2B — decisión racional, ROI primero" },
-  { value: "revendedor",  label: "Revendedor",        desc: "Mayorista, distribuidor, volumen" },
-  { value: "profesional", label: "Profesional",       desc: "Experto en el tema, valora precisión" },
+  { value: "consumidor",  label: "End Consumer", desc: "B2C — quick, emotional decision", isDefault: true },
+  { value: "empresas",    label: "Companies",    desc: "B2B — rational decision, ROI first" },
+  { value: "revendedor",  label: "Reseller",     desc: "Wholesaler, distributor, volume" },
+  { value: "profesional", label: "Professional", desc: "Topic expert, values precision" },
 ]
 
 const LANGUAGES: Language[] = ["Español", "English", "Português", "Français"]
