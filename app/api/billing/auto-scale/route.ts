@@ -19,15 +19,15 @@ export async function GET(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const RECHARGE_PACK_SIZE = 40;
+  const SCALE_PACK_SIZE = 40;
   const additionalCharges = (profile.auto_scale_spent || 0) / 100;
 
   return NextResponse.json({
     isActive: profile.auto_scale_enabled,
     creditsIncluded: profile.credits_total || 0,
     creditsUsed: profile.credits_used || 0,
-    autoRechargesCount: profile.auto_scale_count || 0,
-    rechargePackSize: RECHARGE_PACK_SIZE,
+    autoScalesCount: profile.auto_scale_count || 0,
+    scalePackSize: SCALE_PACK_SIZE,
     additionalCharges: additionalCharges,
     monthlyCap: (profile.auto_scale_cap || 1000) / 100,
   });

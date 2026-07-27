@@ -158,8 +158,8 @@ export default function TermsPage() {
                 </p>
                 <p className="font-semibold text-white mt-4">Auto-Scale (Pro and Business only):</p>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li>When you reach 80% of your monthly credits, Auto-Scale recharges 50 credits at $0.25 each ($12.50 total).</li>
-                  <li>Maximum recharge per cycle: 1000 credits (configurable).</li>
+                  <li>When you reach 80% of your monthly credits, Auto-Scale adds 50 credits at $0.25 each ($12.50 total).</li>
+                  <li>Maximum scaling per cycle: 1000 credits (configurable).</li>
                   <li>Auto-Scale can be disabled in your account settings.</li>
                 </ul>
                 <p className="font-semibold text-white mt-4">Credit purchases (top-ups):</p>

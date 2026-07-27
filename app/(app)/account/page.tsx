@@ -330,7 +330,7 @@ export default function AccountPage() {
 
                         <div className="mt-12 mb-4">
                           <h3 className="text-lg font-semibold">Credits & Billing</h3>
-                          <p className="text-sm text-muted-foreground">Manage your credit usage and automatic recharges.</p>
+                          <p className="text-sm text-muted-foreground">Manage your credit usage and automatic scaling.</p>
                         </div>
 
                         <div className="w-full">

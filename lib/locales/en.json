@@ -215,7 +215,7 @@
             {
                 "category": "Plans",
                 "question": "What happens if I run out of credits?",
-                "answer": "Auto-Pilot pauses when you exhaust your monthly credits. To avoid interruptions, you can enable Auto-Scale (opt-in) from your dashboard: when you reach 80% usage, we automatically recharge 50 credits at $0.25 each. You set a monthly spending cap, and charges never exceed that limit. You can also purchase credit packs as a one-time buy at a lower per-credit rate."
+                "answer": "Auto-Pilot pauses when you exhaust your monthly credits. To avoid interruptions, you can enable Auto-Scale (opt-in) from your dashboard: when you reach 80% usage, we automatically add 50 credits at $0.25 each. You set a monthly spending cap, and charges never exceed that limit. You can also purchase credit packs as a one-time buy at a lower per-credit rate."
             },
             {
                 "category": "Plans",
@@ -386,7 +386,7 @@
             "subtitle": "Add credits to any Pro or Business plan. No plan change required.",
             "best_value": "Best value",
             "buy": "Buy pack",
-            "disclaimer": "Credit packs are a one-time purchase at a lower per-credit rate. Auto-Scale (dashboard feature) recharges at $0.25/credit automatically — two different mechanisms. Credits never expire.",
+            "disclaimer": "Credit packs are a one-time purchase at a lower per-credit rate. Auto-Scale (dashboard feature) adds credits at $0.25/credit automatically — two different mechanisms. Credits never expire.",
             "pack_suffix": "/credit",
             "once": "one-time purchase"
         },
@@ -394,7 +394,7 @@
             "badge": "Auto-Scale",
             "title": "Never run out of credits",
             "subtitle": "Auto-Pilot keeps running in the background. Credits auto-refill so optimization never stops mid-cycle.",
-            "desc1": "When you reach 80% of your credits, we automatically recharge 50 credits at $0.25 each. No notifications. No interruptions. No decisions.",
+            "desc1": "When you reach 80% of your credits, we automatically add 50 credits at $0.25 each. No notifications. No interruptions. No decisions.",
             "desc2": "You set a monthly spending cap. We respect it.",
             "mockup": {
                 "status": "Auto-Scale:",
@@ -402,7 +402,7 @@
                 "included": "Credits included:",
                 "month": "/mo",
                 "used": "Used this month:",
-                "recharges": "Auto-recharges:",
+                "recharges": "Auto-Scales:",
                 "pack": "1 pack (50 credits)",
                 "extra": "Extra spent:",
                 "cap": "Monthly cap:",

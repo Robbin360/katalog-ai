@@ -25,8 +25,8 @@ interface AutoScaleData {
   isActive: boolean;
   creditsIncluded: number;
   creditsUsed: number;
-  autoRechargesCount: number;
-  rechargePackSize: number;
+  autoScalesCount: number;
+  scalePackSize: number;
   additionalCharges: number;
   monthlyCap: number;
 }
@@ -84,7 +84,7 @@ export function AutoScaleCard() {
       return res.json();
     },
     onSuccess: (res) => {
-      toast.success(res.isActive ? 'Auto-Recharge activated' : 'Auto-Recharge deactivated');
+      toast.success(res.isActive ? 'Auto-Scale activated' : 'Auto-Scale deactivated');
       queryClient.invalidateQueries({ queryKey: ['auto-scale'] });
     },
     onError: (error: Error) => {
@@ -111,7 +111,7 @@ export function AutoScaleCard() {
           <div className="flex items-center gap-3">
             <span className={`h-2 w-2 rounded-full ${data.isActive ? 'bg-green-500' : 'bg-gray-500'}`} />
             <div>
-              <CardTitle>Auto-Recharge</CardTitle>
+              <CardTitle>Auto-Scale</CardTitle>
               <CardDescription>Automatically refill credits before you run out.</CardDescription>
             </div>
           </div>
@@ -138,8 +138,8 @@ export function AutoScaleCard() {
           <Progress value={usagePercentage} className="h-2" />
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">Recharges this month:</span>
-          <span className="text-sm font-medium" translate="no">{data.autoRechargesCount} pack ({data.rechargePackSize} credits)</span>
+          <span className="text-sm text-muted-foreground">Auto-Scales this month:</span>
+          <span className="text-sm font-medium" translate="no">{data.autoScalesCount} {data.autoScalesCount === 1 ? 'pack' : 'packs'} ({data.autoScalesCount * data.scalePackSize} credits) — each pack adds {data.scalePackSize} credits</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Additional charges this month:</span>
@@ -152,7 +152,7 @@ export function AutoScaleCard() {
           </div>
         ) : (
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-md p-3 text-sm text-amber-600">
-            ⚠ Auto-Recharge is off. If you run out of credits, your work may be interrupted. Turn it back on anytime — your spend cap is saved.
+            ⚠ Auto-Scale is off. If you run out of credits, your work may be interrupted. Turn it back on anytime — your spend cap is saved.
           </div>
         )}
       </CardContent>
@@ -170,7 +170,7 @@ export function AutoScaleCard() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Monthly Spend Cap</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Set the maximum you're willing to spend on automatic recharges each month. This doesn't turn on Auto-Recharge — use the toggle for that.
+                  Set the maximum you're willing to spend on automatic scaling each month. This doesn't turn on Auto-Scale — use the toggle for that.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="space-y-4 py-4">
