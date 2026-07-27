@@ -89,13 +89,24 @@ const DEFAULTS: BrandRules = {
 }
 
 function buildPreview(rules: BrandRules, t?: any): string {
-  const selectedTone = TONE_OPTIONS.find(t => t.id === rules.tone_voice) || TONE_OPTIONS[0]
-  const selectedAudience = AUDIENCE_OPTIONS.find(a => a.id === rules.target_audience) || AUDIENCE_OPTIONS[0]
+  const selectedTone = TONE_OPTIONS.find(opt => opt.id === rules.tone_voice) || TONE_OPTIONS[0]
+  const selectedAudience = AUDIENCE_OPTIONS.find(opt => opt.id === rules.target_audience) || AUDIENCE_OPTIONS[0]
   
+  const toneLabel = t ? (t(`account.brain.tones.${selectedTone.id}.label`) || selectedTone.label) : selectedTone.label
+  const audienceLabel = t ? (t(`account.brain.audiences.${selectedAudience.id}.label`) || selectedAudience.label) : selectedAudience.label
+
   const forbidden =
     rules.forbidden_words.length > 0
-      ? ` Never use: ${rules.forbidden_words.join(", ")}.`
+      ? (t ? t('account.brain.preview.never', { words: rules.forbidden_words.join(", ") }) : ` Never use: ${rules.forbidden_words.join(", ")}.`)
       : ""
+
+  if (t && t('account.brain.preview.write_with_tone')) {
+    return t('account.brain.preview.write_with_tone', {
+      lang: rules.language || 'English',
+      tone: toneLabel,
+      audience: audienceLabel
+    }) + forbidden
+  }
 
   return `Write copy in ${rules.language || 'English'} with ${selectedTone.label} tone for ${selectedAudience.label}.${forbidden}`
 }

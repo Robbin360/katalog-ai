@@ -40,8 +40,9 @@ interface SidebarProps {
 }
 
 function getInitials(name: string | null | undefined): string {
-  if (!name || !name.trim()) return '??'
-  const parts = name.trim().split(/\s+/)
+  if (!name || !name.trim()) return 'U'
+  const cleanName = name.includes('@') ? name.split('@')[0].replace(/[._-]/g, ' ') : name
+  const parts = cleanName.trim().split(/\s+/)
   const initials = parts
     .filter((n): n is string => Boolean(n))
     .map((n: string) => n[0])
@@ -49,7 +50,7 @@ function getInitials(name: string | null | undefined): string {
     .join('')
     .toUpperCase()
     .substring(0, 2)
-  return initials || '??'
+  return initials || 'U'
 }
 
 export default function Sidebar({ initialCollapsed = false, user }: SidebarProps) {

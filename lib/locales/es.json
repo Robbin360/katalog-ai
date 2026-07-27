@@ -7,46 +7,46 @@
             "profile": "Mi Perfil"
         },
         "brain": {
-            "title": "Brand Brain",
-            "subtitle": "Configure how the AI talks about your products",
-            "voice_title": "Voice & Tone",
-            "voice_subtitle": "How does your brand sound when it speaks?",
-            "voice_desc": "Define the personality of your copy.",
-            "audience_title": "Target Audience",
-            "audience_subtitle": "Who are your main buyers?",
-            "buyer_type": "Buyer Type",
-            "lang_title": "Language & Vocabulary",
-            "lang_subtitle": "Copy language and words the AI should never use.",
-            "lang_label": "Language",
-            "forbidden_label": "Forbidden words",
-            "forbidden_placeholder": "Type and press Enter...",
-            "instruction_header": "Instruction the agent receives",
-            "save_btn": "Save Brand Brain",
-            "saving_btn": "Saving...",
-            "loading": "Loading Brand Brain...",
-            "badge_default": "default",
+            "title": "Cerebro de marca",
+            "subtitle": "Configura cómo la IA habla sobre tus productos.",
+            "voice_title": "Voz y tono",
+            "voice_subtitle": "¿Cómo suena tu marca cuando habla?",
+            "voice_desc": "Define la personalidad de tus textos.",
+            "audience_title": "Público objetivo",
+            "audience_subtitle": "¿Quiénes son sus principales compradores?",
+            "buyer_type": "TIPO DE COMPRADOR",
+            "lang_title": "Idioma y vocabulario",
+            "lang_subtitle": "Idioma del copy y palabras que la IA nunca debe usar.",
+            "lang_label": "Idioma",
+            "forbidden_label": "Palabras prohibidas",
+            "forbidden_placeholder": "Escribe y presiona Enter...",
+            "instruction_header": "Instrucción que recibe el agente",
+            "save_btn": "Guardar Brand Brain",
+            "saving_btn": "Guardando...",
+            "loading": "Cargando Brand Brain...",
+            "badge_default": "por defecto",
             "toasts": {
-                "success": "Brand Brain saved",
-                "error": "Error saving. Try again."
+                "success": "Brand Brain guardado",
+                "error": "Error al guardar. Intenta de nuevo."
             },
             "tones": {
-                "professional": { "label": "Professional", "desc": "Clear, direct, results-oriented. Authoritative without being stiff." },
-                "friendly": { "label": "Friendly", "desc": "Approachable, accessible, no technical jargon. Warm and human." },
-                "aspirational": { "label": "Aspirational", "desc": "Lifestyle, desire, exclusivity. Sells identity and transformation." },
-                "technical": { "label": "Technical", "desc": "Specifications, data, evidence. Precision-focused." },
-                "minimalist": { "label": "Minimalist", "desc": "Clean, concise, premium. Less is more. Apple, Aesop, Muji style." },
-                "storytelling": { "label": "Storytelling", "desc": "Narrative, heritage, handmade. Craft and provenance." }
+                "professional": { "label": "Profesional", "desc": "Claro, directo y orientado a resultados. Autoritario sin ser rígido." },
+                "friendly": { "label": "Amigable", "desc": "Cercano, accesible, sin jerga técnica. Cálido y humano." },
+                "aspirational": { "label": "Aspiracional", "desc": "Estilo de vida, deseo, exclusividad. Vende identidad y transformación." },
+                "technical": { "label": "Técnico", "desc": "Especificaciones, datos, evidencia. Enfoque en la precisión." },
+                "minimalist": { "label": "Minimalista", "desc": "Limpio, conciso, de alta calidad. Menos es más. Al estilo de Apple, Aesop y Muji." },
+                "storytelling": { "label": "Narración de historias", "desc": "Narrativa, tradición, hecho a mano. Artesanía y procedencia." }
             },
             "audiences": {
-                "consumer": { "label": "Consumer", "desc": "B2C: Quick, emotional purchase decisions." },
-                "business": { "label": "Business", "desc": "B2B: Rational, ROI-driven purchase decisions." },
-                "reseller": { "label": "Reseller", "desc": "Wholesale, distributor, volume buyer." }
+                "consumer": { "label": "Consumidor", "desc": "B2C: Decisiones de compra rápidas y emocionales." },
+                "business": { "label": "Negocio", "desc": "B2B: Decisiones de compra racionales y basadas en el retorno de la inversión." },
+                "reseller": { "label": "Revendedor", "desc": "Mayorista, distribuidor, comprador de grandes volúmenes." }
             },
             "preview": {
-                "write": "Write copy in {{lang}} adapting the tone to the context of each product.",
-                "write_with_tone": "Write copy in {{lang}} with {{tone}} tone for {{audience}}.",
-                "public": "Audience: {{audience}}.",
-                "never": " Never use: {{words}}."
+                "write": "Escribe copy en {{lang}} adaptando el tono al contexto de cada producto.",
+                "write_with_tone": "Escribe copy en {{lang}} con tono {{tone}} para {{audience}}.",
+                "public": "Audiencia: {{audience}}.",
+                "never": " Nunca uses: {{words}}."
             }
         },
         "store": {
