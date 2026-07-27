@@ -92,8 +92,8 @@ export default function Sidebar({ initialCollapsed = false, user }: SidebarProps
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [isCollapsed])
 
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User"
-    const initials = getInitials(user?.user_metadata?.full_name) || getInitials(user?.email?.split('@')[0]) || "??"
+    const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || "User"
+    const initials = getInitials(user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0])
 
     return (
         <TooltipProvider delayDuration={0}>

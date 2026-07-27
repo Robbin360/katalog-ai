@@ -11,8 +11,8 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 
-type ToneVoice = "general" | "profesional" | "cercano" | "técnico" | "aspiracional" | "urgente"
-type TargetAudience = "consumidor" | "empresas" | "revendedor" | "profesional"
+type ToneVoice = "professional" | "friendly" | "aspirational" | "technical" | "minimalist" | "storytelling"
+type TargetAudience = "consumer" | "business" | "reseller"
 type Language = "Español" | "English" | "Português" | "Français"
 
 interface BrandRules {
@@ -24,88 +24,80 @@ interface BrandRules {
   forbidden_words: string[]
 }
 
-const TONE_DISPLAY_MAP: Record<string, string> = {
-  general: 'General',
-  profesional: 'Professional',
-  professional: 'Professional',
-  professional_persuasive: 'Professional and Persuasive',
-  cercano: 'Friendly',
-  friendly: 'Friendly',
-  'técnico': 'Technical',
-  technical: 'Technical',
-  aspiracional: 'Aspirational',
-  aspirational: 'Aspirational',
-  urgente: 'Urgent',
-  urgent: 'Urgent',
-  'Professional y Persuasivo': 'Professional and Persuasive',
-  'Profesional': 'Professional',
-}
-
-const AUDIENCE_DISPLAY_MAP: Record<string, string> = {
-  consumidor: 'End Consumer',
-  'consumidor final': 'End Consumer',
-  b2c: 'End Consumer',
-  empresas: 'Companies',
-  b2b: 'Business Buyer',
-  revendedor: 'Reseller',
-  reseller: 'Reseller',
-  profesional: 'Professional',
-  professional: 'Professional',
-}
-
-function getDisplayLabel(value: string | null | undefined, map: Record<string, string>, fallback: string): string {
-  if (!value || !value.trim()) return fallback
-  return map[value.trim()] || map[value.trim().toLowerCase()] || value
-}
-
-const TONES: { value: ToneVoice; label: string; desc: string; isDefault?: boolean }[] = [
-  { value: "general",      label: "General",      desc: "Adaptable to any type of product", isDefault: true },
-  { value: "profesional",  label: "Professional", desc: "Clear, direct, results-oriented" },
-  { value: "cercano",      label: "Friendly",     desc: "Approachable, accessible, no jargon" },
-  { value: "técnico",      label: "Technical",    desc: "Specifications, data, evidence" },
-  { value: "aspiracional", label: "Aspirational", desc: "Lifestyle, desire, exclusivity" },
-  { value: "urgente",      label: "Urgent",       desc: "Offers, scarcity, strong CTA" },
+const TONE_OPTIONS: { id: ToneVoice; label: string; desc: string; isDefault?: boolean }[] = [
+  // Anchors seguros primero (para catálogo mixto)
+  { 
+    id: 'professional', 
+    label: 'Professional', 
+    desc: 'Clear, direct, results-oriented. Authoritative without being stiff.',
+    isDefault: true 
+  },
+  { 
+    id: 'friendly', 
+    label: 'Friendly', 
+    desc: 'Approachable, accessible, no technical jargon. Warm and human.' 
+  },
+  // Opciones de nicho después
+  { 
+    id: 'aspirational', 
+    label: 'Aspirational', 
+    desc: 'Lifestyle, desire, exclusivity. Sells identity and transformation.' 
+  },
+  { 
+    id: 'technical', 
+    label: 'Technical', 
+    desc: 'Specifications, data, evidence. Precision-focused.' 
+  },
+  { 
+    id: 'minimalist', 
+    label: 'Minimalist', 
+    desc: 'Clean, concise, premium. Less is more. Apple, Aesop, Muji style.' 
+  },
+  { 
+    id: 'storytelling', 
+    label: 'Storytelling', 
+    desc: 'Narrative, heritage, handmade. Craft and provenance.' 
+  },
 ]
 
-const AUDIENCES: { value: TargetAudience; label: string; desc: string; isDefault?: boolean }[] = [
-  { value: "consumidor",  label: "End Consumer", desc: "B2C — quick, emotional decision", isDefault: true },
-  { value: "empresas",    label: "Companies",    desc: "B2B — rational decision, ROI first" },
-  { value: "revendedor",  label: "Reseller",     desc: "Wholesaler, distributor, volume" },
-  { value: "profesional", label: "Professional", desc: "Topic expert, values precision" },
+const AUDIENCE_OPTIONS: { id: TargetAudience; label: string; desc: string; isDefault?: boolean }[] = [
+  { 
+    id: 'consumer', 
+    label: 'Consumer', 
+    desc: 'B2C: Quick, emotional purchase decisions.',
+    isDefault: true 
+  },
+  { 
+    id: 'business', 
+    label: 'Business', 
+    desc: 'B2B: Rational, ROI-driven purchase decisions.' 
+  },
+  { 
+    id: 'reseller', 
+    label: 'Reseller', 
+    desc: 'Wholesale, distributor, volume buyer.' 
+  },
 ]
 
-const LANGUAGES: Language[] = ["Español", "English", "Português", "Français"]
+const LANGUAGES: Language[] = ["English", "Español", "Português", "Français"]
 
 const DEFAULTS: BrandRules = {
-  tone_voice: "general",
-  target_audience: "consumidor",
-  language: "Español",
+  tone_voice: "professional",
+  target_audience: "consumer",
+  language: "English",
   forbidden_words: [],
 }
 
-function buildPreview(rules: BrandRules, t: any): string {
+function buildPreview(rules: BrandRules, t?: any): string {
+  const selectedTone = TONE_OPTIONS.find(t => t.id === rules.tone_voice) || TONE_OPTIONS[0]
+  const selectedAudience = AUDIENCE_OPTIONS.find(a => a.id === rules.target_audience) || AUDIENCE_OPTIONS[0]
+  
   const forbidden =
     rules.forbidden_words.length > 0
-      ? t('account.brain.preview.never', { words: rules.forbidden_words.join(", ") })
+      ? ` Never use: ${rules.forbidden_words.join(", ")}.`
       : ""
-  
-  const toneKey = `account.brain.tones.${rules.tone_voice.toLowerCase()}.label`
-  const audienceKey = `account.brain.audiences.${rules.target_audience.toLowerCase()}.label`
-  
-  const toneLabel = t(toneKey) ?? getDisplayLabel(rules.tone_voice, TONE_DISPLAY_MAP, 'General')
-  const audienceLabel = t(audienceKey) ?? getDisplayLabel(rules.target_audience, AUDIENCE_DISPLAY_MAP, 'End Consumer')
 
-  if (rules.tone_voice.toLowerCase() === "general") {
-    return t('account.brain.preview.write', { lang: rules.language }) + 
-           " " + t('account.brain.preview.public', { audience: audienceLabel }) + 
-           forbidden
-  }
-
-  return t('account.brain.preview.write_with_tone', { 
-    lang: rules.language, 
-    tone: toneLabel,
-    audience: audienceLabel 
-  }) + forbidden
+  return `Write copy in ${rules.language || 'English'} with ${selectedTone.label} tone for ${selectedAudience.label}.${forbidden}`
 }
 
 async function fetchBrandRules(): Promise<BrandRules> {
@@ -264,14 +256,14 @@ export function BrandBrainTab() {
           <p className="text-xs text-muted-foreground mt-0.5">{t('account.brain.voice_subtitle')}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-          {TONES.map((t_meta) => (
+          {TONE_OPTIONS.map((t_meta) => (
             <OptionCard
-              key={t_meta.value}
-              label={t(`account.brain.tones.${t_meta.value}.label`)}
-              desc={t(`account.brain.tones.${t_meta.value}.desc`)}
+              key={t_meta.id}
+              label={t(`account.brain.tones.${t_meta.id}.label`) || t_meta.label}
+              desc={t(`account.brain.tones.${t_meta.id}.desc`) || t_meta.desc}
               isDefault={t_meta.isDefault}
-              active={rules.tone_voice === t_meta.value}
-              onClick={() => patch({ tone_voice: t_meta.value })}
+              active={rules.tone_voice === t_meta.id}
+              onClick={() => patch({ tone_voice: t_meta.id })}
               t_badge={t('account.brain.badge_default')}
             />
           ))}
@@ -286,15 +278,15 @@ export function BrandBrainTab() {
         <Label className="text-[11px] uppercase tracking-widest text-muted-foreground/50 block">
           {t('account.brain.buyer_type')}
         </Label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
-          {AUDIENCES.map((a_meta) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          {AUDIENCE_OPTIONS.map((a_meta) => (
             <OptionCard
-              key={a_meta.value}
-              label={t(`account.brain.audiences.${a_meta.value}.label`)}
-              desc={t(`account.brain.audiences.${a_meta.value}.desc`)}
+              key={a_meta.id}
+              label={t(`account.brain.audiences.${a_meta.id}.label`) || a_meta.label}
+              desc={t(`account.brain.audiences.${a_meta.id}.desc`) || a_meta.desc}
               isDefault={a_meta.isDefault}
-              active={rules.target_audience === a_meta.value}
-              onClick={() => patch({ target_audience: a_meta.value })}
+              active={rules.target_audience === a_meta.id}
+              onClick={() => patch({ target_audience: a_meta.id })}
               t_badge={t('account.brain.badge_default')}
             />
           ))}

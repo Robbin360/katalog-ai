@@ -8,17 +8,17 @@
         },
         "brain": {
             "title": "Brand Brain",
-            "subtitle": "Configure how the AI speaks about your products.",
+            "subtitle": "Configure how the AI talks about your products",
             "voice_title": "Voice & Tone",
             "voice_subtitle": "How does your brand sound when it speaks?",
             "voice_desc": "Define the personality of your copy.",
             "audience_title": "Target Audience",
-            "audience_subtitle": "Who buys from you primarily?",
+            "audience_subtitle": "Who are your main buyers?",
             "buyer_type": "Buyer Type",
             "lang_title": "Language & Vocabulary",
             "lang_subtitle": "Copy language and words the AI should never use.",
             "lang_label": "Language",
-            "forbidden_label": "Forbidden Words",
+            "forbidden_label": "Forbidden words",
             "forbidden_placeholder": "Type and press Enter...",
             "instruction_header": "Instruction the agent receives",
             "save_btn": "Save Brand Brain",
@@ -30,18 +30,17 @@
                 "error": "Error saving. Try again."
             },
             "tones": {
-                "general": { "label": "General", "desc": "Adaptable to any type of product" },
-                "profesional": { "label": "Professional", "desc": "Clear, direct, results-oriented" },
-                "cercano": { "label": "Friendly", "desc": "Approachable, accessible, no technical jargon" },
-                "técnico": { "label": "Technical", "desc": "Specifications, data, evidence" },
-                "aspiracional": { "label": "Aspirational", "desc": "Lifestyle, desire, exclusivity" },
-                "urgente": { "label": "Urgent", "desc": "Offers, scarcity, strong CTA" }
+                "professional": { "label": "Professional", "desc": "Clear, direct, results-oriented. Authoritative without being stiff." },
+                "friendly": { "label": "Friendly", "desc": "Approachable, accessible, no technical jargon. Warm and human." },
+                "aspirational": { "label": "Aspirational", "desc": "Lifestyle, desire, exclusivity. Sells identity and transformation." },
+                "technical": { "label": "Technical", "desc": "Specifications, data, evidence. Precision-focused." },
+                "minimalist": { "label": "Minimalist", "desc": "Clean, concise, premium. Less is more. Apple, Aesop, Muji style." },
+                "storytelling": { "label": "Storytelling", "desc": "Narrative, heritage, handmade. Craft and provenance." }
             },
             "audiences": {
-                "consumidor": { "label": "End Consumer", "desc": "B2C — quick, emotional decision" },
-                "empresas": { "label": "Companies", "desc": "B2B — rational decision, ROI first" },
-                "revendedor": { "label": "Reseller", "desc": "Wholesaler, distributor, volume" },
-                "profesional": { "label": "Professional", "desc": "Topic expert, values precision" }
+                "consumer": { "label": "Consumer", "desc": "B2C: Quick, emotional purchase decisions." },
+                "business": { "label": "Business", "desc": "B2B: Rational, ROI-driven purchase decisions." },
+                "reseller": { "label": "Reseller", "desc": "Wholesale, distributor, volume buyer." }
             },
             "preview": {
                 "write": "Write copy in {{lang}} adapting the tone to the context of each product.",
