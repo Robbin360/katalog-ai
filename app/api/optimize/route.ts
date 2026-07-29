@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient()
 
@@ -15,32 +15,32 @@ export async function POST() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session?.access_token) return NextResponse.json({ error: "No session" }, { status: 401 })
 
-    // Llamar al Brain solo con provider — el access token va como JWT, no en el body
-    const brainSyncUrl = `${BACKEND_URL}/api/shopify/sync`
-    const brainResponse = await fetch(brainSyncUrl, {
+    const body = await request.json()
+    const { product_id } = body
+    if (!product_id) return NextResponse.json({ error: "product_id is required" }, { status: 400 })
+
+    const brainResponse = await fetch(`${BACKEND_URL}/api/optimize`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify({ provider: "shopify" }),
+      body: JSON.stringify({ product_id }),
     })
 
     if (!brainResponse.ok) {
-      const errorText = await brainResponse.text()
-      throw new Error(`Katalog Brain Sync Error: ${brainResponse.status} - ${errorText}`)
+      const errorData = await brainResponse.json().catch(() => ({}))
+      return NextResponse.json(
+        { error: errorData.detail || `Brain error: ${brainResponse.status}` },
+        { status: brainResponse.status }
+      )
     }
 
     const brainData = await brainResponse.json()
-
-    return NextResponse.json({
-      success: true,
-      message: "Sync started in background.",
-      data: brainData,
-    })
+    return NextResponse.json(brainData)
   } catch (error: unknown) {
-    console.error("Shopify sync failed to start:", error)
+    console.error("Optimize proxy error:", error)
     const errorMessage = error instanceof Error ? error.message : String(error)
-    return NextResponse.json({ error: `Unable to start sync: ${errorMessage}` }, { status: 500 })
+    return NextResponse.json({ error: `Unable to optimize: ${errorMessage}` }, { status: 500 })
   }
 }

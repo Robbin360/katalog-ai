@@ -108,9 +108,13 @@ export default function InventoryPage() {
     const { data, isLoading } = useQuery<InventoryResponse>({
         queryKey: ['inventory', page, statusFilter, searchTerm],
         queryFn: async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return { products: [], totalCount: 0 }
+
             let query = supabase
                 .from('shopify_products')
                 .select('id, shopify_id, current_title, audit_status, audit_score, image_url, created_at', { count: 'exact' })
+                .eq('user_id', user.id)
 
             if (statusFilter !== 'all') {
                 query = query.eq('audit_status', statusFilter)

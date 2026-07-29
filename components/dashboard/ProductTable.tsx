@@ -18,9 +18,13 @@ export default function ProductTable() {
     const { data: products, isLoading } = useQuery({
         queryKey: ['shopify_products'],
         queryFn: async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return []
+
             const { data } = await supabase
                 .from('shopify_products')
                 .select('id, shopify_id, current_title, audit_status, audit_score, image_url, created_at, updated_at, inventory_quantity, sales_last_7_days')
+                .eq('user_id', user.id)
                 .order('updated_at', { ascending: false })
             return data
         }

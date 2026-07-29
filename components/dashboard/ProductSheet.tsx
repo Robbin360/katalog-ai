@@ -27,8 +27,6 @@ const StatusBadge = ({ status }: { status: string }) => {
     return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-
 export default function ProductSheet() {
     const { isSheetOpen, selectedProductId, closeProduct } = useFoundryStore()
     const queryClient = useQueryClient();
@@ -58,22 +56,10 @@ export default function ProductSheet() {
         if (!selectedProductId) return;
         setIsOptimizing(true);
 
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData.session?.access_token;
-
-        if (!accessToken) {
-            toast.error('Sesión expirada. Por favor recarga la página e inicia sesión de nuevo.');
-            setIsOptimizing(false);
-            return;
-        }
-
         try {
-            const response = await fetch(`${BACKEND_URL}/api/optimize`, {
+            const response = await fetch('/api/optimize', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ product_id: selectedProductId }),
             });
 
