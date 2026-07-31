@@ -338,7 +338,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const { error: creditsError } = await supabase
+    const { error: creditsError } = await serviceClient
       .rpc("increment_profile_credits_used", { p_user_id: user.id })
 
     if (creditsError) {
