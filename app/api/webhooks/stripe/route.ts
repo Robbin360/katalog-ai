@@ -298,7 +298,7 @@ export async function POST(req: Request) {
         await supabaseAdmin
             .from('profiles')
             .update({
-                subscription_status: 'inactive',
+                subscription_status: 'active',
                 next_credit_reset_at: addOneMonthUTC().toISOString(),
                 auto_pilot_enabled: false,
                 credits_total: FREE_TIER_CREDITS,
@@ -375,7 +375,7 @@ export async function POST(req: Request) {
                 const { error } = await supabaseAdmin
                     .from('profiles')
                     .update({
-                        subscription_status: 'inactive',
+                        subscription_status: 'active',
                         credits_total: FREE_TIER_CREDITS,
                         credits_used: 0,
                         next_credit_reset_at: addOneMonthUTC().toISOString(),
