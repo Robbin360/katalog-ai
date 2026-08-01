@@ -20,11 +20,6 @@ interface AiProposal {
   description_length?: number
 }
 
-interface ProfileCredits {
-  credits_used: number | null
-  credits_total: number | null
-}
-
 interface ShopifyProductRow {
   id: number
   shopify_id: string
@@ -173,24 +168,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 })
     }
 
-    const { data: profileData, error: profileError } = await supabase
-      .from("profiles")
-      .select("credits_used, credits_total")
-      .eq("id", user.id)
-      .single()
-
-    if (profileError || !profileData) {
-      throw new PublicRouteError(402, "No credits available.", profileError?.message)
-    }
-
-    const profile = profileData as ProfileCredits
-    const creditsUsed = profile.credits_used ?? 0
-    const creditsTotal = profile.credits_total ?? 0
-
-    if (creditsUsed >= creditsTotal) {
-      return NextResponse.json({ error: "No credits available." }, { status: 402 })
-    }
-
     // Leer el access_token encriptado usando service role (bypassa RLS)
     const serviceClient = createSupabaseServiceClient();
     const { data: integrationData, error: integrationError } = await serviceClient
@@ -231,6 +208,44 @@ export async function POST(req: Request) {
     const product = productData as ShopifyProductRow
     const aiProposal = parseAiProposal(product.ai_proposal)
 
+    // Reserva el crédito ANTES de publicar. Idempotente: si el Brain ya cobró
+    // por este producto, devuelve la reserva existente sin descontar de nuevo.
+    const { data: reserveData, error: reserveError } = await serviceClient
+      .rpc("reserve_or_reuse_product_credit", {
+        p_user_id: user.id,
+        p_product_id: product.id,
+        p_base_amount: 1,
+      })
+
+    const reservation = Array.isArray(reserveData) ? reserveData[0] : reserveData
+
+    if (reserveError || !reservation?.success) {
+      if (reservation?.reason === "insufficient_credits") {
+        return NextResponse.json({ error: "No credits available." }, { status: 402 })
+      }
+      throw new PublicRouteError(
+        500,
+        "Unable to reserve credit for this publish.",
+        reserveError?.message ?? reservation?.reason ?? "reserve_failed"
+      )
+    }
+
+    const releaseReservationIfNew = async () => {
+      if (reservation.reason !== "reserved_new") return
+      try {
+        await serviceClient.rpc("refund_product_reservation", {
+          p_user_id: user.id,
+          p_product_id: product.id,
+          p_reservation_id: reservation.reservation_id,
+        })
+      } catch (refundError) {
+        console.error("refund_product_reservation failed", {
+          product_id: product.id,
+          error: getLogError(refundError),
+        })
+      }
+    }
+
     const mutation = `
       mutation productUpdate($product: ProductUpdateInput!) {
         productUpdate(product: $product) {
@@ -247,20 +262,27 @@ export async function POST(req: Request) {
       }
     }
 
-    const shopifyResponse = await fetch(
-      `https://${shop_url}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": access_token
-        },
-        body: JSON.stringify({ query: mutation, variables }),
-        signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS)
-      }
-    )
+    let shopifyResponse: Response
+    try {
+      shopifyResponse = await fetch(
+        `https://${shop_url}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": access_token
+          },
+          body: JSON.stringify({ query: mutation, variables }),
+          signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS)
+        }
+      )
+    } catch (fetchError) {
+      await releaseReservationIfNew()
+      throw fetchError
+    }
 
     if (!shopifyResponse.ok) {
+      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify rejected the publish request.",
@@ -271,6 +293,7 @@ export async function POST(req: Request) {
     const shopifyData = await shopifyResponse.json() as ShopifyProductUpdateResponse
 
     if (shopifyData.errors?.length) {
+      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify rejected the publish request.",
@@ -280,6 +303,7 @@ export async function POST(req: Request) {
 
     const userErrors = shopifyData.data?.productUpdate?.userErrors ?? []
     if (userErrors.length > 0) {
+      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify rejected the publish request.",
@@ -288,6 +312,7 @@ export async function POST(req: Request) {
     }
 
     if (!shopifyData.data?.productUpdate?.product?.id) {
+      await releaseReservationIfNew()
       throw new PublicRouteError(502, "Shopify rejected the publish request.")
     }
 
@@ -338,15 +363,25 @@ export async function POST(req: Request) {
       )
     }
 
-    const { error: creditsError } = await serviceClient
-      .rpc("increment_profile_credits_used", { p_user_id: user.id })
+    // Confirma el cargo. Idempotente: si el Brain ya lo comprometió,
+    // devuelve already_committed sin descontar otra vez.
+    const { data: commitData, error: commitError } = await serviceClient
+      .rpc("commit_product_credit", {
+        p_user_id: user.id,
+        p_product_id: product.id,
+        p_reservation_id: reservation.reservation_id,
+      })
 
-    if (creditsError) {
-      throw new PublicRouteError(
-        500,
-        "Product was published, but credit capture failed.",
-        creditsError.message
-      )
+    const commit = Array.isArray(commitData) ? commitData[0] : commitData
+
+    if (commitError || !commit?.success) {
+      // El producto YA está publicado. No abortamos: se registra y se sigue.
+      console.error("commit_product_credit failed after publish", {
+        product_id: product.id,
+        user_id: user.id,
+        reservation_id: reservation.reservation_id,
+        reason: commit?.reason ?? commitError?.message ?? "unknown",
+      })
     }
 
     return NextResponse.json({
