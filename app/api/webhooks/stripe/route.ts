@@ -13,14 +13,29 @@ const supabaseAdmin = createClient(
 
 const PLAN_PATROL_LIMITS: Record<string, number> = {
   free: 3,
-  starter: 3,
   pro: 5,
   business: 10,
   enterprise: 3,
 };
 
+const FREE_TIER_CREDITS = 15;
+
 function getPatrolLimitForPlan(planTier: string): number {
   return PLAN_PATROL_LIMITS[planTier] ?? 3;
+}
+
+/**
+ * Suma un mes calendario en UTC. Si el día no existe en el mes destino
+ * (31 de enero + 1 mes), lo ajusta al último día de ese mes.
+ */
+function addOneMonthUTC(from: Date = new Date()): Date {
+  const d = new Date(from);
+  const day = d.getUTCDate();
+  d.setUTCMonth(d.getUTCMonth() + 1);
+  if (d.getUTCDate() < day) {
+    d.setUTCDate(0);
+  }
+  return d;
 }
 
 async function atomicallyUpdatePlanAndLimit(
@@ -129,8 +144,8 @@ export async function POST(req: Request) {
             const priceId = subscription.items.data[0].price.id;
             const interval = subscription.items.data[0].plan.interval;
 
-            let creditsToAssign = 100;
-            let planName = 'starter';
+            let creditsToAssign = 0;
+            let planName = '';
 
             if (
                 priceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO ||
@@ -144,6 +159,14 @@ export async function POST(req: Request) {
             ) {
                 creditsToAssign = 800;
                 planName = 'business';
+            } else {
+                console.error(JSON.stringify({
+                    event: 'stripe_webhook_unknown_price',
+                    price_id: priceId,
+                    user_id: userId,
+                    subscription_id: subscriptionId,
+                }));
+                return new NextResponse('Unknown price ID', { status: 400 });
             }
 
             const patrolLimit = getPatrolLimitForPlan(planName);
@@ -157,7 +180,7 @@ export async function POST(req: Request) {
                     auto_pilot_patrol_limit: patrolLimit,
                     billing_interval: interval,
                     subscription_status: 'active',
-                    next_credit_reset_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                    next_credit_reset_at: addOneMonthUTC().toISOString(),
                     auto_pilot_enabled: true,
                     credits_total: creditsToAssign,
                     credits_used: 0,
@@ -212,11 +235,6 @@ export async function POST(req: Request) {
             const billingInterval = subscription.items.data[0].plan.interval;
             const subscriptionStatus = subscription.status;
 
-            if (billingInterval !== 'month') {
-                console.log(`⏭️ invoice.paid ignorada: suscripción ${subscriptionId} es ${billingInterval}. Supabase gestiona los resets anuales.`);
-                return new NextResponse('Success', { status: 200 });
-            }
-
             if (subscriptionStatus !== 'active') {
                 console.log(`⏭️ invoice.paid ignorada: suscripción ${subscriptionId} está en estado ${subscriptionStatus}.`);
                 return new NextResponse('Success', { status: 200 });
@@ -226,13 +244,18 @@ export async function POST(req: Request) {
                 .from('profiles')
                 .update({
                     credits_used: 0,
+                    next_credit_reset_at: addOneMonthUTC().toISOString(),
                     updated_at: new Date().toISOString(),
                 })
                 .eq('stripe_subscription_id', subscriptionId);
 
             if (error) throw error;
 
-            console.log(`🔄 Recarga mensual procesada: suscripción ${subscriptionId} — créditos usados reseteados.`);
+            console.log(JSON.stringify({
+                event: 'credits_refilled',
+                subscription_id: subscriptionId,
+                billing_interval: billingInterval,
+            }));
         } catch (dbError: any) {
             console.error(`❌ Error al procesar invoice.paid: ${dbError.message}`);
             return new NextResponse('Database error', { status: 500 });
@@ -276,9 +299,10 @@ export async function POST(req: Request) {
             .from('profiles')
             .update({
                 subscription_status: 'inactive',
-                next_credit_reset_at: null,
+                next_credit_reset_at: addOneMonthUTC().toISOString(),
                 auto_pilot_enabled: false,
-                credits_total: 0,
+                credits_total: FREE_TIER_CREDITS,
+                credits_used: 0,
                 stripe_subscription_id: null,
                 updated_at: new Date().toISOString(),
             })
@@ -352,7 +376,9 @@ export async function POST(req: Request) {
                     .from('profiles')
                     .update({
                         subscription_status: 'inactive',
-                        credits_total: 0,
+                        credits_total: FREE_TIER_CREDITS,
+                        credits_used: 0,
+                        next_credit_reset_at: addOneMonthUTC().toISOString(),
                         auto_pilot_enabled: false,
                         stripe_subscription_id: null,
                         updated_at: new Date().toISOString(),
