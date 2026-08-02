@@ -25,9 +25,20 @@ export async function GET(request: Request) {
         )
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
-            return NextResponse.redirect(`${origin}${next}`)
+            const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard'
+            return NextResponse.redirect(`${origin}${safeNext}`)
         }
+        console.error('[auth] exchangeCodeForSession falló:', error.message)
+        return NextResponse.redirect(
+            `${origin}/login?error=auth-code-error`
+        )
     }
 
+    // El proveedor puede devolver el error en la query en vez de un code.
+    const providerError = searchParams.get('error_description')
+        ?? searchParams.get('error')
+    if (providerError) {
+        console.error('[auth] el proveedor devolvió error:', providerError)
+    }
     return NextResponse.redirect(`${origin}/login?error=auth-code-error`)
 }

@@ -30,77 +30,98 @@ async function createClient() {
 // --- 1. INICIAR SESIÓN (Email/Password) ---
 export async function login(formData: FormData) {
     const supabase = await createClient()
-    const data = { email: formData.get("email") as string, password: formData.get("password") as string }
+    const email = String(formData.get("email") ?? "").trim()
+    const password = String(formData.get("password") ?? "")
+    const rawNext = String(formData.get("redirect") ?? "")
 
-    const { error } = await supabase.auth.signInWithPassword(data)
+    // Solo rutas internas: evita redirección abierta a dominios externos.
+    const next =
+        rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/dashboard"
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
     if (error) {
-        console.error("❌ ERROR LOGIN:", error.message)
+        console.error("[auth] login falló:", error.message)
         redirect("/login?error=auth-failed")
     }
+
     revalidatePath("/", "layout")
-    redirect("/dashboard")
+    redirect(next)
 }
 
 // --- 2. REGISTRARSE (Email/Password) ---
 export async function signup(formData: FormData) {
     const supabase = await createClient()
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-    const fullName = formData.get("fullname") as string
+    const email = String(formData.get("email") ?? "").trim()
+    const password = String(formData.get("password") ?? "")
+    const fullName = String(formData.get("fullname") ?? "").trim()
 
-    const signUpData = fullName
-        ? { email, password, options: { data: { full_name: fullName } } }
-        : { email, password }
+    if (!email || !password) redirect("/signup?error=missing-fields")
 
-    const { error } = await supabase.auth.signUp(signUpData)
+    const hdrs = await headers()
+    const origin = hdrs.get('origin') ?? 'http://localhost:3000'
+
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            emailRedirectTo: `${origin}/auth/callback`,
+            ...(fullName ? { data: { full_name: fullName } } : {}),
+        },
+    })
+
     if (error) {
-        console.error("❌ ERROR SIGNUP:", error.message)
+        console.error("[auth] signup falló:", error.message)
         redirect("/signup?error=signup-failed")
     }
+
+    // Sin sesión = el proyecto exige confirmar el correo.
+    // Mandar a /dashboard aquí provoca un rebote infinito contra el proxy.
+    if (!data.session) {
+        redirect("/login?message=check-email")
+    }
+
     revalidatePath("/", "layout")
     redirect("/dashboard")
 }
 
-// --- 3. LOGIN SOCIAL (GOOGLE) ---
-export async function signInWithGoogle() {
+// --- 3. LOGIN SOCIAL (GOOGLE, SLACK, X) ---
+type OAuthResult = { url?: string; error?: string }
+
+async function startOAuth(
+    provider: 'google' | 'slack_oidc' | 'x',
+    extra?: { scopes?: string }
+): Promise<OAuthResult> {
     const supabase = await createClient()
-    const origin = (await headers()).get('origin') || 'http://localhost:3000'
+    const hdrs = await headers()
+    const origin = hdrs.get('origin') ?? 'http://localhost:3000'
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: `${origin}/auth/callback`, queryParams: { access_type: 'offline', prompt: 'consent' } },
-    })
-    if (error) { console.error("❌ ERROR GOOGLE:", error.message); redirect("/login?error=oauth-failed") }
-    if (data.url) redirect(data.url)
-}
-
-// --- 4. LOGIN SOCIAL (SLACK) ---
-export async function signInWithSlack() {
-    const supabase = await createClient()
-    const origin = (await headers()).get('origin') || 'http://localhost:3000'
-
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'slack_oidc',
-        options: { redirectTo: `${origin}/auth/callback` },
-    })
-    if (error) { console.error("❌ ERROR SLACK:", error.message); redirect("/login?error=slack-failed") }
-    if (data.url) redirect(data.url)
-}
-
-// --- 5. LOGIN SOCIAL (X / TWITTER) ---
-export async function signInWithX() {
-    const supabase = await createClient()
-    const origin = (await headers()).get('origin') || 'http://localhost:3000'
-
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'x', // OAuth 2.0 — el nuevo y recomendado
+        provider,
         options: {
-            redirectTo: `${origin}/auth/callback?next=/dashboard`,
-            scopes: 'users.read tweet.read',
+            redirectTo: `${origin}/auth/callback`,
+            ...(extra?.scopes ? { scopes: extra.scopes } : {}),
         },
     })
-    if (error) { console.error("❌ ERROR X:", error.message); redirect("/login?error=x-failed") }
-    if (data.url) redirect(data.url)
+
+    if (error) {
+        console.error(`[auth] OAuth ${provider} falló:`, error.message)
+        return { error: error.message }
+    }
+    if (!data?.url) return { error: 'no_oauth_url' }
+    return { url: data.url }
+}
+
+export async function signInWithGoogle(): Promise<OAuthResult> {
+    return startOAuth('google')
+}
+
+export async function signInWithSlack(): Promise<OAuthResult> {
+    return startOAuth('slack_oidc')
+}
+
+export async function signInWithX(): Promise<OAuthResult> {
+    return startOAuth('x', { scopes: 'users.read tweet.read' })
 }
 
 // --- 6. CERRAR SESIÓN ---
