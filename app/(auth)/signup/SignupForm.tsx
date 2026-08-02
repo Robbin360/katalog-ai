@@ -69,8 +69,11 @@ export default function SignupForm() {
         }
         setConfirmError(false)
         setIsLoading(true)
-        await signup(formData)
-        setIsLoading(false)
+        try {
+            await signup(formData)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
