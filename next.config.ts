@@ -1,21 +1,25 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const productionConnectSrc = "'self' https://*.supabase.co https://api.stripe.com https://*.shopify.com";
-const devConnectSrc = "'self' http://localhost:8000 http://127.0.0.1:8000 https://*.supabase.co https://api.stripe.com https://*.shopify.com";
+const devConnectSrc = "'self' http://localhost:8000 http://127.0.0.1:8000 https://*.supabase.co https://api.stripe.com https://*.shopify.com ws://localhost:3000";
 
 const cspHeader = [
   "default-src 'self'",
-  process.env.NODE_ENV === 'production'
-    ? `connect-src ${productionConnectSrc}`
-    : `connect-src ${devConnectSrc}`,
-  "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
+  isDev ? `connect-src ${devConnectSrc}` : `connect-src ${productionConnectSrc}`,
+  // React Refresh usa eval() en desarrollo. Sin esto el cliente no hidrata
+  // y ningún onClick funciona. En producción se mantiene estricto.
+  isDev
+    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+    : "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' blob: data: https:",
-  "font-src 'self' data:",
+  "font-src 'self' data: https://fonts.gstatic.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "upgrade-insecure-requests",
+  ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join('; ');
 
 const nextConfig: NextConfig = {
