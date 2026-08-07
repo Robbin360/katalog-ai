@@ -50,7 +50,7 @@ export default function ProductTable() {
                         const title = item.current_title || "Producto Sin Nombre"
                         
                         // Score Logic
-                        const score = item.audit_score || item.seo_score_initial || 0
+                        const score = item.audit_score ?? item.seo_score_initial ?? 0
                         const scoreColor = score >= 80 ? "bg-emerald-500" : score >= 50 ? "bg-amber-500" : "bg-red-500"
                         const scoreTextColor = score >= 80 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"
 

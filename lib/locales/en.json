@@ -111,6 +111,25 @@
                 "optimize_success": "Optimization queued! Your agent will process it soon.",
                 "optimize_error": "Could not contact agent."
             }
+        },
+        "kpis": {
+            "revenue_at_risk": {
+                "title": "Revenue at Risk",
+                "subtitle": "Inventory value held in unoptimized assets",
+                "trend_high": "High risk",
+                "trend_none": "No risk"
+            },
+            "catalog_health": {
+                "title": "Catalog Health",
+                "subtitle": "Overall quality score across all store products",
+                "trend_connect": "Connect a store",
+                "trend_healthy": "Healthy",
+                "trend_attention": "Needs Attention"
+            },
+            "optimization_queue": {
+                "title": "Optimization Queue",
+                "subtitle": "Includes pending, processing, ready, and error states"
+            }
         }
     },
     "onboarding": {

@@ -34,14 +34,16 @@ export default function ProductSheet() {
     const [isOptimizing, setIsOptimizing] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
 
-    // Fetch product details lazily when the sheet opens
-    const { data: productDetail, isLoading: isLoadingDetail } = useQuery({
+    // Fetch product details lazily when the sheet opens.
+    // El RPC get_priority_products NO trae current_body_html (listado ligero):
+    // aquí se carga puntual solo al abrir la ficha.
+    const { data: productDetail, isLoading: isLoadingDetail, isError: isDetailError, refetch: refetchDetail } = useQuery({
         queryKey: ['product-detail', selectedProductId],
         queryFn: async () => {
             if (!selectedProductId) return null;
             const { data, error } = await supabase
                 .from('shopify_products')
-                .select('*')
+                .select('id, shopify_id, current_title, audit_status, image_url, error_log, ai_proposal, current_body_html')
                 .eq('id', selectedProductId)
                 .single();
             if (error) throw error;
@@ -126,7 +128,23 @@ export default function ProductSheet() {
                 </SheetHeader>
                 
                 <div className="mt-8 space-y-6 flex-1">
-                    {productDetail?.audit_status === 'ERROR' ? (
+                    {isDetailError ? (
+                        <div className="bg-destructive/10 dark:bg-red-950/30 border border-destructive/20 dark:border-red-900/50 text-destructive dark:text-red-400 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertTriangle className="w-5 h-5" />
+                                <h3>Failed to load product</h3>
+                            </div>
+                            <p className="text-sm opacity-90">The product description could not be fetched. Please try again.</p>
+                            <Button
+                                variant="destructive"
+                                onClick={() => refetchDetail()}
+                                disabled={isLoadingDetail}
+                                className="mt-2 bg-destructive dark:bg-red-950 hover:bg-destructive/90 dark:hover:bg-red-900 text-destructive-foreground dark:text-red-400 border border-transparent dark:border-red-900/50"
+                            >
+                                <RefreshCw className="w-4 h-4 mr-2" /> Retry
+                            </Button>
+                        </div>
+                    ) : productDetail?.audit_status === 'ERROR' ? (
                         <div className="bg-destructive/10 dark:bg-red-950/30 border border-destructive/20 dark:border-red-900/50 text-destructive dark:text-red-400 p-6 rounded-xl space-y-4">
                             <div className="flex items-center gap-2 font-bold text-lg">
                                 <AlertTriangle className="w-5 h-5" />

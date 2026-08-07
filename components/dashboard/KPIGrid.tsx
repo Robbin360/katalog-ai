@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from "@/lib/supabase"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useI18n } from "@/lib/i18n-context"
 import { TrendingDown, Activity, Zap } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -94,6 +95,7 @@ interface KPIGridProps {
 
 export default function KPIGrid({ userId }: KPIGridProps) {
     const queryClient = useQueryClient()
+    const { t } = useI18n()
 
     // --- INITIAL FETCH VIA REACT QUERY ---
     // Automáticamente maneja la latencia de sesión (auth) con retries
@@ -182,29 +184,29 @@ export default function KPIGrid({ userId }: KPIGridProps) {
     return (
         <div className="grid gap-4 md:grid-cols-3 mb-8">
             <KPICard
-                title="Revenue at Risk"
+                title={t('dashboard.kpis.revenue_at_risk.title')}
                 value={`$${animatedRevenue.toLocaleString()}.00`}
                 icon={TrendingDown}
-                trend={{ label: animatedRevenue > 0 ? "High Risk" : "Clear", type: animatedRevenue > 0 ? "neg" : "pos" }}
+                trend={{ label: animatedRevenue > 0 ? t('dashboard.kpis.revenue_at_risk.trend_high') : t('dashboard.kpis.revenue_at_risk.trend_none'), type: animatedRevenue > 0 ? "neg" : "pos" }}
                 glowColor="#ef4444"
-                subtitle="Est. monthly loss due to unoptimized assets"
+                subtitle={t('dashboard.kpis.revenue_at_risk.subtitle')}
                 loading={isLoading}
             />
             <KPICard
-                title="Catalog Health"
+                title={t('dashboard.kpis.catalog_health.title')}
                 value={`${animatedHealth}%`}
                 icon={Activity}
-                trend={{ label: animatedHealth === 0 ? "Connect a store" : (animatedHealth > 80 ? "Healthy" : "Needs Attention"), type: animatedHealth === 0 ? "pos" : (animatedHealth > 80 ? "pos" : "neg") }}
+                trend={{ label: animatedHealth === 0 ? t('dashboard.kpis.catalog_health.trend_connect') : (animatedHealth > 80 ? t('dashboard.kpis.catalog_health.trend_healthy') : t('dashboard.kpis.catalog_health.trend_attention')), type: animatedHealth === 0 ? "pos" : (animatedHealth > 80 ? "pos" : "neg") }}
                 glowColor="#eab308"
-                subtitle="Overall quality score across all store products"
+                subtitle={t('dashboard.kpis.catalog_health.subtitle')}
                 loading={isLoading}
             />
             <KPICard
-                title="Optimization Queue"
+                title={t('dashboard.kpis.optimization_queue.title')}
                 value={animatedQueue}
                 icon={Zap}
                 glowColor="#3b82f6"
-                subtitle="Includes pending, processing, ready, and error states"
+                subtitle={t('dashboard.kpis.optimization_queue.subtitle')}
                 loading={isLoading}
             />
         </div>

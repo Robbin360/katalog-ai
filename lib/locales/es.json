@@ -111,6 +111,25 @@
                 "optimize_success": "¡Optimización en cola! Tu agente la procesará pronto.",
                 "optimize_error": "No se pudo contactar con el agente."
             }
+        },
+        "kpis": {
+            "revenue_at_risk": {
+                "title": "Ingresos en Riesgo",
+                "subtitle": "Valor de inventario atado en activos sin optimizar",
+                "trend_high": "Riesgo alto",
+                "trend_none": "Sin riesgo"
+            },
+            "catalog_health": {
+                "title": "Salud del Catálogo",
+                "subtitle": "Puntuación general de calidad de todos los productos de la tienda",
+                "trend_connect": "Conecta una tienda",
+                "trend_healthy": "Saludable",
+                "trend_attention": "Requiere Atención"
+            },
+            "optimization_queue": {
+                "title": "Cola de Optimización",
+                "subtitle": "Incluye estados pendientes, en proceso, listos y con error"
+            }
         }
     },
     "onboarding": {

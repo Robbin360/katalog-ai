@@ -41,6 +41,23 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Product, ProductStatus } from "@/types/inventory";
 
+// Tipado manual del RPC get_priority_products (no hay database.types generados)
+// Columnas devueltas: id, shopify_id, current_title, audit_status, audit_score,
+// image_url, inventory_quantity, price, sales_last_7_days, created_at, priority_score
+interface PriorityProductRow {
+    id: string;
+    shopify_id: string | null;
+    current_title: string | null;
+    audit_status: string | null;
+    audit_score: number | null;
+    image_url: string | null;
+    inventory_quantity: number | null;
+    price: number | null;
+    sales_last_7_days: number | null;
+    created_at: string | null;
+    priority_score: number | null;
+}
+
 // --- COMPONENT: ONBOARDING DECK ---
 function OnboardingDeck({ status, onDismiss }: {
     status: {
@@ -197,13 +214,9 @@ export default function DashboardPage() {
                 queuedCountReq,
                 brandRulesReq
             ] = await Promise.all([
-                // Consulta ligera: sin HTML pesado ni JSONs grandes, con límite de 50
-                supabase.from('shopify_products')
-                    .select('id, shopify_id, current_title, audit_status, audit_score, image_url, created_at, inventory_quantity, sales_last_7_days')
-                    .eq('user_id', user.id)
-                    .neq('audit_status', 'OPTIMIZED')
-                    .order('created_at', { ascending: false })
-                    .limit(50),
+                // Consulta ligera: RPC en SQL ya filtra por auth.uid(), excluye
+                // OPTIMIZED y ordena por priority_score desc. Sin HTML pesado.
+                supabase.rpc('get_priority_products', { p_limit: 50 }),
                 
                 supabase.from('profiles').select('plan_tier, onboarding_dismissed, auto_pilot_enabled').eq('id', user.id).single(),
                 
@@ -216,7 +229,7 @@ export default function DashboardPage() {
                 supabase.from('brand_rules').select('id, updated_at, created_at').eq('user_id', user.id).maybeSingle()
             ])
 
-            const products = productsReq.data || []
+            const products = (productsReq.data || []) as PriorityProductRow[]
             const profile = profileReq.data
             const shopifyCount = shopifyCountReq.count
             const integrationCount = integrationCountReq.count
@@ -286,8 +299,9 @@ export default function DashboardPage() {
         await supabase.from('profiles').update({ onboarding_dismissed: true }).eq('id', user.id)
     }
 
-    const products: any[] = dashboardData?.products?.map((p: any) => {
-        const proposal = p.ai_proposal || {}
+    const products = dashboardData?.products?.map((p: PriorityProductRow) => {
+        // El RPC no trae ai_proposal (listado ligero): se carga puntual en ProductSheet.
+        const proposal = {}
         return {
             id: p.id,
             shopifyId: p.shopify_id,
@@ -295,10 +309,10 @@ export default function DashboardPage() {
             image: p.image_url,
             status: p.audit_status,
             healthScore: p.audit_score || 0,
-            revenueImpact: p.audit_score < 80 ? (80 - p.audit_score) : 0,
-            currentBodyHtml: p.current_body_html,
+            revenueImpact: p.priority_score ?? 0,
+            currentBodyHtml: undefined,
             aiProposal: proposal,
-            createdAt: new Date(p.created_at).toLocaleDateString(),
+            createdAt: new Date(p.created_at as string).toLocaleDateString(),
             platform: 'Shopify',
             inventoryQuantity: p.inventory_quantity || 0,
             salesLast7Days: p.sales_last_7_days || 0
