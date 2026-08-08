@@ -43,7 +43,7 @@ export default function ProductSheet() {
             if (!selectedProductId) return null;
             const { data, error } = await supabase
                 .from('shopify_products')
-                .select('id, shopify_id, current_title, audit_status, image_url, error_log, ai_proposal, current_body_html')
+                .select('id, shopify_id, current_title, audit_status, image_url, error_log, ai_proposal, current_body_html, audit_log')
                 .eq('id', selectedProductId)
                 .single();
             if (error) throw error;
@@ -53,6 +53,14 @@ export default function ProductSheet() {
         staleTime: 1000 * 60 * 5, // 5 minutos de cache para evitar el spam del auth-lock en Strict Mode
         gcTime: 1000 * 60 * 10 // Mantener en memoria 10 minutos
     });
+
+    // audit_log es jsonb y lo escribieron versiones distintas de código:
+    // nunca asumir que es un array — si alguna fila trae string u objeto,
+    // .filter() reventaría el sheet al abrirse.
+    const auditLog: string[] = Array.isArray(productDetail?.audit_log)
+        ? (productDetail.audit_log as unknown[]).filter((l): l is string => typeof l === "string")
+        : [];
+    const gateRejection = auditLog.filter((l) => l.startsWith("Gate RECHAZADO")).at(-1);
 
     const handleOptimize = async () => {
         if (!selectedProductId) return;
@@ -211,6 +219,16 @@ export default function ProductSheet() {
                                             </div>
                                         ) : productDetail?.audit_status === 'OPTIMIZED' || productDetail?.ai_proposal?.new_title ? (
                                             <div className="space-y-4">
+                                                {/* GATE REJECTION — el escritor produjo texto, el gate lo rechazó.
+                                                    No es un bug: es el control de calidad protegiendo la tienda. */}
+                                                {productDetail?.audit_status === 'NEEDS_OPTIMIZATION' && gateRejection && (
+                                                    <div className="mb-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 space-y-1">
+                                                        <p className="text-[10px] text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1.5 uppercase tracking-widest">
+                                                            <AlertTriangle className="h-3 w-3" /> Quality Gate rejected this draft
+                                                        </p>
+                                                        <p className="text-[11px] text-amber-800 dark:text-amber-300/90 leading-relaxed">{gateRejection}</p>
+                                                    </div>
+                                                )}
                                                 {/* AI AUDIT INSIGHTS */}
                                                 {(() => {
                                                     const auditReasons = productDetail?.ai_proposal?.audit_log || productDetail?.ai_proposal?.registro_de_auditoria || [];
