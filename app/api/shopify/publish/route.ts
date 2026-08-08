@@ -26,6 +26,7 @@ interface ShopifyProductRow {
   current_title: string | null
   current_body_html: string | null
   ai_proposal: unknown
+  audit_status: string
 }
 
 interface OptimizationInsert {
@@ -196,13 +197,25 @@ export async function POST(req: Request) {
 
     const { data: productData, error: productError } = await supabase
       .from("shopify_products")
-      .select("id, shopify_id, current_title, current_body_html, ai_proposal")
+      .select("id, shopify_id, current_title, current_body_html, ai_proposal, audit_status")
       .eq("id", requestBody.productId)
       .eq("user_id", user.id)
       .single()
 
     if (productError || !productData) {
       throw new PublicRouteError(404, "Product or AI proposal not found.", productError?.message)
+    }
+
+    // Lista blanca: solo productos que pasaron el quality gate (misma doctrina
+    // que route_after_save en Katalog-brain). Fallo cerrado: cualquier otro
+    // estado bloquea la publicación, antes de reservar crédito. Sin esta guarda,
+    // un producto rechazado por el gate (crédito ya reembolsado) podía
+    // publicarse desde el ProductSheet y cobrar de nuevo un crédito.
+    if (productData.audit_status !== "READY_TO_PUBLISH") {
+      return NextResponse.json(
+        { error: "Product not approved. It must pass the quality gate before publishing." },
+        { status: 409 }
+      )
     }
 
     const product = productData as ShopifyProductRow
