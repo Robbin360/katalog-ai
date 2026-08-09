@@ -23,7 +23,7 @@ import { useFoundryStore } from "@/store/useFoundryStore"
 const StatusBadge = ({ status }: { status: string }) => {
     if (status === 'ERROR') return <Badge variant="outline" className="bg-destructive/10 dark:bg-red-500/10 text-destructive dark:text-red-500 border-destructive/20 dark:border-red-500/20 px-2 py-0.5"><AlertTriangle className="h-3 w-3 mr-1" /> Error</Badge>
     if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
-    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
+    if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
     return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
@@ -221,7 +221,7 @@ export default function ProductSheet() {
                                             <div className="space-y-4">
                                                 {/* GATE REJECTION — el escritor produjo texto, el gate lo rechazó.
                                                     No es un bug: es el control de calidad protegiendo la tienda. */}
-                                                {productDetail?.audit_status === 'NEEDS_OPTIMIZATION' && gateRejection && (
+                                                {['NEEDS_OPTIMIZATION', 'NEEDS_REVIEW'].includes(productDetail?.audit_status ?? '') && gateRejection && (
                                                     <div className="mb-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 space-y-1">
                                                         <p className="text-[10px] text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1.5 uppercase tracking-widest">
                                                             <AlertTriangle className="h-3 w-3" /> Quality Gate rejected this draft
@@ -365,6 +365,20 @@ export default function ProductSheet() {
                                 <Button disabled className="w-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center gap-2 font-bold h-11">
                                     ✨ Already Optimized
                                 </Button>
+                            );
+                        }
+
+                        if (status === 'NEEDS_REVIEW') {
+                            return (
+                                <div className="w-full bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 text-center space-y-1">
+                                    <p className="text-amber-600 dark:text-amber-400 font-bold text-sm flex items-center justify-center gap-1.5">
+                                        <AlertTriangle className="h-4 w-4" />
+                                        This product needs your review
+                                    </p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        AI tried 3 times and couldn't fix this listing. Edit it in Shopify and re-scan to try again.
+                                    </p>
+                                </div>
                             );
                         }
 

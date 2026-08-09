@@ -143,7 +143,7 @@ function StatusBadge({ status }: { status: string }) {
         return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20"><CheckCircle2 className="w-3 h-3 mr-1" /> Optimized</Badge>
     }
     if (status === 'NEEDS_REVIEW') {
-        return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/20"><AlertCircle className="w-3 h-3 mr-1" /> Needs Review</Badge>
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20"><AlertCircle className="w-3 h-3 mr-1" /> Needs Review</Badge>
     }
     if (status === 'PENDING_AUDIT' || status === 'PENDING') {
         return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20"><Clock className="w-3 h-3 mr-1" /> Pending Audit</Badge>
