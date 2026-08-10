@@ -54,6 +54,7 @@ interface ShopifyUserError {
 interface ShopifyProductUpdatePayload {
   product: {
     id: string
+    title: string
   } | null
   userErrors: ShopifyUserError[]
 }
@@ -262,7 +263,7 @@ export async function POST(req: Request) {
     const mutation = `
       mutation productUpdate($product: ProductUpdateInput!) {
         productUpdate(product: $product) {
-          product { id }
+          product { id title }
           userErrors { field message }
         }
       }
@@ -324,9 +325,18 @@ export async function POST(req: Request) {
       )
     }
 
-    if (!shopifyData.data?.productUpdate?.product?.id) {
+    const updatedProduct = shopifyData.data?.productUpdate?.product
+    if (!updatedProduct?.id) {
       await releaseReservationIfNew()
       throw new PublicRouteError(502, "Shopify rejected the publish request.")
+    }
+    if (updatedProduct.title !== aiProposal.new_title) {
+      await releaseReservationIfNew()
+      throw new PublicRouteError(
+        502,
+        "Shopify accepted the update but did not apply the title.",
+        `Title mismatch. Sent: ${aiProposal.new_title} | Returned: ${updatedProduct.title}`
+      )
     }
 
     const publishedAt = new Date().toISOString()
