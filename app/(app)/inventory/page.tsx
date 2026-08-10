@@ -51,6 +51,8 @@ import { useI18n } from "@/lib/i18n-context"
 
 import { Product, InventoryResponse } from "@/types/inventory"
 import { StatusBadge } from "@/components/ui/status-badge"
+import { useFoundryStore } from "@/store/useFoundryStore"
+import ProductSheet from "@/components/dashboard/ProductSheet"
 
 const PAGE_SIZE = 10;
 
@@ -59,6 +61,7 @@ const PAGE_SIZE = 10;
 // StatusBadge has been centralized to @/components/ui/status-badge
 export default function InventoryPage() {
     const { t } = useI18n()
+    const { openProduct } = useFoundryStore()
     const queryClient = useQueryClient()
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -366,9 +369,9 @@ export default function InventoryPage() {
                                                     <MoreHorizontal className="h-4 w-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
+                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => openProduct(product.id)}>
                                                     <Eye className="mr-2 h-4 w-4" /> View Details
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={async () => {
@@ -429,6 +432,7 @@ export default function InventoryPage() {
                     </Button>
                 </div>
             </div>
+            <ProductSheet />
         </div>
     )
 }
