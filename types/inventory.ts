@@ -1,7 +1,7 @@
 export type ProductStatus = 'PENDING_AUDIT' | 'NEEDS_REVIEW' | 'OPTIMIZED' | 'IDLE';
 
 export interface Product {
-    id: string;
+    id: number;
     shopifyId: string;
     current_title: string;
     image: string | null;
