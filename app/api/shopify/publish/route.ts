@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server"
-import { createSupabaseServerClient, createSupabaseServiceClient, decryptShopifyToken } from '@/lib/supabase/server'
+import { createSupabaseServerClient, createSupabaseServiceClient, decryptShopifyToken } from "@/lib/supabase/server"
 
 export const maxDuration = 60
 
 const SHOPIFY_API_VERSION = "2026-04"
 const SHOPIFY_FETCH_TIMEOUT_MS = 45_000
-const DEFAULT_FRAMEWORK_USED = "manual_publish"
-const DEFAULT_TONE_USED = "default"
 
 interface PublishRequestBody {
   productId: string | number
@@ -15,9 +13,6 @@ interface PublishRequestBody {
 interface AiProposal {
   new_title: string
   new_body_html: string
-  framework_used?: string
-  tone_used?: string
-  description_length?: number
 }
 
 interface ShopifyProductRow {
@@ -29,17 +24,10 @@ interface ShopifyProductRow {
   audit_status: string
 }
 
-interface OptimizationInsert {
-  user_id: string
-  product_id: number
-  title_generated: string
-  description_generated: string
-  framework_used: string
-  tone_used: string
-  description_length: number
-  title_previous: string | null
-  description_previous: string | null
-  status: "published"
+interface FinalizePublishResult {
+  success?: boolean
+  reason?: string
+  optimization_id?: string
 }
 
 interface ShopifyGraphqlError {
@@ -55,6 +43,7 @@ interface ShopifyProductUpdatePayload {
   product: {
     id: string
     title: string
+    descriptionHtml: string
   } | null
   userErrors: ShopifyUserError[]
 }
@@ -114,29 +103,8 @@ const parseAiProposal = (payload: unknown): AiProposal => {
   return {
     new_title: newTitle,
     new_body_html: newBodyHtml,
-    framework_used: typeof payload.framework_used === "string" && payload.framework_used.trim().length > 0
-      ? payload.framework_used.trim()
-      : undefined,
-    tone_used: typeof payload.tone_used === "string" && payload.tone_used.trim().length > 0
-      ? payload.tone_used.trim()
-      : undefined,
-    description_length: typeof payload.description_length === "number" &&
-      Number.isFinite(payload.description_length)
-      ? payload.description_length
-      : undefined
   }
 }
-
-const stripHtml = (html: string): string =>
-  html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-
-const getDescriptionLength = (proposal: AiProposal): number =>
-  Math.max(0, Math.trunc(proposal.description_length ?? stripHtml(proposal.new_body_html).length))
 
 const getProductIdForShopify = (shopifyId: string): string => {
   if (shopifyId.startsWith("gid://shopify/Product/")) return shopifyId
@@ -161,8 +129,18 @@ const getLogError = (error: unknown): string => {
 }
 
 export async function POST(req: Request) {
+  let rawBody: unknown
   try {
-    const requestBody = parseRequestBody(await req.json() as unknown)
+    rawBody = await req.json()
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON in request body." },
+      { status: 400 }
+    )
+  }
+
+  try {
+    const requestBody = parseRequestBody(rawBody)
     const supabase = await createSupabaseServerClient()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -171,22 +149,22 @@ export async function POST(req: Request) {
     }
 
     // Leer el access_token encriptado usando service role (bypassa RLS)
-    const serviceClient = createSupabaseServiceClient();
+    const serviceClient = createSupabaseServiceClient()
     const { data: integrationData, error: integrationError } = await serviceClient
-        .from("integrations")
-        .select("shop_url, access_token")
-        .eq("user_id", user.id)
-        .eq("provider", "shopify")
-        .is("uninstalled_at", null)
-        .single();
+      .from("integrations")
+      .select("shop_url, access_token")
+      .eq("user_id", user.id)
+      .eq("provider", "shopify")
+      .is("uninstalled_at", null)
+      .single()
 
     if (integrationError || !integrationData) {
-        return NextResponse.json({ error: "No Shopify integration found" }, { status: 404 });
+      return NextResponse.json({ error: "No Shopify integration found" }, { status: 404 })
     }
 
     // Desencriptar el token
-    const access_token = await decryptShopifyToken(serviceClient, integrationData.access_token);
-    const shop_url = integrationData.shop_url;
+    const access_token = await decryptShopifyToken(serviceClient, integrationData.access_token)
+    const shop_url = integrationData.shop_url
 
     const shopUrlPattern = /^[a-zA-Z0-9][-a-zA-Z0-9]*\.myshopify\.com$/
     if (!shopUrlPattern.test(shop_url)) {
@@ -207,11 +185,7 @@ export async function POST(req: Request) {
       throw new PublicRouteError(404, "Product or AI proposal not found.", productError?.message)
     }
 
-    // Lista blanca: solo productos que pasaron el quality gate (misma doctrina
-    // que route_after_save en Katalog-brain). Fallo cerrado: cualquier otro
-    // estado bloquea la publicación, antes de reservar crédito. Sin esta guarda,
-    // un producto rechazado por el gate (crédito ya reembolsado) podía
-    // publicarse desde el ProductSheet y cobrar de nuevo un crédito.
+    // Lista blanca: solo productos que pasaron el quality gate.
     if (productData.audit_status !== "READY_TO_PUBLISH") {
       return NextResponse.json(
         { error: "Product not approved. It must pass the quality gate before publishing." },
@@ -222,49 +196,18 @@ export async function POST(req: Request) {
     const product = productData as ShopifyProductRow
     const aiProposal = parseAiProposal(product.ai_proposal)
 
-    // Reserva el crédito ANTES de publicar. Idempotente: si el Brain ya cobró
-    // por este producto, devuelve la reserva existente sin descontar de nuevo.
-    const { data: reserveData, error: reserveError } = await serviceClient
-      .rpc("reserve_or_reuse_product_credit", {
-        p_user_id: user.id,
-        p_product_id: product.id,
-        p_base_amount: 1,
-      })
-
-    const reservation = Array.isArray(reserveData) ? reserveData[0] : reserveData
-
-    if (reserveError || !reservation?.success) {
-      if (reservation?.reason === "insufficient_credits") {
-        return NextResponse.json({ error: "No credits available." }, { status: 402 })
-      }
-      throw new PublicRouteError(
-        500,
-        "Unable to reserve credit for this publish.",
-        reserveError?.message ?? reservation?.reason ?? "reserve_failed"
-      )
-    }
-
-    const releaseReservationIfNew = async () => {
-      if (reservation.reason !== "reserved_new") return
-      try {
-        await serviceClient.rpc("refund_product_reservation", {
-          p_user_id: user.id,
-          p_product_id: product.id,
-          p_reservation_id: reservation.reservation_id,
-        })
-      } catch (refundError) {
-        console.error("refund_product_reservation failed", {
-          product_id: product.id,
-          error: getLogError(refundError),
-        })
-      }
-    }
-
     const mutation = `
       mutation productUpdate($product: ProductUpdateInput!) {
         productUpdate(product: $product) {
-          product { id title }
-          userErrors { field message }
+          product {
+            id
+            title
+            descriptionHtml
+          }
+          userErrors {
+            field
+            message
+          }
         }
       }
     `
@@ -272,31 +215,24 @@ export async function POST(req: Request) {
       product: {
         id: getProductIdForShopify(product.shopify_id),
         title: aiProposal.new_title,
-        descriptionHtml: aiProposal.new_body_html
-      }
+        descriptionHtml: aiProposal.new_body_html,
+      },
     }
 
-    let shopifyResponse: Response
-    try {
-      shopifyResponse = await fetch(
-        `https://${shop_url}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Access-Token": access_token
-          },
-          body: JSON.stringify({ query: mutation, variables }),
-          signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS)
-        }
-      )
-    } catch (fetchError) {
-      await releaseReservationIfNew()
-      throw fetchError
-    }
+    const shopifyResponse = await fetch(
+      `https://${shop_url}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": access_token,
+        },
+        body: JSON.stringify({ query: mutation, variables }),
+        signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS),
+      }
+    )
 
     if (!shopifyResponse.ok) {
-      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify rejected the publish request.",
@@ -304,10 +240,9 @@ export async function POST(req: Request) {
       )
     }
 
-    const shopifyData = await shopifyResponse.json() as ShopifyProductUpdateResponse
+    const shopifyData = (await shopifyResponse.json()) as ShopifyProductUpdateResponse
 
     if (shopifyData.errors?.length) {
-      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify rejected the publish request.",
@@ -317,7 +252,6 @@ export async function POST(req: Request) {
 
     const userErrors = shopifyData.data?.productUpdate?.userErrors ?? []
     if (userErrors.length > 0) {
-      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify rejected the publish request.",
@@ -326,12 +260,12 @@ export async function POST(req: Request) {
     }
 
     const updatedProduct = shopifyData.data?.productUpdate?.product
+
     if (!updatedProduct?.id) {
-      await releaseReservationIfNew()
       throw new PublicRouteError(502, "Shopify rejected the publish request.")
     }
+
     if (updatedProduct.title !== aiProposal.new_title) {
-      await releaseReservationIfNew()
       throw new PublicRouteError(
         502,
         "Shopify accepted the update but did not apply the title.",
@@ -339,78 +273,66 @@ export async function POST(req: Request) {
       )
     }
 
-    const publishedAt = new Date().toISOString()
-    const { error: productUpdateError } = await supabase
-      .from("shopify_products")
-      .update({
-        audit_status: "OPTIMIZED",
-        current_body_html: aiProposal.new_body_html,
-        current_title: aiProposal.new_title,
-        error_log: null,
-        last_audit_at: publishedAt,
-        updated_at: publishedAt
-      })
-      .eq("id", product.id)
-      .eq("user_id", user.id)
-
-    if (productUpdateError) {
+    if (
+      updatedProduct.descriptionHtml.trim() !==
+      aiProposal.new_body_html.trim()
+    ) {
       throw new PublicRouteError(
-        500,
-        "Product was published, but local sync failed.",
-        productUpdateError.message
+        502,
+        "Shopify accepted the update but did not apply the description.",
+        "Description HTML returned by Shopify does not match the approved proposal."
       )
     }
 
-    const optimizationInsert: OptimizationInsert = {
-      user_id: user.id,
-      product_id: product.id,
-      title_generated: aiProposal.new_title,
-      description_generated: aiProposal.new_body_html,
-      framework_used: aiProposal.framework_used ?? DEFAULT_FRAMEWORK_USED,
-      tone_used: aiProposal.tone_used ?? DEFAULT_TONE_USED,
-      description_length: getDescriptionLength(aiProposal),
-      title_previous: product.current_title,
-      description_previous: product.current_body_html,
-      status: "published"
-    }
-
-    const { error: optimizationError } = await supabase
-      .from("optimizations")
-      .insert(optimizationInsert)
-
-    if (optimizationError) {
-      throw new PublicRouteError(
-        500,
-        "Product was published, but optimization history failed.",
-        optimizationError.message
-      )
-    }
-
-    // Confirma el cargo. Idempotente: si el Brain ya lo comprometió,
-    // devuelve already_committed sin descontar otra vez.
-    const { data: commitData, error: commitError } = await serviceClient
-      .rpc("commit_product_credit", {
+    // Atomic local commit via finalize_product_publish RPC
+    const { data: finalizeData, error: finalizeError } = await serviceClient.rpc(
+      "finalize_product_publish",
+      {
         p_user_id: user.id,
         p_product_id: product.id,
-        p_reservation_id: reservation.reservation_id,
-      })
+        p_confirmed_title: updatedProduct.title,
+        p_confirmed_body_html: updatedProduct.descriptionHtml,
+      }
+    )
 
-    const commit = Array.isArray(commitData) ? commitData[0] : commitData
+    const finalizeResult: FinalizePublishResult | undefined = Array.isArray(finalizeData)
+      ? finalizeData[0]
+      : (finalizeData as FinalizePublishResult | null) ?? undefined
 
-    if (commitError || !commit?.success) {
-      // El producto YA está publicado. No abortamos: se registra y se sigue.
-      console.error("commit_product_credit failed after publish", {
-        product_id: product.id,
-        user_id: user.id,
-        reservation_id: reservation.reservation_id,
-        reason: commit?.reason ?? commitError?.message ?? "unknown",
+    if (finalizeError || !finalizeResult) {
+      throw new PublicRouteError(
+        500,
+        "Shopify was updated, but the local record failed. Please retry publishing.",
+        finalizeError?.message ?? "finalize_product_publish returned no data"
+      )
+    }
+
+    if (finalizeResult.reason === "completed" || finalizeResult.reason === "already_completed") {
+      return NextResponse.json({
+        success: true,
+        message: "Published to Shopify successfully",
       })
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Published to Shopify successfully"
-    })
+    if (finalizeResult.reason === "not_ready_to_publish") {
+      return NextResponse.json(
+        { error: "Product not approved. It must pass the quality gate before publishing." },
+        { status: 409 }
+      )
+    }
+
+    if (finalizeResult.reason === "product_not_found" || finalizeResult.reason === "user_mismatch") {
+      return NextResponse.json(
+        { error: "Product or AI proposal not found." },
+        { status: 404 }
+      )
+    }
+
+    throw new PublicRouteError(
+      500,
+      "Shopify was updated, but the local record failed. Please retry publishing.",
+      `finalize_product_publish unexpected reason: ${finalizeResult.reason}`
+    )
   } catch (error: unknown) {
     const publicError = getPublicErrorResponse(error)
     console.error("Shopify publish failed:", getLogError(error))

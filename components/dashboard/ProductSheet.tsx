@@ -24,6 +24,17 @@ const StatusBadge = ({ status }: { status: string }) => {
     if (status === 'ERROR') return <Badge variant="outline" className="bg-destructive/10 dark:bg-red-500/10 text-destructive dark:text-red-500 border-destructive/20 dark:border-red-500/20 px-2 py-0.5"><AlertTriangle className="h-3 w-3 mr-1" /> Error</Badge>
     if (status === 'OPTIMIZED') return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"><CheckCircle2 className="h-3 w-3 mr-1" /> Optimized</Badge>
     if (status === 'NEEDS_REVIEW') return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-2 py-0.5"><AlertCircle className="h-3 w-3 mr-1" /> Needs Review</Badge>
+    if (status === "READY_TO_PUBLISH") {
+        return (
+            <Badge
+                variant="outline"
+                className="bg-blue-500/10 text-blue-500 border-blue-500/20 px-2 py-0.5"
+            >
+                <UploadCloud className="h-3 w-3 mr-1" />
+                Ready to Publish
+            </Badge>
+        )
+    }
     return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
@@ -103,10 +114,19 @@ export default function ProductSheet() {
                 toast.error(data.error || 'Failed to publish to Shopify.');
                 return;
             }
-            toast.success('Successfully published to Shopify!');
-            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
-            queryClient.invalidateQueries({ queryKey: ['shopify-inventory'] });
-            closeProduct();
+            toast.success("Successfully published to Shopify!")
+
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["dashboard-full"] }),
+                queryClient.invalidateQueries({ queryKey: ["inventory"] }),
+                queryClient.invalidateQueries({
+                    queryKey: ["product-detail", selectedProductId],
+                }),
+            ])
+
+            setTimeout(() => {
+                closeProduct()
+            }, 250)
         } catch (err: any) {
             toast.error(err.message || 'An unexpected error occurred.');
         } finally {
