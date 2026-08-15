@@ -458,9 +458,9 @@ describe("11-12. Payload sent to Shopify", () => {
 })
 
 // ---------------------------------------------------------------------------
-// 13-19. Shopify failures: all -> 502, no RPC, no direct writes
+// 13-18, 34-35. Shopify failures: all -> 502, no RPC, no direct writes
 // ---------------------------------------------------------------------------
-describe("13-19. Shopify failures", () => {
+describe("13-18, 34-35. Shopify failures", () => {
   async function assertShopifyFailure(
     shopifyFetchOverride: ReturnType<typeof vi.fn>
   ): Promise<{ _status: number; _body: unknown }> {
@@ -570,7 +570,7 @@ describe("13-19. Shopify failures", () => {
     )
   })
 
-  it("19. returned descriptionHtml differs -> 502", async () => {
+  it("34. descriptionHtml vacío devuelto por Shopify -> 502, RPC no llamada", async () => {
     await assertShopifyFailure(
       vi.fn().mockResolvedValue({
         ok: true,
@@ -582,7 +582,29 @@ describe("13-19. Shopify failures", () => {
               product: {
                 id: SHOPIFY_GID,
                 title: APPROVED_TITLE,
-                descriptionHtml: "<p>WRONG DESCRIPTION</p>",
+                descriptionHtml: "",
+              },
+              userErrors: [],
+            },
+          },
+        }),
+      })
+    )
+  })
+
+  it("35. descriptionHtml con solo whitespace -> 502, RPC no llamada", async () => {
+    await assertShopifyFailure(
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        json: async () => ({
+          data: {
+            productUpdate: {
+              product: {
+                id: SHOPIFY_GID,
+                title: APPROVED_TITLE,
+                descriptionHtml: "   \n\t  ",
               },
               userErrors: [],
             },
@@ -594,9 +616,43 @@ describe("13-19. Shopify failures", () => {
 })
 
 // ---------------------------------------------------------------------------
-// 20-23, 33. Success path
+// 19-23, 33, 36. Success path
 // ---------------------------------------------------------------------------
-describe("20-23, 33. Success", () => {
+describe("19-23, 33, 36. Success", () => {
+  it("19. descriptionHtml reescrito por Shopify (mismo contenido, HTML distinto) -> 200, y el valor devuelto por Shopify se pasa a la RPC", async () => {
+    const REWRITTEN_HTML = '<P class="shopify">Hola mundo</P>\n'
+    const proposalRow = {
+      ...DEFAULT_PRODUCT_ROW,
+      ai_proposal: {
+        new_title: APPROVED_TITLE,
+        new_body_html: "<p>Hola mundo</p>",
+      },
+    }
+    const { serviceClient } = setupDefaultMocks({
+      productRow: proposalRow,
+      shopifyBody: makeShopifySuccess({ descriptionHtml: REWRITTEN_HTML }),
+    })
+
+    const res = await callPost({ productId: PRODUCT_ID })
+
+    expect(res._status).toBe(200)
+    expect(res._body).toMatchObject({
+      success: true,
+      message: "Published to Shopify successfully",
+    })
+
+    const finalizeCalls = serviceClient.rpc.mock.calls.filter(
+      (c) => c[0] === "finalize_product_publish"
+    )
+    expect(finalizeCalls).toHaveLength(1)
+    expect(finalizeCalls[0][1]).toMatchObject({
+      p_user_id: USER_ID,
+      p_product_id: PRODUCT_ID,
+      p_confirmed_title: APPROVED_TITLE,
+      p_confirmed_body_html: REWRITTEN_HTML,
+    })
+  })
+
   it("20. reason completed -> 200, RPC once with the four params from the Shopify response", async () => {
     // The proposal's body has surrounding whitespace; Shopify returns it
     // trimmed. The RPC must receive the values Shopify CONFIRMED (trimmed),
@@ -691,6 +747,41 @@ describe("20-23, 33. Success", () => {
       p_product_id: PRODUCT_ID,
       p_confirmed_title: APPROVED_TITLE,
       p_confirmed_body_html: APPROVED_BODY_HTML,
+    })
+  })
+
+  it("36. proposal con \\n final y Shopify devuelve recortado -> 200", async () => {
+    const proposalRow = {
+      ...DEFAULT_PRODUCT_ROW,
+      ai_proposal: {
+        new_title: APPROVED_TITLE,
+        new_body_html: "<p>Hola</p>\n",
+      },
+    }
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      productRow: proposalRow,
+      shopifyBody: makeShopifySuccess({ descriptionHtml: "<p>Hola</p>" }),
+    })
+
+    const res = await callPost({ productId: PRODUCT_ID })
+
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeDefined()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(res._status).toBe(200)
+    expect(res._body).toMatchObject({
+      success: true,
+      message: "Published to Shopify successfully",
+    })
+
+    const finalizeCalls = serviceClient.rpc.mock.calls.filter(
+      (c) => c[0] === "finalize_product_publish"
+    )
+    expect(finalizeCalls).toHaveLength(1)
+    expect(finalizeCalls[0][1]).toMatchObject({
+      p_user_id: USER_ID,
+      p_product_id: PRODUCT_ID,
+      p_confirmed_title: APPROVED_TITLE,
+      p_confirmed_body_html: "<p>Hola</p>",
     })
   })
 })

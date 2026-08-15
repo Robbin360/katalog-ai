@@ -273,14 +273,18 @@ export async function POST(req: Request) {
       )
     }
 
+    // Shopify es la autoridad sobre su propio HTML: puede reescribir tags,
+    // atributos o entidades legítimamente. Aquí solo se exige que devolvió
+    // contenido. La comparación semántica contra la propuesta aprobada la
+    // hace finalize_product_publish, en un único lugar.
     if (
-      updatedProduct.descriptionHtml.trim() !==
-      aiProposal.new_body_html.trim()
+      typeof updatedProduct.descriptionHtml !== "string" ||
+      updatedProduct.descriptionHtml.trim().length === 0
     ) {
       throw new PublicRouteError(
         502,
-        "Shopify accepted the update but did not apply the description.",
-        "Description HTML returned by Shopify does not match the approved proposal."
+        "Shopify accepted the update but returned no description.",
+        "Shopify returned an empty descriptionHtml."
       )
     }
 
