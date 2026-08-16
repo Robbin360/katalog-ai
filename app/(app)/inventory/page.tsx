@@ -171,12 +171,12 @@ export default function InventoryPage() {
         setPage(1)
     }
 
-    // --- FILTERING ---
-    const filteredProducts = products?.filter((product: Product) => {
-        const matchesSearch = product.current_title.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesStatus = statusFilter === 'all' || product.status === statusFilter
-        return matchesSearch && matchesStatus
-    }) || []
+    // El filtrado y la paginacion los hace el servidor en queryFn
+    // (query.eq + query.ilike + .range). No se vuelve a filtrar en el
+    // cliente: hacerlo sobre una pagina de PAGE_SIZE filas rompia el
+    // contador "Showing X of Y" y el estado vacio, porque ilike de
+    // Postgres y includes de JavaScript no coinciden exactamente con
+    // acentos y mayusculas.
 
     return (
         <div className="min-h-screen bg-transparent text-foreground p-8 font-sans">
@@ -234,7 +234,7 @@ export default function InventoryPage() {
                         placeholder={t('common.placeholders.search')}
                         className="pl-9 bg-card border-border"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={handleSearchChange}
                     />
                 </div>
                 <div className="flex gap-3">
@@ -289,7 +289,7 @@ export default function InventoryPage() {
                                     <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-md ml-auto" /></TableCell>
                                 </TableRow>
                             ))
-                        ) : filteredProducts.length === 0 ? (
+                        ) : products.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={6} className="h-64 text-center">
                                     <div className="flex flex-col items-center justify-center text-muted-foreground">
@@ -298,14 +298,14 @@ export default function InventoryPage() {
                                         </div>
                                         <p className="text-lg font-medium">No products found</p>
                                         <p className="text-sm mb-4">Try adjusting your filters or search query.</p>
-                                        <Button variant="outline" onClick={() => { setSearchTerm(''); setStatusFilter('all'); }}>
+                                        <Button variant="outline" onClick={() => { setSearchTerm(''); setStatusFilter('all'); setPage(1); }}>
                                             Clear Filters
                                         </Button>
                                     </div>
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredProducts.map((product: Product) => (
+                            products.map((product: Product) => (
                                 <TableRow key={product.id} className="hover:bg-muted/50 transition-colors">
                                     <TableCell>
                                         <div className="h-12 w-12 rounded-md overflow-hidden bg-muted border border-border">
