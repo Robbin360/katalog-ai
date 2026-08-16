@@ -49,7 +49,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useI18n } from "@/lib/i18n-context"
 
-import { Product, InventoryResponse } from "@/types/inventory"
+import { Product, InventoryResponse, ShopifyProductRow } from "@/types/inventory"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { useFoundryStore } from "@/store/useFoundryStore"
 import ProductSheet from "@/components/dashboard/ProductSheet"
@@ -136,18 +136,19 @@ export default function InventoryPage() {
 
             if (error) throw error
 
-            const products = (data || []).map((p: any) => {
-                return {
-                    id: p.id,
-                    shopifyId: p.shopify_id,
-                    current_title: p.current_title || "Untitled Product",
-                    image: p.image_url,
-                    status: p.audit_status,
-                    healthScore: p.audit_score || 0,
-                    createdAt: new Date(p.created_at).toLocaleDateString(),
-                    platform: 'Shopify'
-                }
-            })
+            const products: Product[] = (data ?? []).map((p) => {
+        const row = p as ShopifyProductRow
+        return {
+          id: row.id,
+          shopifyId: row.shopify_id,
+          current_title: row.current_title || "Untitled Product",
+          image: row.image_url,
+          status: row.audit_status ?? "PENDING_AUDIT",
+          healthScore: row.audit_score ?? 0,
+          createdAt: new Date(row.created_at).toLocaleDateString(),
+          platform: "Shopify",
+        }
+      })
 
             return {
                 products,
