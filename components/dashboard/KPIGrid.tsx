@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from "@/lib/supabase"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useI18n } from "@/lib/i18n-context"
-import { TrendingDown, Activity, Zap } from 'lucide-react'
+import { TrendingDown, Activity, Zap, AlertCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -99,7 +99,7 @@ export default function KPIGrid({ userId }: KPIGridProps) {
 
     // --- INITIAL FETCH VIA REACT QUERY ---
     // Automáticamente maneja la latencia de sesión (auth) con retries
-    const { data: kpis = DEFAULTS, isLoading } = useQuery({
+    const { data: kpis = DEFAULTS, isLoading, isError } = useQuery({
         queryKey: KPI_QUERY_KEY(userId),
         queryFn: async () => {
             if (!userId) return DEFAULTS
@@ -181,13 +181,41 @@ export default function KPIGrid({ userId }: KPIGridProps) {
         }
     }, [userId, queryClient])
 
+    // Un fallo real de red no puede parecerse a "catalogo perfecto".
+    // Antes, tras agotar los 5 reintentos, data caia a DEFAULTS y el
+    // usuario veia ceros como si fueran datos buenos.
+    if (isError) {
+        return (
+            <div className="grid gap-4 md:grid-cols-3 mb-8">
+                <Card className="md:col-span-3 border-amber-500/30 bg-amber-500/5">
+                    <CardContent className="flex items-center gap-3 py-6">
+                        <AlertCircle className="h-5 w-5 shrink-0 text-amber-500" />
+                        <div>
+                            <p className="text-sm font-semibold text-foreground">
+                                No pudimos cargar tus metricas
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                                Recarga la pagina. Los numeros que verias podrian no ser reales.
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
     return (
         <div className="grid gap-4 md:grid-cols-3 mb-8">
             <KPICard
                 title={t('dashboard.kpis.revenue_at_risk.title')}
                 value={`$${animatedRevenue.toLocaleString()}.00`}
                 icon={TrendingDown}
-                trend={{ label: animatedRevenue > 0 ? t('dashboard.kpis.revenue_at_risk.trend_high') : t('dashboard.kpis.revenue_at_risk.trend_none'), type: animatedRevenue > 0 ? "neg" : "pos" }}
+                trend={{
+                    label: kpis.revenue_at_risk > 0
+                        ? t('dashboard.kpis.revenue_at_risk.trend_high')
+                        : t('dashboard.kpis.revenue_at_risk.trend_none'),
+                    type: kpis.revenue_at_risk > 0 ? "neg" : "pos",
+                }}
                 glowColor="#ef4444"
                 subtitle={t('dashboard.kpis.revenue_at_risk.subtitle')}
                 loading={isLoading}
@@ -196,7 +224,16 @@ export default function KPIGrid({ userId }: KPIGridProps) {
                 title={t('dashboard.kpis.catalog_health.title')}
                 value={`${animatedHealth}%`}
                 icon={Activity}
-                trend={{ label: animatedHealth === 0 ? t('dashboard.kpis.catalog_health.trend_connect') : (animatedHealth > 80 ? t('dashboard.kpis.catalog_health.trend_healthy') : t('dashboard.kpis.catalog_health.trend_attention')), type: animatedHealth === 0 ? "pos" : (animatedHealth > 80 ? "pos" : "neg") }}
+                trend={{
+                    // Cero NO es "sin datos": un catalogo con 0% de salud es
+                    // el peor caso posible y antes se pintaba en verde con el
+                    // texto "Conecta una tienda". La ausencia de datos ya la
+                    // cubre el estado loading.
+                    label: kpis.health_score_avg > 80
+                        ? t('dashboard.kpis.catalog_health.trend_healthy')
+                        : t('dashboard.kpis.catalog_health.trend_attention'),
+                    type: kpis.health_score_avg > 80 ? "pos" : "neg",
+                }}
                 glowColor="#eab308"
                 subtitle={t('dashboard.kpis.catalog_health.subtitle')}
                 loading={isLoading}
