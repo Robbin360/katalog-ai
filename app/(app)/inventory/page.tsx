@@ -35,7 +35,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
@@ -392,10 +391,30 @@ export default function InventoryPage() {
                                                 }}>
                                                     <RefreshCw className="mr-2 h-4 w-4" /> Re-optimize
                                                 </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => toast.success("Asset deleted", { description: "The product has been removed from inventory." })}>
-                                                    Delete Asset
-                                                </DropdownMenuItem>
+                                                {/*
+                                                  "Delete Asset" se retiro a proposito.
+                                                  Antes era un toast que decia "Asset deleted" sin
+                                                  borrar nada: el usuario creia que habia eliminado
+                                                  un producto y seguia ahi.
+
+                                                  No se reemplazo por un DELETE real porque
+                                                  optimizations y product_metrics tienen CASCADE
+                                                  (se perderia el historial de publicaciones y las
+                                                  metricas), credit_compensations tiene NO ACTION
+                                                  (el DELETE fallaria en algunos productos), y el
+                                                  proximo sync de Shopify lo reinsertaria igual.
+
+                                                  La solucion correcta es ocultar el producto del
+                                                  catalogo sin borrarlo, y eso requiere una columna
+                                                  nueva mas ajustar el filtro de inventory, el RPC
+                                                  get_priority_products, refresh_user_kpis, los
+                                                  triggers de auditoria y el autopilot.
+
+                                                  Si se implementa, debe llevar confirmacion
+                                                  explicita con AlertDialog: un DropdownMenuItem
+                                                  que dispara una accion destructiva sin dialogo es
+                                                  un accidente esperando.
+                                                */}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>
