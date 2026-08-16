@@ -39,13 +39,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Product, ProductStatus } from "@/types/inventory";
 
 // Tipado manual del RPC get_priority_products (no hay database.types generados)
 // Columnas devueltas: id, shopify_id, current_title, audit_status, audit_score,
 // image_url, inventory_quantity, price, sales_last_7_days, created_at, priority_score
 interface PriorityProductRow {
-    id: string;
+    id: number;
     shopify_id: string | null;
     current_title: string | null;
     audit_status: string | null;
@@ -307,15 +306,15 @@ export default function DashboardPage() {
             shopifyId: p.shopify_id,
             current_title: p.current_title || "Untitled Product",
             image: p.image_url,
-            status: p.audit_status,
-            healthScore: p.audit_score || 0,
+            status: p.audit_status ?? "PENDING_AUDIT",
+            healthScore: p.audit_score ?? 0,
             revenueImpact: p.priority_score ?? 0,
             currentBodyHtml: undefined,
             aiProposal: proposal,
             createdAt: new Date(p.created_at as string).toLocaleDateString(),
             platform: 'Shopify',
-            inventoryQuantity: p.inventory_quantity || 0,
-            salesLast7Days: p.sales_last_7_days || 0
+            inventoryQuantity: p.inventory_quantity ?? 0,
+            salesLast7Days: p.sales_last_7_days ?? 0
         }
     }) || []
 
@@ -489,7 +488,7 @@ export default function DashboardPage() {
                                     </div>
                                 </TableCell>
                             </TableRow>
-                        ) : filteredProducts.map((product: any) => (
+                        ) : filteredProducts.map((product) => (
                             <TableRow key={product.id} className="border-border/50 hover:bg-muted/30 transition-all duration-300 group">
                                 <TableCell className="py-4">
                                     <div className="flex items-center gap-3">
