@@ -35,6 +35,34 @@ const StatusBadge = ({ status }: { status: string }) => {
             </Badge>
         )
     }
+    if (status === 'STABLE_PERFORMING') {
+        return (
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border-emerald-500/20 px-2 py-0.5">
+                <CheckCircle2 className="h-3 w-3 mr-1" /> Stable
+            </Badge>
+        )
+    }
+    if (status === 'BENCHMARK') {
+        return (
+            <Badge variant="outline" className="bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20 px-2 py-0.5">
+                <CheckCircle2 className="h-3 w-3 mr-1" /> Benchmark
+            </Badge>
+        )
+    }
+    if (status === 'MONITORING') {
+        return (
+            <Badge variant="outline" className="bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20 px-2 py-0.5">
+                <Clock className="h-3 w-3 mr-1" /> Monitoring
+            </Badge>
+        )
+    }
+    if (status === 'INVESTIGATE_CAUSE') {
+        return (
+            <Badge variant="outline" className="bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20 px-2 py-0.5">
+                <AlertCircle className="h-3 w-3 mr-1" /> Investigating
+            </Badge>
+        )
+    }
     return <Badge variant="outline" className="bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"><Clock className="h-3 w-3 mr-1" /> Pending Audit</Badge>
 };
 
@@ -242,11 +270,28 @@ export default function ProductSheet() {
                                                 {/* GATE REJECTION — el escritor produjo texto, el gate lo rechazó.
                                                     No es un bug: es el control de calidad protegiendo la tienda. */}
                                                 {['NEEDS_OPTIMIZATION', 'NEEDS_REVIEW'].includes(productDetail?.audit_status ?? '') && gateRejection && (
-                                                    <div className="mb-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 space-y-1">
+                                                    <div className="mb-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 space-y-1.5">
                                                         <p className="text-[10px] text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1.5 uppercase tracking-widest">
                                                             <AlertTriangle className="h-3 w-3" /> Quality Gate rejected this draft
                                                         </p>
-                                                        <p className="text-[11px] text-amber-800 dark:text-amber-300/90 leading-relaxed">{gateRejection}</p>
+                                                        {/* El gate concatena sus razones con " | ". Separarlas en una
+                                                            lista mantiene legible un mensaje que puede traer tres
+                                                            motivos, incluyendo citas textuales del inspector. */}
+                                                        <ul className="space-y-1">
+                                                            {gateRejection
+                                                                .replace(/^Gate RECHAZADO:\s*/, "")
+                                                                .split(" | ")
+                                                                .filter((reason) => reason.trim().length > 0)
+                                                                .map((reason, i) => (
+                                                                    <li
+                                                                        key={i}
+                                                                        className="text-[11px] text-amber-800 dark:text-amber-300/90 leading-relaxed flex items-start gap-1.5"
+                                                                    >
+                                                                        <span className="mt-0.5 text-amber-700 dark:text-amber-400">•</span>
+                                                                        <span>{reason}</span>
+                                                                    </li>
+                                                                ))}
+                                                        </ul>
                                                     </div>
                                                 )}
                                                 {/* AI AUDIT INSIGHTS */}
@@ -400,6 +445,26 @@ export default function ProductSheet() {
                                     </p>
                                 </div>
                             );
+                        }
+
+                        if (['STABLE_PERFORMING', 'BENCHMARK', 'MONITORING', 'INVESTIGATE_CAUSE'].includes(status ?? '')) {
+                            // Cuadrantes que asigna el orquestador. No ofrecen accion
+                            // porque optimizar aqui gastaria cuota sin un problema de
+                            // copy identificado. El texto describe el estado sin
+                            // prometer nada que el sistema no haga hoy.
+                            const quadrantCopy: Record<string, string> = {
+                                STABLE_PERFORMING: "This listing performs well. No optimization queued.",
+                                BENCHMARK: "Used as a quality reference for your catalog.",
+                                MONITORING: "Under observation. No action needed right now.",
+                                INVESTIGATE_CAUSE: "Sales don't match the listing quality. The cause may be price, stock or images, not the copy.",
+                            }
+                            return (
+                                <div className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-center">
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        {quadrantCopy[status as string]}
+                                    </p>
+                                </div>
+                            )
                         }
 
                         // PENDING_AUDIT & Default
