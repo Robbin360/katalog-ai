@@ -2,6 +2,10 @@ export function StatusBadge({ status }: { status: string }) {
     // Base classes: Pure text, no icons, larger font size (text-xs)
     const baseClasses = "relative border rounded-full px-3 py-0.5 text-xs font-sans font-medium flex items-center w-fit transition-all duration-300";
 
+    // Estados: deben coincidir con el CHECK valid_audit_status en
+    // shopify_products. Si agregas uno alla, agregalo aqui: el default
+    // muestra "Pending Audit", que es falso para cualquier estado no
+    // contemplado y hace creer al usuario que el producto esta en cola.
     switch (status) {
         case 'NEEDS_OPTIMIZATION':
             return (
@@ -37,6 +41,36 @@ export function StatusBadge({ status }: { status: string }) {
             return (
                 <div className={`${baseClasses} bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200 dark:bg-fuchsia-500/10 dark:text-fuchsia-400 dark:border-fuchsia-500/30 dark:shadow-[0_0_10px_rgba(217,70,239,0.05)]`}>
                     Upgrade Plan
+                </div>
+            );
+        case 'NEEDS_REVIEW':
+            return (
+                <div className={`${baseClasses} bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40 dark:shadow-[0_0_10px_rgba(245,158,11,0.1)]`}>
+                    Needs Review
+                </div>
+            );
+        case 'STABLE_PERFORMING':
+            return (
+                <div className={`${baseClasses} bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-500/10 dark:text-teal-400 dark:border-teal-500/30 dark:shadow-[0_0_10px_rgba(20,184,166,0.05)]`}>
+                    Stable
+                </div>
+            );
+        case 'BENCHMARK':
+            return (
+                <div className={`${baseClasses} bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/30 dark:shadow-[0_0_10px_rgba(139,92,246,0.05)]`}>
+                    Benchmark
+                </div>
+            );
+        case 'MONITORING':
+            return (
+                <div className={`${baseClasses} bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/30 dark:shadow-[0_0_10px_rgba(14,165,233,0.05)]`}>
+                    Monitoring
+                </div>
+            );
+        case 'INVESTIGATE_CAUSE':
+            return (
+                <div className={`${baseClasses} bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/30 dark:shadow-[0_0_10px_rgba(249,115,22,0.05)]`}>
+                    Investigating
                 </div>
             );
         case 'PENDING_AUDIT':
