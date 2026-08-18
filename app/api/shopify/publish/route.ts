@@ -13,6 +13,8 @@ interface PublishRequestBody {
 interface AiProposal {
   new_title: string
   new_body_html: string
+  seo_title?: string
+  seo_description?: string
 }
 
 interface ShopifyProductRow {
@@ -44,6 +46,7 @@ interface ShopifyProductUpdatePayload {
     id: string
     title: string
     descriptionHtml: string
+    seo: { title?: string | null; description?: string | null } | null
   } | null
   userErrors: ShopifyUserError[]
 }
@@ -100,9 +103,19 @@ const parseAiProposal = (payload: unknown): AiProposal => {
     throw new PublicRouteError(400, "Product or AI proposal not found.")
   }
 
+  // SEO explicito opcional. El schema actual del writer (AIProposalOutput en
+  // Katalog-brain/core/schemas.py) no emite ni seo_title ni seo_description:
+  // si una version futura los trae, se usan; si no, el caller decide el
+  // fallback. Nunca se aceptan strings vacios: sobrescribirian el SEO
+  // existente con nada.
+  const seoTitle = typeof payload.seo_title === "string" ? payload.seo_title.trim() : ""
+  const seoDescription = typeof payload.seo_description === "string" ? payload.seo_description.trim() : ""
+
   return {
     new_title: newTitle,
     new_body_html: newBodyHtml,
+    ...(seoTitle ? { seo_title: seoTitle } : {}),
+    ...(seoDescription ? { seo_description: seoDescription } : {}),
   }
 }
 
@@ -196,6 +209,18 @@ export async function POST(req: Request) {
     const product = productData as ShopifyProductRow
     const aiProposal = parseAiProposal(product.ai_proposal)
 
+    // SEO del producto: campo NATIVO seo, no metafields global.* (esos son
+    // para paginas/articulos y fallan con "Key must be unique within this
+    // namespace on this resource").
+    // seoTitle: el writer no produce titulo SEO explicito hoy, asi que se usa
+    // el new_title confirmado (Google lo trunca igual, y es mejor que el
+    // titulo obsoleto que quedaria en el campo seo).
+    // seoDescription: NO existe campo apto en AIProposalOutput (seo_tags son
+    // keywords, no una meta descripcion) -> no se envia. No se genera
+    // recortando el body: produciria marcado sin sentido en los resultados.
+    const seoTitle = aiProposal.seo_title ?? aiProposal.new_title
+    const seoDescription = aiProposal.seo_description
+
     const mutation = `
       mutation productUpdate($product: ProductUpdateInput!) {
         productUpdate(product: $product) {
@@ -203,6 +228,10 @@ export async function POST(req: Request) {
             id
             title
             descriptionHtml
+            seo {
+              title
+              description
+            }
           }
           userErrors {
             field
@@ -216,6 +245,14 @@ export async function POST(req: Request) {
         id: getProductIdForShopify(product.shopify_id),
         title: aiProposal.new_title,
         descriptionHtml: aiProposal.new_body_html,
+        ...(seoTitle || seoDescription
+          ? {
+              seo: {
+                ...(seoTitle ? { title: seoTitle } : {}),
+                ...(seoDescription ? { description: seoDescription } : {}),
+              },
+            }
+          : {}),
       },
     }
 
@@ -286,6 +323,22 @@ export async function POST(req: Request) {
         "Shopify accepted the update but returned no description.",
         "Shopify returned an empty descriptionHtml."
       )
+    }
+
+    // El SEO se registra pero NO hace fallar el publish: Shopify puede
+    // normalizar estos campos, y un fallo aqui bloquearia una publicacion
+    // por lo demas correcta. Solo se comparan los campos que se enviaron.
+    if (updatedProduct.seo) {
+      const seoMismatches: string[] = []
+      if (seoTitle !== undefined && updatedProduct.seo.title !== seoTitle) {
+        seoMismatches.push(`title: sent "${seoTitle}" | returned "${updatedProduct.seo.title ?? ""}"`)
+      }
+      if (seoDescription !== undefined && updatedProduct.seo.description !== seoDescription) {
+        seoMismatches.push(`description: sent "${seoDescription}" | returned "${updatedProduct.seo.description ?? ""}"`)
+      }
+      if (seoMismatches.length > 0) {
+        console.warn(`Shopify publish: seo mismatch after update (product ${product.id}): ${seoMismatches.join("; ")}`)
+      }
     }
 
     // Atomic local commit via finalize_product_publish RPC

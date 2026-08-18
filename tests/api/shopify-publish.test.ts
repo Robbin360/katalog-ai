@@ -216,6 +216,7 @@ function makeShopifySuccess(overrides: Record<string, unknown> = {}) {
           id: SHOPIFY_GID,
           title: APPROVED_TITLE,
           descriptionHtml: APPROVED_BODY_HTML,
+          seo: { title: APPROVED_TITLE, description: null },
           ...overrides,
         },
         userErrors: [],
@@ -423,7 +424,7 @@ describe("1-10. Validation & auth", () => {
 // 11-12. Payload sent to Shopify
 // ---------------------------------------------------------------------------
 describe("11-12. Payload sent to Shopify", () => {
-  it("11. fetch called exactly once with id/title/descriptionHtml from ai_proposal", async () => {
+  it("11. fetch called exactly once with id/title/descriptionHtml/seo from ai_proposal", async () => {
     const { fetchMock } = setupDefaultMocks()
 
     const res = await callPost({ productId: PRODUCT_ID })
@@ -434,14 +435,17 @@ describe("11-12. Payload sent to Shopify", () => {
     const [_url, fetchInit] = fetchMock.mock.calls[0]
     const requestBody = JSON.parse(fetchInit.body as string)
 
+    // El writer (AIProposalOutput) no trae seo explicito: seo.title cae al
+    // fallback del new_title confirmado y seo.description no se envia.
     expect(requestBody.variables.product).toEqual({
       id: SHOPIFY_GID,
       title: APPROVED_TITLE,
       descriptionHtml: APPROVED_BODY_HTML,
+      seo: { title: APPROVED_TITLE },
     })
   })
 
-  it("12. mutation requests product { id title descriptionHtml }", async () => {
+  it("12. mutation requests product { id title descriptionHtml seo { title description } }", async () => {
     const { fetchMock } = setupDefaultMocks()
 
     await callPost({ productId: PRODUCT_ID })
@@ -454,6 +458,7 @@ describe("11-12. Payload sent to Shopify", () => {
     expect(requestBody.query).toContain("id")
     expect(requestBody.query).toContain("title")
     expect(requestBody.query).toContain("descriptionHtml")
+    expect(requestBody.query).toContain("seo")
   })
 })
 
@@ -783,6 +788,54 @@ describe("19-23, 33, 36. Success", () => {
       p_confirmed_title: APPROVED_TITLE,
       p_confirmed_body_html: "<p>Hola</p>",
     })
+  })
+
+  it("37. seo_title/seo_description explicitos de la propuesta viajan al input seo", async () => {
+    const seoRow = {
+      ...DEFAULT_PRODUCT_ROW,
+      ai_proposal: {
+        new_title: APPROVED_TITLE,
+        new_body_html: APPROVED_BODY_HTML,
+        seo_title: "Meta title explicito",
+        seo_description: "Meta description explicita",
+      },
+    }
+    const { fetchMock } = setupDefaultMocks({
+      productRow: seoRow,
+      shopifyBody: makeShopifySuccess({
+        seo: { title: "Meta title explicito", description: "Meta description explicita" },
+      }),
+    })
+
+    const res = await callPost({ productId: PRODUCT_ID })
+
+    expect(res._status).toBe(200)
+
+    const [_url, fetchInit] = fetchMock.mock.calls[0]
+    const requestBody = JSON.parse(fetchInit.body as string)
+
+    expect(requestBody.variables.product.seo).toEqual({
+      title: "Meta title explicito",
+      description: "Meta description explicita",
+    })
+  })
+
+  it("38. seo devuelto distinto al enviado -> 200 (soft check, console.warn)", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const { fetchMock } = setupDefaultMocks({
+      shopifyBody: makeShopifySuccess({
+        seo: { title: "Normalizado por Shopify", description: null },
+      }),
+    })
+
+    const res = await callPost({ productId: PRODUCT_ID })
+
+    expect(res._status).toBe(200)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("seo mismatch after update")
+    )
+    warnSpy.mockRestore()
   })
 })
 
