@@ -29,7 +29,8 @@ export type ProductStatus =
 export interface AiProposal {
   new_title?: string;
   new_body_html?: string;
-  seo_tags?: string;
+  seo_title?: string;
+  seo_description?: string;
   audit_log?: string[];
   framework_used?: string;
   tone_used?: string;
