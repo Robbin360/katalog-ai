@@ -1,7 +1,8 @@
 -- ROLLBACK MANUAL ONLY
--- No colocar este archivo dentro de supabase/migrations: Supabase no debe
--- ejecutarlo automáticamente. Ejecutar solo después de detener consumidores
--- de publish_error_* y confirmar que no se necesita el historial de errores.
+-- Este rollback retira la RPC, el índice y la constraint, pero conserva las
+-- columnas publish_* para no borrar diagnóstico ni datos de producción.
+-- La eliminación de columnas requiere una migración posterior explícita,
+-- después de verificar que ningún consumidor las usa.
 
 begin;
 
@@ -14,13 +15,8 @@ drop index if exists public.shopify_products_publish_retry_idx;
 alter table public.shopify_products
   drop constraint if exists shopify_products_publish_attempts_nonnegative;
 
-alter table public.shopify_products
-  drop column if exists publish_error_details,
-  drop column if exists publish_error_at,
-  drop column if exists publish_error_retryable,
-  drop column if exists publish_error_stage,
-  drop column if exists publish_error_code,
-  drop column if exists publish_next_retry_at,
-  drop column if exists publish_attempts;
-
 commit;
+
+-- Las columnas publish_* permanecen intencionalmente. Si deben eliminarse,
+-- crear una migración separada con back-up, comprobación de consumidores y
+-- ventana de rollback.
