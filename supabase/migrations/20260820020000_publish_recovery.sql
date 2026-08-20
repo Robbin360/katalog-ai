@@ -55,6 +55,7 @@ declare
   v_status text;
   v_new_status text;
   v_details jsonb;
+  v_updated integer;
 begin
   select user_id, audit_status into v_owner_id, v_status
   from public.shopify_products where id = p_product_id for update;
@@ -90,6 +91,12 @@ begin
       publish_attempts = coalesce(publish_attempts, 0) + 1,
       updated_at = now()
   where id = p_product_id and user_id = p_user_id and audit_status <> 'OPTIMIZED';
+
+  get diagnostics v_updated = row_count;
+  if v_updated = 0 then
+    return query select false, 'concurrent_state_change'::text, v_status;
+    return;
+  end if;
 
   return query select true, 'recorded'::text, v_new_status;
 end;
