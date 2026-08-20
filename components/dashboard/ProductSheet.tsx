@@ -14,11 +14,24 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Sparkles, BrainCircuit, Loader2, UploadCloud, CheckCircle2, AlertCircle, Clock, AlertTriangle, RefreshCw } from "lucide-react"
 import DOMPurify from "isomorphic-dompurify"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { useFoundryStore } from "@/store/useFoundryStore"
+
+// Polling del job asíncrono: el Brain responde 202 y el grafo corre en
+// segundo plano; el estado se consulta hasta alcanzar un estado terminal.
+const POLL_INTERVAL_MS = 3000
+// Timeout de seguridad del cliente: 15 min. Si el grafo tarda más, se deja
+// de sondear y se avisa — el job sigue corriendo en el Brain.
+const POLL_TIMEOUT_MS = 15 * 60 * 1000
+// Estados en los que el job terminó y el polling debe detenerse.
+const TERMINAL_STATUSES = new Set([
+  "READY_TO_PUBLISH", "ERROR", "OPTIMIZED", "NEEDS_OPTIMIZATION",
+  "NEEDS_REVIEW", "OUT_OF_CREDITS",
+  "STABLE_PERFORMING", "BENCHMARK", "MONITORING", "INVESTIGATE_CAUSE",
+])
 
 const StatusBadge = ({ status }: { status: string }) => {
     if (status === 'ERROR') return <Badge variant="outline" className="bg-destructive/10 dark:bg-red-500/10 text-destructive dark:text-red-500 border-destructive/20 dark:border-red-500/20 px-2 py-0.5"><AlertTriangle className="h-3 w-3 mr-1" /> Error</Badge>
@@ -89,9 +102,54 @@ export default function ProductSheet() {
             return data;
         },
         enabled: !!selectedProductId && isSheetOpen,
+        // Mientras haya un job en vuelo, sondear el estado cada 3s.
+        // El refetchInterval ignora staleTime: fuerza el refetch.
+        refetchInterval: isOptimizing ? POLL_INTERVAL_MS : false,
         staleTime: 1000 * 60 * 5, // 5 minutos de cache para evitar el spam del auth-lock en Strict Mode
         gcTime: 1000 * 60 * 10 // Mantener en memoria 10 minutos
     });
+
+    // Detener el polling al alcanzar un estado terminal y avisar al usuario.
+    // Cuidado: NEEDS_OPTIMIZATION es a la vez estado pre-run y resultado de
+    // un job (gate rechazado). Solo se trata como terminal tras haber visto
+    // PROCESSING — de lo contrario el dato cacheado cortaría el ciclo al
+    // clickear "Optimize" antes de que el refetch traiga el estado real.
+    const sawProcessingRef = useRef(false);
+    useEffect(() => {
+        if (!isOptimizing) return;
+        const status = productDetail?.audit_status;
+        if (status === 'PROCESSING') {
+            sawProcessingRef.current = true;
+            return;
+        }
+        if (!status || !sawProcessingRef.current || !TERMINAL_STATUSES.has(status)) return;
+
+        setIsOptimizing(false);
+
+        if (status === 'READY_TO_PUBLISH' || status === 'OPTIMIZED') {
+            toast.success('AI Engine: Optimization Complete');
+        } else if (status === 'ERROR' || status === 'OUT_OF_CREDITS') {
+            toast.error(productDetail?.error_log || `AI Engine: Optimization ${status === 'ERROR' ? 'failed' : 'out of credits'}`);
+        } else {
+            toast.info('AI Engine: Optimization finished. Review the proposal.');
+        }
+
+        queryClient.invalidateQueries({ queryKey: ['product-detail', selectedProductId] });
+        queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
+    }, [productDetail?.audit_status, isOptimizing, productDetail?.error_log, selectedProductId, queryClient]);
+
+    // Timeout de seguridad del cliente: 15 min sin estado terminal.
+    useEffect(() => {
+        if (!isOptimizing) return;
+        const timeout = setTimeout(() => {
+            setIsOptimizing(false);
+            // Invalidar para que una reapertura de la ficha traiga el estado
+            // real en vez del PROCESSING cacheado.
+            queryClient.invalidateQueries({ queryKey: ['product-detail', selectedProductId] });
+            toast.error('AI Engine: Optimization is taking longer than 15 minutes. It keeps running in the background — reopen this sheet to check the result.');
+        }, POLL_TIMEOUT_MS);
+        return () => clearTimeout(timeout);
+    }, [isOptimizing, selectedProductId, queryClient]);
 
     // audit_log es jsonb y lo escribieron versiones distintas de código:
     // nunca asumir que es un array — si alguna fila trae string u objeto,
@@ -104,6 +162,7 @@ export default function ProductSheet() {
     const handleOptimize = async () => {
         if (!selectedProductId) return;
         setIsOptimizing(true);
+        sawProcessingRef.current = false;
 
         try {
             const response = await fetch('/api/optimize', {
@@ -111,20 +170,21 @@ export default function ProductSheet() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ product_id: selectedProductId }),
             });
+            const data = await response.json().catch(() => ({}));
 
             if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
+                setIsOptimizing(false);
                 toast.error(data.error || 'AI Engine: Connection failed');
                 return;
             }
 
-            toast.success('AI Engine: Optimization Complete');
-            queryClient.invalidateQueries({ queryKey: ['product-detail', selectedProductId] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard-full'] });
+            // 202 Accepted: el job está en cola. El polling (refetchInterval
+            // + efectos de arriba) lo sigue hasta un estado terminal.
+            toast.success('AI Engine: Optimization queued. Monitoring progress...');
+            void refetchDetail();
         } catch (err: any) {
-            toast.error('AI Engine: Connection failed');
-        } finally {
             setIsOptimizing(false);
+            toast.error('AI Engine: Connection failed');
         }
     };
 
