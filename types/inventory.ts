@@ -62,7 +62,7 @@ export interface ShopifyProductRow {
   publish_error_stage?: string | null;
   publish_error_retryable?: boolean | null;
   publish_error_at?: string | null;
-  publish_error_details?: unknown | null;
+  publish_error_details?: Record<string, unknown> | null;
 }
 
 /** Producto normalizado para la UI. */

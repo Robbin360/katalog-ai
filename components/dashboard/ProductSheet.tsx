@@ -95,7 +95,7 @@ export default function ProductSheet() {
             if (!selectedProductId) return null;
             const { data, error } = await supabase
                 .from('shopify_products')
-                .select('id, shopify_id, current_title, audit_status, image_url, error_log, ai_proposal, current_body_html, audit_log')
+                .select('id, shopify_id, current_title, audit_status, image_url, error_log, ai_proposal, current_body_html, audit_log, publish_attempts, publish_next_retry_at, publish_error_code, publish_error_stage, publish_error_retryable, publish_error_at, publish_error_details')
                 .eq('id', selectedProductId)
                 .single();
             if (error) throw error;
@@ -159,6 +159,59 @@ export default function ProductSheet() {
         : [];
     const gateRejection = auditLog.filter((l) => l.startsWith("Gate RECHAZADO")).at(-1);
 
+    // Helpers de publicación recuperable — no usar solo audit_status === "ERROR"
+    const publishErrorCode = (productDetail as unknown as Record<string, unknown> | null)?.publish_error_code as string | null ?? null
+    const publishErrorStage = (productDetail as unknown as Record<string, unknown> | null)?.publish_error_stage as string | null ?? null
+    const publishErrorRetryable = (productDetail as unknown as Record<string, unknown> | null)?.publish_error_retryable === true
+    const publishErrorDetails = productDetail?.publish_error_details as Record<string, unknown> | null | undefined
+    const publishNextRetryAt = (productDetail as unknown as Record<string, unknown> | null)?.publish_next_retry_at as string | null ?? null
+
+    const codeUpper = publishErrorCode ? String(publishErrorCode).toUpperCase() : null
+    const stageUpper = publishErrorStage ? String(publishErrorStage).toUpperCase() : null
+
+    const isLocalFinalizePending =
+        codeUpper === "LOCAL_FINALIZE_ERROR" &&
+        publishErrorStage === "local_finalize" &&
+        publishErrorRetryable
+
+    const isPermanentPublishError =
+        Boolean(publishErrorCode) &&
+        !publishErrorRetryable &&
+        !isLocalFinalizePending
+
+    const isTransientPublishError =
+        publishErrorRetryable &&
+        !isLocalFinalizePending
+
+    // Clasificación fina para banners
+    const INTEGRATION_CODES = new Set([
+        "NO_INTEGRATION", "MISSING_TOKEN", "INVALID_TOKEN", "SHOP_NOT_ACTIVE", "PERMISSION_DENIED",
+        "INTEGRATION_MISSING", "INVALID_SHOP_URL", "SHOP_NOT_ACTIVE", "MISSING_TOKEN", "SHOP_INACTIVE"
+    ])
+    const isIntegrationError = isPermanentPublishError && codeUpper !== null && INTEGRATION_CODES.has(codeUpper)
+
+    const PROPOSAL_CODES = new Set([
+        "PRODUCT_NOT_FOUND", "PROPOSAL_INVALID", "PROPOSAL_MISMATCH", "SHOPIFY_VALIDATION_ERROR",
+        "PROPOSAL_MISSING", "SHOPIFY_USER_ERROR", "PRODUCT_NOT_FOUND", "PROPOSAL_MISSING"
+    ])
+    // También considerar códigos de validación genéricos cuando stage es preflight/shopify_verify y no retryable
+    const isProposalError = isPermanentPublishError && (
+        (codeUpper !== null && PROPOSAL_CODES.has(codeUpper)) ||
+        (!isIntegrationError && !isLocalFinalizePending && isPermanentPublishError)
+    )
+    // Para distinguir: si es integración, prioriza ese; si no, propuesta
+    const isProposalErrorFinal = isProposalError && !isIntegrationError
+
+    const TRANSIENT_CODES = new Set([
+        "TIMEOUT", "NETWORK_ERROR", "SHOPIFY_429", "SHOPIFY_500", "SHOPIFY_502", "SHOPIFY_503", "SHOPIFY_504",
+        "RATE_LIMITED", "SHOPIFY_5XX", "SHOPIFY_HTTP_ERROR", "TIMEOUT", "NETWORK_ERROR"
+    ])
+    const isTransientCode = codeUpper !== null && TRANSIENT_CODES.has(codeUpper)
+    // Transient real es retryable y no local finalize; si el código no está en lista pero es retryable, también se considera transitorio genérico
+    const showTransientBanner = isTransientPublishError && (isTransientCode || (!isIntegrationError && !isProposalErrorFinal))
+
+    const hasPublishError = Boolean(publishErrorCode)
+
     const handleOptimize = async () => {
         if (!selectedProductId) return;
         setIsOptimizing(true);
@@ -182,7 +235,7 @@ export default function ProductSheet() {
             // + efectos de arriba) lo sigue hasta un estado terminal.
             toast.success('AI Engine: Optimization queued. Monitoring progress...');
             void refetchDetail();
-        } catch (err: any) {
+        } catch (err: unknown) {
             setIsOptimizing(false);
             toast.error('AI Engine: Connection failed');
         }
@@ -190,6 +243,7 @@ export default function ProductSheet() {
 
     const handlePublishToShopify = async () => {
         if (!selectedProductId) return;
+        if (isPublishing) return;
         setIsPublishing(true);
         try {
             const response = await fetch('/api/shopify/publish', {
@@ -197,30 +251,53 @@ export default function ProductSheet() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ productId: selectedProductId }),
             });
-            const data = await response.json();
+            const data = await response.json().catch(() => ({})) as Record<string, unknown>;
             if (!response.ok) {
-                toast.error(data.error || 'Failed to publish to Shopify.');
+                // No cerrar la ficha; invalidar para que los campos persistidos determinen el banner correcto
+                await queryClient.invalidateQueries({
+                    queryKey: ["product-detail", selectedProductId],
+                })
+                // Mostrar mensaje seguro devuelto por la API, no "Connection failed" genérico
+                const safeMessage = (data.error as string) || (data.message as string) || 'Failed to publish to Shopify.'
+                toast.error(safeMessage);
                 return;
             }
-            toast.success("Successfully published to Shopify!")
-
+            // Éxito: invalida las queries, espera, muestra éxito y cierra después de refrescar
             await Promise.all([
-                queryClient.invalidateQueries({ queryKey: ["dashboard-full"] }),
-                queryClient.invalidateQueries({ queryKey: ["inventory"] }),
                 queryClient.invalidateQueries({
                     queryKey: ["product-detail", selectedProductId],
                 }),
+                queryClient.invalidateQueries({
+                    queryKey: ["dashboard-full"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["inventory"],
+                }),
             ])
+
+            toast.success("Published to Shopify successfully")
 
             setTimeout(() => {
                 closeProduct()
             }, 250)
-        } catch (err: any) {
-            toast.error(err.message || 'An unexpected error occurred.');
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'An unexpected error occurred.'
+            toast.error(message);
+            await queryClient.invalidateQueries({
+                queryKey: ["product-detail", selectedProductId],
+            })
         } finally {
             setIsPublishing(false);
         }
     };
+
+    const handleReconnectShopify = () => {
+        // Usar ruta existente de reconexión si existe; no inventar URL
+        // La ruta de auth de Shopify existe en /api/shopify/auth
+        if (typeof window !== "undefined") {
+            window.location.href = "/api/shopify/auth"
+        }
+    }
 
     if (!selectedProductId) return null;
 
@@ -259,6 +336,114 @@ export default function ProductSheet() {
                             >
                                 <RefreshCw className="w-4 h-4 mr-2" /> Retry
                             </Button>
+                        </div>
+                    ) : isLocalFinalizePending ? (
+                        <div className="bg-blue-500/10 dark:bg-blue-950/30 border border-blue-500/30 dark:border-blue-900/50 text-blue-700 dark:text-blue-300 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertCircle className="w-5 h-5" />
+                                <h3>Shopify was updated. We are finishing the local record.</h3>
+                            </div>
+                            <p className="text-sm opacity-90">
+                                Shopify already applied the change. We just need to finish the local record. You can retry safely — it will not publish twice.
+                            </p>
+                            {productDetail?.error_log && (
+                                <p className="text-xs opacity-75">{productDetail.error_log}</p>
+                            )}
+                            <Button
+                                onClick={handlePublishToShopify}
+                                disabled={isPublishing}
+                                className="mt-2 bg-blue-600 hover:bg-blue-700 text-white"
+                            >
+                                {isPublishing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing...</> : <>Finish publishing</>}
+                            </Button>
+                        </div>
+                    ) : isIntegrationError ? (
+                        <div className="bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/30 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertTriangle className="w-5 h-5" />
+                                <h3>Your Shopify connection needs attention.</h3>
+                            </div>
+                            <p className="text-sm opacity-90">
+                                {(productDetail?.error_log as string) || (publishErrorDetails as unknown as string) || "Please reconnect Shopify to continue publishing."}
+                            </p>
+                            {publishErrorCode && (
+                                <p className="text-xs opacity-60">Code: {publishErrorCode} {publishErrorStage ? `• Stage: ${publishErrorStage}` : ""}</p>
+                            )}
+                            <Button
+                                onClick={handleReconnectShopify}
+                                className="mt-2 bg-amber-600 hover:bg-amber-700 text-white"
+                            >
+                                Reconnect Shopify
+                            </Button>
+                        </div>
+                    ) : isProposalErrorFinal ? (
+                        <div className="bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/30 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertCircle className="w-5 h-5" />
+                                <h3>This product or proposal needs attention.</h3>
+                            </div>
+                            <p className="text-sm opacity-90">
+                                {(productDetail?.error_log as string) || "The proposal is invalid or the product no longer exists. Please regenerate the proposal."}
+                            </p>
+                            {publishErrorCode && (
+                                <p className="text-xs opacity-60">Code: {publishErrorCode}</p>
+                            )}
+                            <Button
+                                disabled
+                                className="mt-2 bg-zinc-500 text-white opacity-60 cursor-not-allowed"
+                                title="Regenerate proposal from dashboard"
+                            >
+                                Regenerate Proposal
+                            </Button>
+                        </div>
+                    ) : showTransientBanner ? (
+                        <div className="bg-sky-500/10 dark:bg-sky-950/30 border border-sky-500/30 dark:border-sky-900/50 text-sky-700 dark:text-sky-300 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertTriangle className="w-5 h-5" />
+                                <h3>Shopify did not respond. You can retry.</h3>
+                            </div>
+                            <p className="text-sm opacity-90">
+                                {(productDetail?.error_log as string) || "Shopify is temporarily unavailable. Please try again."}
+                            </p>
+                            {publishNextRetryAt && (
+                                <p className="text-xs opacity-60">Next retry: {new Date(publishNextRetryAt).toLocaleString()}</p>
+                            )}
+                            <Button
+                                onClick={handlePublishToShopify}
+                                disabled={isPublishing}
+                                className="mt-2 bg-sky-600 hover:bg-sky-700 text-white"
+                            >
+                                {isPublishing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing...</> : <>Retry publishing</>}
+                            </Button>
+                        </div>
+                    ) : hasPublishError ? (
+                        <div className="bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/30 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 p-6 rounded-xl space-y-4">
+                            <div className="flex items-center gap-2 font-bold text-lg">
+                                <AlertTriangle className="w-5 h-5" />
+                                <h3>We couldn&apos;t finish publishing. Please try again or reconnect Shopify.</h3>
+                            </div>
+                            <p className="text-sm opacity-90">
+                                {(productDetail?.error_log as string) || "An error occurred while publishing."}
+                            </p>
+                            {publishErrorCode && (
+                                <p className="text-xs opacity-60">Code: {publishErrorCode} • Stage: {publishErrorStage ?? "unknown"}</p>
+                            )}
+                            {publishErrorRetryable ? (
+                                <Button
+                                    onClick={handlePublishToShopify}
+                                    disabled={isPublishing}
+                                    className="mt-2 bg-amber-600 hover:bg-amber-700 text-white"
+                                >
+                                    {isPublishing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing...</> : <>Retry publishing</>}
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={handleReconnectShopify}
+                                    className="mt-2 bg-amber-600 hover:bg-amber-700 text-white"
+                                >
+                                    Reconnect Shopify
+                                </Button>
+                            )}
                         </div>
                     ) : productDetail?.audit_status === 'ERROR' ? (
                         <div className="bg-destructive/10 dark:bg-red-950/30 border border-destructive/20 dark:border-red-900/50 text-destructive dark:text-red-400 p-6 rounded-xl space-y-4">
@@ -436,6 +621,85 @@ export default function ProductSheet() {
                             );
                         }
 
+                        // Prioridad visual: isPublishing > LOCAL_FINALIZE > permanente > transitorio > READY etc.
+                        if (isPublishing) {
+                            return (
+                                <Button disabled className="w-full bg-indigo-600/80 text-white flex items-center justify-center gap-2 font-bold h-11">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    Publishing...
+                                </Button>
+                            );
+                        }
+
+                        if (isLocalFinalizePending) {
+                            return (
+                                <Button
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 font-bold h-11 shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all"
+                                    onClick={handlePublishToShopify}
+                                    disabled={isPublishing}
+                                >
+                                    Finish publishing
+                                </Button>
+                            );
+                        }
+
+                        if (isIntegrationError) {
+                            return (
+                                <Button
+                                    className="w-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center gap-2 font-bold h-11"
+                                    onClick={handleReconnectShopify}
+                                >
+                                    Reconnect Shopify
+                                </Button>
+                            );
+                        }
+
+                        if (isProposalErrorFinal) {
+                            return (
+                                <Button
+                                    disabled
+                                    className="w-full bg-zinc-500/20 text-zinc-500 border border-zinc-300 flex items-center justify-center gap-2 font-bold h-11 cursor-not-allowed"
+                                >
+                                    Regenerate Proposal
+                                </Button>
+                            );
+                        }
+
+                        if (showTransientBanner) {
+                            return (
+                                <Button
+                                    className="w-full bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center gap-2 font-bold h-11"
+                                    onClick={handlePublishToShopify}
+                                    disabled={isPublishing}
+                                >
+                                    Retry publishing
+                                </Button>
+                            );
+                        }
+
+                        if (hasPublishError) {
+                            // Genérico
+                            if (publishErrorRetryable) {
+                                return (
+                                    <Button
+                                        className="w-full bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center gap-2 font-bold h-11"
+                                        onClick={handlePublishToShopify}
+                                        disabled={isPublishing}
+                                    >
+                                        Retry publishing
+                                    </Button>
+                                );
+                            }
+                            return (
+                                <Button
+                                    className="w-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center gap-2 font-bold h-11"
+                                    onClick={handleReconnectShopify}
+                                >
+                                    Reconnect Shopify
+                                </Button>
+                            );
+                        }
+
                         if (status === 'NEEDS_OPTIMIZATION') {
                             return (
                                 <Button 
@@ -454,11 +718,7 @@ export default function ProductSheet() {
                                     onClick={handlePublishToShopify}
                                     disabled={isPublishing}
                                 >
-                                    {isPublishing ? (
-                                        <><Loader2 className="h-4 w-4 animate-spin" /> Publishing...</>
-                                    ) : (
-                                        <>🚀 Publish to Shopify</>
-                                    )}
+                                    🚀 Publish to Shopify
                                 </Button>
                             );
                         }
