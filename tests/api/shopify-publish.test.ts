@@ -1520,3 +1520,422 @@ describe("46-54. Retry con lectura previa", () => {
     expect((res._body as Record<string, unknown>).error).toMatch(/reconnect/i)
   })
 })
+
+// ---------------------------------------------------------------------------
+// 55-75. Parte 3: regresión sin segunda mutación, errores permanentes/transitorios, confirmación
+// ---------------------------------------------------------------------------
+describe("55-75. Parte 3 regresión", () => {
+  const RETRY_LOCAL = {
+    ...DEFAULT_PRODUCT_ROW,
+    publish_error_code: "LOCAL_FINALIZE_ERROR",
+    publish_error_stage: "local_finalize",
+    publish_error_retryable: true,
+    publish_attempts: 2,
+  }
+  const RETRY_TIMEOUT = {
+    ...DEFAULT_PRODUCT_ROW,
+    publish_error_code: "TIMEOUT",
+    publish_error_stage: "shopify_request",
+    publish_error_retryable: true,
+    publish_attempts: 1,
+  }
+  const RETRY_NETWORK = {
+    ...DEFAULT_PRODUCT_ROW,
+    publish_error_code: "NETWORK_ERROR",
+    publish_error_stage: "shopify_request",
+    publish_error_retryable: true,
+    publish_attempts: 1,
+  }
+
+  // 1A ya cubierto en 46, pero regresión explícita sin segunda mutación
+  it("55. Caso A: LOCAL_FINALIZE sin segunda mutación, ni refund ni doble cobro", async () => {
+    const { serviceClient, fetchMock, userClient } = setupDefaultMocks({
+      productRow: RETRY_LOCAL as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const body = JSON.parse((init as Record<string, unknown>).body as string)
+        if (body.query.includes("productUpdate")) throw new Error("no segunda mutación")
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({
+            data: { product: { id: SHOPIFY_GID, title: APPROVED_TITLE, descriptionHtml: APPROVED_BODY_HTML } },
+          }),
+        } as Response)
+      }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(200)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(userClient.productUpdateSpy).not.toHaveBeenCalled()
+    expect(userClient.optimizationInsertSpy).not.toHaveBeenCalled()
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeDefined()
+    const creditCalls = serviceClient.rpc.mock.calls.filter((c) => (CREDIT_RPCS as readonly string[]).includes(c[0] as string))
+    expect(creditCalls).toHaveLength(0)
+    expect(findRpc(serviceClient, "record_publish_failure")).toBeUndefined()
+  })
+
+  it("56. Caso D: lectura timeout no llama productUpdate ni finalize, retryable true", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      productRow: RETRY_LOCAL as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const b = JSON.parse((init as Record<string, unknown>).body as string)
+        if (b.query.includes("productUpdate")) throw new Error("no mutación en timeout lectura")
+        return Promise.reject(new DOMException("timeout", "TimeoutError"))
+      }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const args = rec[1] as Record<string, unknown>
+    expect(args.p_retryable).toBe(true)
+    expect(args.p_shopify_confirmed).toBe(false)
+    expect(args.p_next_retry_at).toBeTruthy()
+    expect(new Date(args.p_next_retry_at as string).getTime()).toBeGreaterThan(Date.now() - 1000)
+  })
+
+  it("57. Caso D: lectura 429 no muta, retryable true, next_retry futuro", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      productRow: RETRY_TIMEOUT as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const b = JSON.parse((init as Record<string, unknown>).body as string)
+        if (b.query.includes("productUpdate")) throw new Error("no mutate on 429")
+        return Promise.resolve({ ok: false, status: 429, statusText: "Too Many Requests", json: async () => ({}) } as Response)
+      }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(true)
+    expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+    expect((rec[1] as Record<string, unknown>).p_next_retry_at).toBeTruthy()
+  })
+
+  it("58. Caso D: lectura 500/502/503/504 no muta, retryable true", async () => {
+    for (const status of [500, 502, 503, 504]) {
+      const { serviceClient, fetchMock } = setupDefaultMocks({
+        productRow: RETRY_NETWORK as unknown as Record<string, unknown>,
+        shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+          const b = JSON.parse((init as Record<string, unknown>).body as string)
+          if (b.query.includes("productUpdate")) throw new Error(`no mutate on ${status}`)
+          return Promise.resolve({ ok: false, status, statusText: "Error", json: async () => ({}) } as Response)
+        }),
+      })
+      const res = await callPost({ productId: PRODUCT_ID })
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+      expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+      const rec = findRpc(serviceClient, "record_publish_failure")!
+      expect((rec[1] as Record<string, unknown>).p_retryable).toBe(true)
+      expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+    }
+  })
+
+  it("59. Token inválido durante lectura 401: INVALID_TOKEN, no retryable, sin mutación", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      productRow: RETRY_LOCAL as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const b = JSON.parse((init as Record<string, unknown>).body as string)
+        if (b.query.includes("productUpdate")) throw new Error("no mutate on 401")
+        return Promise.resolve({ ok: false, status: 401, statusText: "Unauthorized", json: async () => ({}) } as Response)
+      }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(401)
+    expect((res._body as Record<string, unknown>).error).toMatch(/reconnect/i)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const args = rec[1] as Record<string, unknown>
+    // Código canónico INVALID_TOKEN o equivalente
+    expect(String(args.p_code).toUpperCase()).toMatch(/INVALID_TOKEN|NO_INTEGRATION|MISSING_TOKEN/)
+    expect(args.p_retryable).toBe(false)
+    expect(args.p_shopify_confirmed).toBe(false)
+  })
+
+  it("60. Integración inexistente: NO_INTEGRATION, no Shopify", async () => {
+    const { serviceClient, fetchMock, userClient } = setupDefaultMocks({ integration: null })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(404)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(userClient.productSelectSpy).not.toHaveBeenCalled()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const code = String((rec[1] as Record<string, unknown>).p_code).toUpperCase()
+    expect(["NO_INTEGRATION", "INTEGRATION_MISSING", "INVALID_TOKEN"]).toContain(code)
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(false)
+    expect((res._body as Record<string, unknown>).error).toMatch(/connect|reconnect/i)
+  })
+
+  it("61. Tienda desinstalada: SHOP_NOT_ACTIVE, no intenta publicar", async () => {
+    // Simula lectura 403 Shop not active
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      productRow: RETRY_LOCAL as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const b = JSON.parse((init as Record<string, unknown>).body as string)
+        if (b.query.includes("productUpdate")) throw new Error("no mutate on shop inactive")
+        return Promise.resolve({ ok: false, status: 403, statusText: "Forbidden", json: async () => ({}) } as Response)
+      }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const code = String((rec[1] as Record<string, unknown>).p_code).toUpperCase()
+    expect(["SHOP_NOT_ACTIVE", "PERMISSION_DENIED", "SHOPIFY_FORBIDDEN", "INVALID_TOKEN"]).toContain(code)
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(false)
+  })
+
+  it("62. Producto inexistente en DB: PRODUCT_NOT_FOUND, no Shopify, no finalize", async () => {
+    const { serviceClient, fetchMock, userClient } = setupDefaultMocks({ productRow: null })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(404)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    expect(String((rec[1] as Record<string, unknown>).p_code).toUpperCase()).toMatch(/PRODUCT_NOT_FOUND|PROPOSAL/)
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(false)
+  })
+
+  it("63. Permisos insuficientes 403 en mutación: PERMISSION_DENIED, no retry", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      shopifyFetchOverride: vi.fn().mockResolvedValue({ ok: false, status: 403, statusText: "Forbidden", json: async () => ({}) } as Response),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const code = String((rec[1] as Record<string, unknown>).p_code).toUpperCase()
+    expect(["PERMISSION_DENIED", "INVALID_TOKEN", "SHOP_NOT_ACTIVE", "SHOPIFY_FORBIDDEN"]).toContain(code)
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(false)
+    expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+  })
+
+  it("64. Propuesta inválida: PROPOSAL_INVALID, no productUpdate ni finalize", async () => {
+    const badRow = { ...DEFAULT_PRODUCT_ROW, ai_proposal: { new_title: "", new_body_html: "" } }
+    const { serviceClient, fetchMock } = setupDefaultMocks({ productRow: badRow as unknown as Record<string, unknown> })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(400)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const code = String((rec[1] as Record<string, unknown>).p_code).toUpperCase()
+    expect(["PROPOSAL_INVALID", "PROPOSAL_MISSING", "PROPOSAL_MISMATCH", "PRODUCT_NOT_FOUND"]).toContain(code)
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(false)
+  })
+
+  it("65. proposal_mismatch en finalize: no retry ciego, conserva propuesta, mensaje claro", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      finalizeResult: makeSuccessfulFinalize({ success: false, reason: "proposal_mismatch" }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(500)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    // Solo una mutación, no segunda
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    expect(String((rec[1] as Record<string, unknown>).p_code)).toBe("LOCAL_FINALIZE_ERROR")
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(true)
+    expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(true)
+    const creditCalls = serviceClient.rpc.mock.calls.filter((c) => (CREDIT_RPCS as readonly string[]).includes(c[0] as string))
+    expect(creditCalls).toHaveLength(0)
+  })
+
+  it("66. Shopify 429 retryable con next_retry futuro, no finalize", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      shopifyFetchOverride: vi.fn().mockResolvedValue({ ok: false, status: 429, statusText: "Too Many Requests", json: async () => ({}) } as Response),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(502)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const args = rec[1] as Record<string, unknown>
+    expect(String(args.p_code).toUpperCase()).toMatch(/SHOPIFY_429|RATE_LIMITED|SHOPIFY_HTTP|TIMEOUT/)
+    expect(args.p_stage).toBe("shopify_request")
+    expect(args.p_retryable).toBe(true)
+    expect(args.p_shopify_confirmed).toBe(false)
+    expect(args.p_next_retry_at).toBeTruthy()
+    expect(new Date(args.p_next_retry_at as string).getTime()).toBeGreaterThan(Date.now())
+  })
+
+  it("67. Shopify 500/503 retryable, no token error", async () => {
+    for (const status of [500, 503]) {
+      const { serviceClient } = setupDefaultMocks({
+        shopifyFetchOverride: vi.fn().mockResolvedValue({ ok: false, status, statusText: "Error", json: async () => ({}) } as Response),
+      })
+      const res = await callPost({ productId: PRODUCT_ID })
+      expect(res._status).toBe(502)
+      const rec = findRpc(serviceClient, "record_publish_failure")!
+      expect((rec[1] as Record<string, unknown>).p_retryable).toBe(true)
+      expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+      expect(String((rec[1] as Record<string, unknown>).p_code).toUpperCase()).not.toMatch(/INVALID_TOKEN/)
+      expect((res._body as Record<string, unknown>).error).not.toMatch(/reconnect/i)
+    }
+  })
+
+  it("68. TIMEOUT: stage shopify_request, retryable true, no segunda mutación en misma request", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      shopifyFetchOverride: vi.fn().mockRejectedValue(new DOMException("timeout", "TimeoutError")),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(504)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    expect(String((rec[1] as Record<string, unknown>).p_code).toUpperCase()).toBe("TIMEOUT")
+    expect((rec[1] as Record<string, unknown>).p_stage).toBe("shopify_request")
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(true)
+    expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+    expect((rec[1] as Record<string, unknown>).p_next_retry_at).toBeTruthy()
+  })
+
+  it("69. NETWORK_ERROR: retryable true, mensaje retry, sin detalles internos", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      shopifyFetchOverride: vi.fn().mockRejectedValue(new TypeError("fetch failed")),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    expect(String((rec[1] as Record<string, unknown>).p_code).toUpperCase()).toBe("NETWORK_ERROR")
+    expect((rec[1] as Record<string, unknown>).p_stage).toBe("shopify_request")
+    expect((rec[1] as Record<string, unknown>).p_retryable).toBe(true)
+    const details = JSON.stringify((rec[1] as Record<string, unknown>).p_details)
+    expect(details).not.toContain(ACCESS_TOKEN)
+    expect(details).not.toContain("shpat")
+  })
+
+  it("70. Confirmación completa: p_shopify_confirmed true con valores de Shopify", async () => {
+    const REWRITTEN = '<p>Descripción aprobada</p>'
+    const { serviceClient } = setupDefaultMocks({
+      shopifyBody: makeShopifySuccess({ descriptionHtml: REWRITTEN }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(200)
+    const fin = findRpc(serviceClient, "finalize_product_publish")!
+    const args = fin[1] as Record<string, unknown>
+    expect(args.p_confirmed_title).toBe(APPROVED_TITLE)
+    expect(args.p_confirmed_body_html).toBe(REWRITTEN)
+    // No debe usar valores no confirmados de la propuesta si Shopify reescribió
+    expect(args.p_confirmed_body_html).not.toBe("<p>otra</p>")
+  })
+
+  it("71. Título incorrecto: p_shopify_confirmed false, stage shopify_verify, no finalize", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      shopifyFetchOverride: vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        json: async () => ({
+          data: { productUpdate: { product: { id: SHOPIFY_GID, title: "Wrong", descriptionHtml: APPROVED_BODY_HTML }, userErrors: [] } },
+        }),
+      }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(502)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+    expect((rec[1] as Record<string, unknown>).p_stage).toBe("shopify_verify")
+  })
+
+  it("72. Descripción vacía y whitespace: p_shopify_confirmed false, no finalize", async () => {
+    for (const html of ["", "   \n\t  ", "   "]) {
+      const { serviceClient, fetchMock } = setupDefaultMocks({
+        shopifyFetchOverride: vi.fn().mockResolvedValue({
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({
+            data: { productUpdate: { product: { id: SHOPIFY_GID, title: APPROVED_TITLE, descriptionHtml: html }, userErrors: [] } },
+          }),
+        }),
+      })
+      const res = await callPost({ productId: PRODUCT_ID })
+      expect(res._status).toBe(502)
+      expect(findRpc(serviceClient, "finalize_product_publish")).toBeUndefined()
+      const rec = findRpc(serviceClient, "record_publish_failure")!
+      expect((rec[1] as Record<string, unknown>).p_shopify_confirmed).toBe(false)
+      expect((rec[1] as Record<string, unknown>).p_stage).toBe("shopify_verify")
+    }
+  })
+
+  it("73. Shopify confirmado y finalize falla: LOCAL_FINALIZE_ERROR sin segunda mutación", async () => {
+    const { serviceClient, fetchMock } = setupDefaultMocks({
+      finalizeError: { message: "db down" },
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeDefined()
+    const rec = findRpc(serviceClient, "record_publish_failure")!
+    const args = rec[1] as Record<string, unknown>
+    expect(args.p_code).toBe("LOCAL_FINALIZE_ERROR")
+    expect(args.p_stage).toBe("local_finalize")
+    expect(args.p_retryable).toBe(true)
+    expect(args.p_shopify_confirmed).toBe(true)
+    // No segunda mutación
+    expect(fetchMock.mock.calls.filter((c: unknown[]) => JSON.parse((c[1] as Record<string, unknown>).body as string).query.includes("productUpdate"))).toHaveLength(1)
+    // No refund
+    const creditCalls = serviceClient.rpc.mock.calls.filter((c) => (CREDIT_RPCS as readonly string[]).includes(c[0] as string))
+    expect(creditCalls).toHaveLength(0)
+    expect((res._body as Record<string, unknown>).error).toMatch(/Finishing the local record/i)
+  })
+
+  it("74. already_completed éxito sin duplicar historial ni cobro", async () => {
+    const { serviceClient, fetchMock, userClient } = setupDefaultMocks({
+      finalizeResult: makeSuccessfulFinalize({ success: false, reason: "already_completed" }),
+    })
+    const res = await callPost({ productId: PRODUCT_ID })
+    expect(res._status).toBe(200)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(findRpc(serviceClient, "finalize_product_publish")).toBeDefined()
+    expect(userClient.productUpdateSpy).not.toHaveBeenCalled()
+    expect(userClient.optimizationInsertSpy).not.toHaveBeenCalled()
+    const creditCalls = serviceClient.rpc.mock.calls.filter((c) => (CREDIT_RPCS as readonly string[]).includes(c[0] as string))
+    expect(creditCalls).toHaveLength(0)
+    expect(findRpc(serviceClient, "record_publish_failure")).toBeUndefined()
+  })
+
+  it("75. Huella semántica: HTML cosmético no dispara mutación, contenido distinto sí", async () => {
+    // Cosmético: mismo fingerprint -> no mutación
+    const { serviceClient: sc1, fetchMock: fm1 } = setupDefaultMocks({
+      productRow: RETRY_LOCAL as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const b = JSON.parse((init as Record<string, unknown>).body as string)
+        if (b.query.includes("productUpdate")) throw new Error("no mutación cosmética")
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({
+            data: { product: { id: SHOPIFY_GID, title: APPROVED_TITLE, descriptionHtml: '<div><p>Descripción   aprobada</p></div>' } },
+          }),
+        } as Response)
+      }),
+    })
+    const res1 = await callPost({ productId: PRODUCT_ID })
+    expect(res1._status).toBe(200)
+    expect(fm1).toHaveBeenCalledTimes(1)
+
+    // Realmente distinto -> una mutación
+    const { serviceClient: sc2, fetchMock: fm2 } = setupDefaultMocks({
+      productRow: RETRY_LOCAL as unknown as Record<string, unknown>,
+      shopifyFetchOverride: vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        const b = JSON.parse((init as Record<string, unknown>).body as string)
+        if (b.query.includes("productUpdate")) {
+          return Promise.resolve({ ok: true, status: 200, statusText: "OK", json: async () => makeShopifySuccess() } as Response)
+        }
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({
+            data: { product: { id: SHOPIFY_GID, title: "Otro", descriptionHtml: "<p>Otro</p>" } },
+          }),
+        } as Response)
+      }),
+    })
+    const res2 = await callPost({ productId: PRODUCT_ID })
+    expect(res2._status).toBe(200)
+    expect(fm2).toHaveBeenCalledTimes(2)
+    expect(findRpc(sc2, "finalize_product_publish")).toBeDefined()
+  })
+})

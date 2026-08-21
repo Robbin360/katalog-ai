@@ -261,7 +261,7 @@ export async function POST(req: Request) {
         details: {},
         shopifyConfirmed: false,
       })
-      return NextResponse.json({ error: "No Shopify integration found" }, { status: 404 })
+      return NextResponse.json({ error: "No Shopify integration found. Please connect Shopify." }, { status: 404 })
     }
 
     let access_token: string
@@ -853,7 +853,7 @@ export async function POST(req: Request) {
       })
       throw new PublicRouteError(
         500,
-        "Shopify was updated, but the local record failed. Please retry publishing.",
+        "Shopify was updated. We are finishing the local record. Please retry publishing.",
         finalizeError?.message ?? "finalize_product_publish returned no data"
       )
     }
@@ -918,7 +918,7 @@ export async function POST(req: Request) {
     })
     throw new PublicRouteError(
       500,
-      "Shopify was updated, but the local record failed. Please retry publishing.",
+      "Shopify was updated. We are finishing the local record. Please retry publishing.",
       `finalize_product_publish unexpected reason: ${finalizeResult.reason}`
     )
   } catch (error: unknown) {
