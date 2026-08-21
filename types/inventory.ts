@@ -56,6 +56,13 @@ export interface ShopifyProductRow {
   ai_proposal?: AiProposal | null;
   error_log?: string | null;
   audit_log?: unknown;
+  publish_attempts?: number | null;
+  publish_next_retry_at?: string | null;
+  publish_error_code?: string | null;
+  publish_error_stage?: string | null;
+  publish_error_retryable?: boolean | null;
+  publish_error_at?: string | null;
+  publish_error_details?: unknown | null;
 }
 
 /** Producto normalizado para la UI. */
